@@ -1,10 +1,11 @@
 package server
 
 import (
-	"code-comment-analyzer/server/handler"
 	"fmt"
 	"log"
 	"net/http"
+
+	"code-comment-analyzer/server/handler"
 )
 
 type Server struct {
