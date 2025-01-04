@@ -1,0 +1,12 @@
+wipe     = true # 先删除之前自动生成的文件再重新生成
+no-tests = true # 不生成测试代码
+add-global-variants = true # 生成使用全局数据源的方法，也就是带 G 后缀的方法
+add-panic-variants = true # 生成使用当 error 不为 nil 时 panic 的方法，也就是带 P 后缀的方法
+no-context = true # 不需要上下文参数
+
+[mysql]
+dbname  = "code_comment_analyzer"
+host    = "127.0.0.1"
+user    = "root"
+pass    = "123456"
+sslmode = "false"
