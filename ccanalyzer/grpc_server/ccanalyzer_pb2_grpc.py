@@ -3,9 +3,9 @@
 import grpc
 import warnings
 
-import ccanalyzer_pb2 as ccanalyzer__pb2
+from . import ccanalyzer_pb2 as ccanalyzer__pb2
 
-GRPC_GENERATED_VERSION = '1.68.1'
+GRPC_GENERATED_VERSION = '1.69.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,8 +25,9 @@ if _version_not_supported:
     )
 
 
-class CCAnalyzerStub(object):
-    """Missing associated documentation comment in .proto file."""
+class UserStub(object):
+    """定义User rpc服务
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -34,43 +35,62 @@ class CCAnalyzerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SayHello = channel.unary_unary(
-                '/CCAnalyzer/SayHello',
-                request_serializer=ccanalyzer__pb2.HelloRequest.SerializeToString,
-                response_deserializer=ccanalyzer__pb2.HelloResponse.FromString,
+        self.AddUser = channel.unary_unary(
+                '/User/AddUser',
+                request_serializer=ccanalyzer__pb2.UserRequest.SerializeToString,
+                response_deserializer=ccanalyzer__pb2.UserResponse.FromString,
+                _registered_method=True)
+        self.GetUser = channel.unary_unary(
+                '/User/GetUser',
+                request_serializer=ccanalyzer__pb2.GetUserRequest.SerializeToString,
+                response_deserializer=ccanalyzer__pb2.GetUserResponse.FromString,
                 _registered_method=True)
 
 
-class CCAnalyzerServicer(object):
-    """Missing associated documentation comment in .proto file."""
+class UserServicer(object):
+    """定义User rpc服务
+    """
 
-    def SayHello(self, request, context):
+    def AddUser(self, request, context):
+        """定义rpc服务的方法
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUser(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_CCAnalyzerServicer_to_server(servicer, server):
+def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SayHello': grpc.unary_unary_rpc_method_handler(
-                    servicer.SayHello,
-                    request_deserializer=ccanalyzer__pb2.HelloRequest.FromString,
-                    response_serializer=ccanalyzer__pb2.HelloResponse.SerializeToString,
+            'AddUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddUser,
+                    request_deserializer=ccanalyzer__pb2.UserRequest.FromString,
+                    response_serializer=ccanalyzer__pb2.UserResponse.SerializeToString,
+            ),
+            'GetUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUser,
+                    request_deserializer=ccanalyzer__pb2.GetUserRequest.FromString,
+                    response_serializer=ccanalyzer__pb2.GetUserResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'CCAnalyzer', rpc_method_handlers)
+            'User', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('CCAnalyzer', rpc_method_handlers)
+    server.add_registered_method_handlers('User', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class CCAnalyzer(object):
-    """Missing associated documentation comment in .proto file."""
+class User(object):
+    """定义User rpc服务
+    """
 
     @staticmethod
-    def SayHello(request,
+    def AddUser(request,
             target,
             options=(),
             channel_credentials=None,
@@ -83,9 +103,36 @@ class CCAnalyzer(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/CCAnalyzer/SayHello',
-            ccanalyzer__pb2.HelloRequest.SerializeToString,
-            ccanalyzer__pb2.HelloResponse.FromString,
+            '/User/AddUser',
+            ccanalyzer__pb2.UserRequest.SerializeToString,
+            ccanalyzer__pb2.UserResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetUser(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/User/GetUser',
+            ccanalyzer__pb2.GetUserRequest.SerializeToString,
+            ccanalyzer__pb2.GetUserResponse.FromString,
             options,
             channel_credentials,
             insecure,
