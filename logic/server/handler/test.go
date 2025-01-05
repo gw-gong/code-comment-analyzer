@@ -3,14 +3,15 @@ package handler
 import (
 	"context"
 	"fmt"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
 
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
 	"code-comment-analyzer/config"
 	"code-comment-analyzer/data/mysql"
-	"code-comment-analyzer/grpc_client"
+	service "code-comment-analyzer/grpc_client"
 )
 
 // Test 是一个HTTP处理函数，它接收两个参数：http.ResponseWriter 和 *http.Request
@@ -48,7 +49,7 @@ func Test(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	// 向响应体写入一条消息
-	_, err = fmt.Fprintln(w, "This is a test route handler function. Insert successfully"+resp.GetMsg(), resp.GetCode())
+	_, err = fmt.Fprintln(w, "This is a test route handler function. Insert successfully| modify something..."+resp.GetMsg(), resp.GetCode())
 	if err != nil {
 		// 如果写入响应时发生错误，可以在服务器日志中记录此错误
 		// 这里简单打印到标准错误输出，你也可以使用更复杂的日志记录方式
