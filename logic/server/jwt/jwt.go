@@ -60,7 +60,7 @@ func ParseToken(r *http.Request) (userID uint64, err error) {
 		return 0, err
 	}
 	if !token.Valid {
-		return 0, fmt.Errorf(protocol.ErrorMsgInvalidToken)
+		return 0, fmt.Errorf("invalid token")
 	}
 	return claims.UserID, nil
 }

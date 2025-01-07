@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/jwt"
 	"context"
 	"fmt"
@@ -17,6 +18,12 @@ import (
 
 // Test 是一个HTTP处理函数，它接收两个参数：http.ResponseWriter 和 *http.Request
 func Test(w http.ResponseWriter, r *http.Request) {
+	userID, err := getUserIDFromRequestCtx(w, r)
+	if err != nil {
+		protocol.HandleError(w, protocol.ErrorCodeMissingUserId, err)
+		return
+	}
+	fmt.Println(userID)
 	exec, err := mysql.GetMysqlMasterExecutor(config.Cfg.MysqlMaster)
 	if err != nil {
 		w.Write([]byte(err.Error()))

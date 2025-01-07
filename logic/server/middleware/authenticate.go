@@ -1,12 +1,14 @@
 package middleware
 
 import (
-	"fmt"
+	"context"
 	"net/http"
 
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/jwt"
 )
+
+const CtxKeyUserID = "userIDFromAuthenticateForUser"
 
 func AuthenticateForUser(handlerFunc HandlerFunc) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -15,10 +17,8 @@ func AuthenticateForUser(handlerFunc HandlerFunc) HandlerFunc {
 			protocol.HandleError(w, protocol.ErrorCodeAuthenticating, err)
 			return
 		}
-		// 待处理如何传递userID
-		fmt.Println(userID)
-		handlerFunc(w, r)
+		ctx := context.WithValue(r.Context(), CtxKeyUserID, userID)
+		rWithUser := r.WithContext(ctx)
+		handlerFunc(w, rWithUser)
 	}
 }
-
-// 使用jwt

@@ -6,10 +6,6 @@ import (
 	"net/http"
 )
 
-const (
-	ErrorMsgInvalidToken string = "invalid token"
-)
-
 type ErrorResponse struct {
 	Status string `json:"status"`
 	Code   int    `json:"code"`
