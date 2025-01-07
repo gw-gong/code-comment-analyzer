@@ -22,6 +22,7 @@ func NewHTTPServer() *Server {
 
 func (s *Server) RegisterRouters() {
 	middleware.RegisterRouter(s.mux, "/test", handler.Test, middleware.AuthenticationForUser)
+	middleware.RegisterRouter(s.mux, "/test_login", handler.TestLogin)
 }
 
 func (s *Server) Listen(host, port string) {
