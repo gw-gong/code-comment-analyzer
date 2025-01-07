@@ -8,3 +8,6 @@ mysql_master:
   username: "root"
   password: "123456"
   dbname: "code_comment_analyzer"
+
+user_token_duration: 5  # min
+jwt_key: secret_key_for_user

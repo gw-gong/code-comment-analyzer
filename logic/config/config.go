@@ -25,8 +25,10 @@ type HttpServerConfig struct {
 }
 
 type Config struct {
-	HttpServerConfig HttpServerConfig `yaml:"http_server"`
-	MysqlMaster      MysqlConfig      `yaml:"mysql_master"`
+	HttpServerConfig  HttpServerConfig `yaml:"http_server"`
+	MysqlMaster       MysqlConfig      `yaml:"mysql_master"`
+	UserTokenDuration uint32           `yaml:"user_token_duration"`
+	JwtKey            string           `yaml:"jwt_key"`
 }
 
 func init() {

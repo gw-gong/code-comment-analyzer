@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"code-comment-analyzer/server/jwt"
 	"context"
 	"fmt"
 	"log"
@@ -58,23 +59,6 @@ func Test(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestLogin(w http.ResponseWriter, r *http.Request) {
-	// 假设身份验证逻辑已经完成，并且用户是合法的
-
-	// 正常情况下，你会在这里生成一个真正的JWT token
-	// 以下是一个伪造的token用于示例
-	token := "5xxxxxx"
-
-	// 将Token设置到Cookie中，发送给客户端
-	http.SetCookie(w, &http.Cookie{
-		Name:     "AuthToken",
-		Value:    token,
-		Path:     "/",
-		HttpOnly: true, // HttpOnly防止前端JS访问此cookie，增加安全性
-		Secure:   true, // Secure标记表示只能通过https传输此cookie
-		MaxAge:   3600, // 有效期，单位秒
-	})
-
-	// 设置成功响应
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Login successful and token has been set."))
+	// ....
+	jwt.AuthorizeUserToken(123456, w)
 }

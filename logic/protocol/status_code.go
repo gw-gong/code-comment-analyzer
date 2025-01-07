@@ -1,7 +1,10 @@
 package protocol
 
-type StatusCode uint
+const (
+	Success int = iota
+)
 
 const (
-	Success StatusCode = iota
+	ErrorCodeAuthenticating int = 1000 + iota
+	ErrorCodeAuthorizing
 )
