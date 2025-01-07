@@ -8,4 +8,5 @@ const (
 	ErrorCodeAuthenticating int = 1000 + iota
 	ErrorCodeAuthorizing
 	ErrorCodeMissingUserId
+	ErrorCodeRPCCallFail
 )

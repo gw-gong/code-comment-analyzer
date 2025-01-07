@@ -3,7 +3,7 @@ from concurrent import futures
 from grpc_server import ccanalyzer_pb2
 from grpc_server import ccanalyzer_pb2_grpc
 
-class UserService(ccanalyzer_pb2_grpc.UserServicer):
+class CcAnalyzer(ccanalyzer_pb2_grpc.CcAnalyzerServicer):
 
     # 实现proto文件中rpc的调用
     def AddUser(self, request: ccanalyzer_pb2.UserRequest, context):
@@ -18,9 +18,9 @@ class UserService(ccanalyzer_pb2_grpc.UserServicer):
 def serve():
     # 使用线程池来完成grpc的请求
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
-    ccanalyzer_pb2_grpc.add_UserServicer_to_server(UserService(), server)
-    print('listening ' + '127.0.0.1:50051')
-    server.add_insecure_port('127.0.0.1:50051')  # 绑定端口
+    ccanalyzer_pb2_grpc.add_CcAnalyzerServicer_to_server(CcAnalyzer(), server)
+    print('listening ' + '127.0.0.1:8888')
+    server.add_insecure_port('127.0.0.1:8888')  # 绑定端口
     server.start()
     server.wait_for_termination()
 

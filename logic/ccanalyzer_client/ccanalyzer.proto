@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-option go_package = ".;service";
+option go_package = ".;ccanalyzer_client";
 
 // 定义User rpc服务
-service User {
+service CcAnalyzer {
   // 定义rpc服务的方法
   rpc AddUser (UserRequest) returns (UserResponse);
   rpc GetUser (GetUserRequest) returns (GetUserResponse);

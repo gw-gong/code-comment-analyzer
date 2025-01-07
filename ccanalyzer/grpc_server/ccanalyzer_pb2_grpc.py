@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class UserStub(object):
+class CcAnalyzerStub(object):
     """定义User rpc服务
     """
 
@@ -36,18 +36,18 @@ class UserStub(object):
             channel: A grpc.Channel.
         """
         self.AddUser = channel.unary_unary(
-                '/User/AddUser',
+                '/CcAnalyzer/AddUser',
                 request_serializer=ccanalyzer__pb2.UserRequest.SerializeToString,
                 response_deserializer=ccanalyzer__pb2.UserResponse.FromString,
                 _registered_method=True)
         self.GetUser = channel.unary_unary(
-                '/User/GetUser',
+                '/CcAnalyzer/GetUser',
                 request_serializer=ccanalyzer__pb2.GetUserRequest.SerializeToString,
                 response_deserializer=ccanalyzer__pb2.GetUserResponse.FromString,
                 _registered_method=True)
 
 
-class UserServicer(object):
+class CcAnalyzerServicer(object):
     """定义User rpc服务
     """
 
@@ -65,7 +65,7 @@ class UserServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_UserServicer_to_server(servicer, server):
+def add_CcAnalyzerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'AddUser': grpc.unary_unary_rpc_method_handler(
                     servicer.AddUser,
@@ -79,13 +79,13 @@ def add_UserServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'User', rpc_method_handlers)
+            'CcAnalyzer', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('User', rpc_method_handlers)
+    server.add_registered_method_handlers('CcAnalyzer', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class User(object):
+class CcAnalyzer(object):
     """定义User rpc服务
     """
 
@@ -103,7 +103,7 @@ class User(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/User/AddUser',
+            '/CcAnalyzer/AddUser',
             ccanalyzer__pb2.UserRequest.SerializeToString,
             ccanalyzer__pb2.UserResponse.FromString,
             options,
@@ -130,7 +130,7 @@ class User(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/User/GetUser',
+            '/CcAnalyzer/GetUser',
             ccanalyzer__pb2.GetUserRequest.SerializeToString,
             ccanalyzer__pb2.GetUserResponse.FromString,
             options,

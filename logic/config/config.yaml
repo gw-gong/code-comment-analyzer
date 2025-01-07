@@ -9,5 +9,11 @@ mysql_master:
   password: "123456"
   dbname: "code_comment_analyzer"
 
+ccanalyzer_conf:
+  host: "localhost"
+  port: "8888"
+  connection_pool_size: 10
+  timeout_get_client: 5  #s
+
 user_token_duration: 5  # min
 jwt_key: secret_key_for_user
