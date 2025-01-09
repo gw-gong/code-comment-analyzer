@@ -4,7 +4,7 @@
 // - protoc             v5.29.2
 // source: ccanalyzer.proto
 
-package service
+package ccanalyzer_client
 
 import (
 	context "context"
@@ -19,145 +19,145 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	User_AddUser_FullMethodName = "/User/AddUser"
-	User_GetUser_FullMethodName = "/User/GetUser"
+	CcAnalyzer_AddUser_FullMethodName = "/CcAnalyzer/AddUser"
+	CcAnalyzer_GetUser_FullMethodName = "/CcAnalyzer/GetUser"
 )
 
-// UserClient is the client API for User service.
+// CcAnalyzerClient is the client API for CcAnalyzer service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // 定义User rpc服务
-type UserClient interface {
+type CcAnalyzerClient interface {
 	// 定义rpc服务的方法
 	AddUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 }
 
-type userClient struct {
+type ccAnalyzerClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewUserClient(cc grpc.ClientConnInterface) UserClient {
-	return &userClient{cc}
+func NewCcAnalyzerClient(cc grpc.ClientConnInterface) CcAnalyzerClient {
+	return &ccAnalyzerClient{cc}
 }
 
-func (c *userClient) AddUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+func (c *ccAnalyzerClient) AddUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UserResponse)
-	err := c.cc.Invoke(ctx, User_AddUser_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, CcAnalyzer_AddUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
+func (c *ccAnalyzerClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetUserResponse)
-	err := c.cc.Invoke(ctx, User_GetUser_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, CcAnalyzer_GetUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// UserServer is the server API for User service.
-// All implementations must embed UnimplementedUserServer
+// CcAnalyzerServer is the server API for CcAnalyzer service.
+// All implementations must embed UnimplementedCcAnalyzerServer
 // for forward compatibility.
 //
 // 定义User rpc服务
-type UserServer interface {
+type CcAnalyzerServer interface {
 	// 定义rpc服务的方法
 	AddUser(context.Context, *UserRequest) (*UserResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
-	mustEmbedUnimplementedUserServer()
+	mustEmbedUnimplementedCcAnalyzerServer()
 }
 
-// UnimplementedUserServer must be embedded to have
+// UnimplementedCcAnalyzerServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedUserServer struct{}
+type UnimplementedCcAnalyzerServer struct{}
 
-func (UnimplementedUserServer) AddUser(context.Context, *UserRequest) (*UserResponse, error) {
+func (UnimplementedCcAnalyzerServer) AddUser(context.Context, *UserRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
 }
-func (UnimplementedUserServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
+func (UnimplementedCcAnalyzerServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
-func (UnimplementedUserServer) testEmbeddedByValue()              {}
+func (UnimplementedCcAnalyzerServer) mustEmbedUnimplementedCcAnalyzerServer() {}
+func (UnimplementedCcAnalyzerServer) testEmbeddedByValue()                    {}
 
-// UnsafeUserServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to UserServer will
+// UnsafeCcAnalyzerServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CcAnalyzerServer will
 // result in compilation errors.
-type UnsafeUserServer interface {
-	mustEmbedUnimplementedUserServer()
+type UnsafeCcAnalyzerServer interface {
+	mustEmbedUnimplementedCcAnalyzerServer()
 }
 
-func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
-	// If the following call pancis, it indicates UnimplementedUserServer was
+func RegisterCcAnalyzerServer(s grpc.ServiceRegistrar, srv CcAnalyzerServer) {
+	// If the following call pancis, it indicates UnimplementedCcAnalyzerServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&User_ServiceDesc, srv)
+	s.RegisterService(&CcAnalyzer_ServiceDesc, srv)
 }
 
-func _User_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CcAnalyzer_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).AddUser(ctx, in)
+		return srv.(CcAnalyzerServer).AddUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_AddUser_FullMethodName,
+		FullMethod: CcAnalyzer_AddUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).AddUser(ctx, req.(*UserRequest))
+		return srv.(CcAnalyzerServer).AddUser(ctx, req.(*UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CcAnalyzer_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).GetUser(ctx, in)
+		return srv.(CcAnalyzerServer).GetUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_GetUser_FullMethodName,
+		FullMethod: CcAnalyzer_GetUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).GetUser(ctx, req.(*GetUserRequest))
+		return srv.(CcAnalyzerServer).GetUser(ctx, req.(*GetUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// User_ServiceDesc is the grpc.ServiceDesc for User service.
+// CcAnalyzer_ServiceDesc is the grpc.ServiceDesc for CcAnalyzer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var User_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "User",
-	HandlerType: (*UserServer)(nil),
+var CcAnalyzer_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "CcAnalyzer",
+	HandlerType: (*CcAnalyzerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "AddUser",
-			Handler:    _User_AddUser_Handler,
+			Handler:    _CcAnalyzer_AddUser_Handler,
 		},
 		{
 			MethodName: "GetUser",
-			Handler:    _User_GetUser_Handler,
+			Handler:    _CcAnalyzer_GetUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

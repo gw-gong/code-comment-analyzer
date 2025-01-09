@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"code-comment-analyzer/server/handler"
+	"code-comment-analyzer/server/middleware"
 )
 
 type Server struct {
@@ -20,7 +21,8 @@ func NewHTTPServer() *Server {
 }
 
 func (s *Server) RegisterRouters() {
-	s.mux.HandleFunc("/test", handler.Test)
+	middleware.RegisterRouter(s.mux, "/test", handler.Test, middleware.AuthenticateForUser)
+	middleware.RegisterRouter(s.mux, "/test_login", handler.TestLogin)
 }
 
 func (s *Server) Listen(host, port string) {
