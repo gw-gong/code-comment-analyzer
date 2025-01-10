@@ -1,22 +1,18 @@
 package jwt
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-	"time"
-
 	"code-comment-analyzer/config"
 	"code-comment-analyzer/data/redis"
 	"code-comment-analyzer/protocol"
+	"fmt"
+	"log"
+	"net/http"
 
 	"github.com/golang-jwt/jwt"
 )
 
 func AuthorizeUserToken(userID uint64, w http.ResponseWriter, sessionManager redis.SessionManager) {
-	duration := time.Duration(config.Cfg.UserTokenDuration)
 	jwtKey := []byte(config.Cfg.JwtKey)
-	expireTime := time.Now().Add(duration * time.Minute)
 	token := jwt.New(jwt.SigningMethodHS256)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
@@ -31,9 +27,8 @@ func AuthorizeUserToken(userID uint64, w http.ResponseWriter, sessionManager red
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expireTime,
+		Name:  "token",
+		Value: tokenString,
 	})
 	w.WriteHeader(http.StatusOK)
 	_, err = w.Write([]byte("Login successful and token has been set."))
