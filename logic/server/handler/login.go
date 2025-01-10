@@ -28,5 +28,5 @@ func NewLogin(registry *data.DataManagerRegistry) middleware.GetHandler {
 
 func (l *Login) Handle() {
 	// ....
-	jwt.AuthorizeUserToken(123456, l.w)
+	jwt.AuthorizeUserToken(123456, l.w, l.registry.GetSessionManager())
 }

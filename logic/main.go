@@ -2,6 +2,7 @@ package main
 
 import (
 	"code-comment-analyzer/ccanalyzer_client"
+	"code-comment-analyzer/data/redis"
 	"log"
 	"os"
 
@@ -20,6 +21,10 @@ func main() {
 	defer mysqlMaster.Close()
 	exitOnErr(err)
 	register.Register(mysqlMaster)
+
+	redisMaster := redis.NewSessionManager(cfg.RedisMaster, cfg.UserTokenDuration)
+	defer redisMaster.Close()
+	register.Register(redisMaster)
 
 	ccanalyzer, err := ccanalyzer_client.NewCCAnalyzer(cfg.CcAnalyzerConfig)
 	defer ccanalyzer.Close()
