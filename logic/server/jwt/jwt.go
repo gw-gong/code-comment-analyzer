@@ -1,41 +1,34 @@
 package jwt
 
 import (
-	"fmt"
-	"net/http"
-	"time"
-
 	"code-comment-analyzer/config"
+	"code-comment-analyzer/data/redis"
 	"code-comment-analyzer/protocol"
+	"fmt"
+	"log"
+	"net/http"
 
 	"github.com/golang-jwt/jwt"
 )
 
-type Claims struct {
-	UserID uint64 `json:"user_id"`
-	jwt.StandardClaims
-}
-
-func AuthorizeUserToken(userID uint64, w http.ResponseWriter) {
-	duration := time.Duration(config.Cfg.UserTokenDuration)
+func AuthorizeUserToken(userID uint64, w http.ResponseWriter, sessionManager redis.SessionManager) {
 	jwtKey := []byte(config.Cfg.JwtKey)
-	expireTime := time.Now().Add(duration * time.Minute)
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
-		UserID: userID,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(),
-		},
-	})
+	token := jwt.New(jwt.SigningMethodHS256)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		protocol.HandleError(w, protocol.ErrorCodeAuthorizing, err)
-		fmt.Println(err)
+		log.Println(err)
+		return
+	}
+	err = sessionManager.SetSession(tokenString, userID)
+	if err != nil {
+		protocol.HandleError(w, protocol.ErrorCodeAuthorizing, err)
+		log.Println(err)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expireTime,
+		Name:  "token",
+		Value: tokenString,
 	})
 	w.WriteHeader(http.StatusOK)
 	_, err = w.Write([]byte("Login successful and token has been set."))
@@ -45,15 +38,14 @@ func AuthorizeUserToken(userID uint64, w http.ResponseWriter) {
 	}
 }
 
-func ParseToken(r *http.Request) (userID uint64, err error) {
+func ParseToken(r *http.Request, sessionManager redis.SessionManager) (userID uint64, err error) {
 	c, err := r.Cookie("token")
 	if err != nil {
 		return 0, err
 	}
 	tokenString := c.Value
-	claims := &Claims{}
 	jwtKey := []byte(config.Cfg.JwtKey)
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
 	if err != nil {
@@ -62,5 +54,18 @@ func ParseToken(r *http.Request) (userID uint64, err error) {
 	if !token.Valid {
 		return 0, fmt.Errorf("invalid token")
 	}
-	return claims.UserID, nil
+	return sessionManager.GetSession(tokenString)
+}
+
+func RefreshToken(r *http.Request, sessionManager redis.SessionManager) error {
+	c, err := r.Cookie("token")
+	if err != nil {
+		return err
+	}
+	tokenString := c.Value
+	err = sessionManager.RefreshSession(tokenString)
+	if err != nil {
+		return err
+	}
+	return nil
 }

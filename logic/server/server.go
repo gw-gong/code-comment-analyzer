@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"code-comment-analyzer/ccanalyzer_client"
+	"code-comment-analyzer/data"
 	"code-comment-analyzer/server/handler"
 	"code-comment-analyzer/server/middleware"
 )
@@ -20,9 +22,10 @@ func NewHTTPServer() *Server {
 	return s
 }
 
-func (s *Server) RegisterRouters() {
-	middleware.RegisterRouter(s.mux, "/test", handler.Test, middleware.AuthenticateForUser)
-	middleware.RegisterRouter(s.mux, "/test_login", handler.TestLogin)
+func (s *Server) RegisterRouters(register *data.DataManagerRegistry, ccanalyzer ccanalyzer_client.CCAnalyzer) {
+	middleware.RegisterSessionManager(register.GetSessionManager())
+	middleware.RegisterRouter(s.mux, "/test", handler.NewTestXXX(register, ccanalyzer), middleware.EnforceGet, middleware.AuthenticateUser)
+	middleware.RegisterRouter(s.mux, "/test_login", handler.NewLogin(register), middleware.EnforcePost)
 }
 
 func (s *Server) Listen(host, port string) {

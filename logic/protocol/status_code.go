@@ -9,4 +9,6 @@ const (
 	ErrorCodeAuthorizing
 	ErrorCodeMissingUserId
 	ErrorCodeRPCCallFail
+	ErrorCodeMustBeGet
+	ErrorCodeMustBePost
 )
