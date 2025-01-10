@@ -1,8 +1,9 @@
 package data
 
 import (
-	"code-comment-analyzer/data/mysql"
 	"fmt"
+
+	"code-comment-analyzer/data/mysql"
 )
 
 var (

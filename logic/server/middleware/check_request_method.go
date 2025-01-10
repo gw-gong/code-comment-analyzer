@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"code-comment-analyzer/protocol"
 	"fmt"
 	"net/http"
+
+	"code-comment-analyzer/protocol"
 )
 
 const (

@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"code-comment-analyzer/config"
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/data/mysql"
 	"code-comment-analyzer/server"
-	"log"
-	"os"
 )
 
 func main() {

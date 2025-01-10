@@ -1,10 +1,11 @@
 package handler
 
 import (
+	"net/http"
+
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/server/jwt"
 	"code-comment-analyzer/server/middleware"
-	"net/http"
 )
 
 type Login struct {

@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"code-comment-analyzer/server/middleware"
 	"fmt"
 	"net/http"
+
+	"code-comment-analyzer/server/middleware"
 )
 
 func getUserIDFromRequestCtx(w http.ResponseWriter, r *http.Request) (uint64, error) {
