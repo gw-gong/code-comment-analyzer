@@ -1,6 +1,7 @@
 package main
 
 import (
+	"code-comment-analyzer/ccanalyzer_client"
 	"log"
 	"os"
 
@@ -14,12 +15,18 @@ func main() {
 	cfg := config.Cfg
 
 	register := &data.DataManagerRegistry{}
+
 	mysqlMaster, err := mysql.GetMysqlMasterExecutor(cfg.MysqlMaster)
+	defer mysqlMaster.Close()
 	exitOnErr(err)
 	register.Register(mysqlMaster)
 
+	ccanalyzer, err := ccanalyzer_client.NewCCAnalyzer(cfg.CcAnalyzerConfig)
+	defer ccanalyzer.Close()
+	exitOnErr(err)
+
 	httpServer := server.NewHTTPServer()
-	httpServer.RegisterRouters(register)
+	httpServer.RegisterRouters(register, ccanalyzer)
 	httpServerCfg := config.Cfg.HttpServerConfig
 	httpServer.Listen(httpServerCfg.Host, httpServerCfg.Port)
 }

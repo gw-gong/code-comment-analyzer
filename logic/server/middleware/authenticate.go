@@ -9,7 +9,7 @@ import (
 
 const CtxKeyUserID = "userIDFromAuthenticateForUser"
 
-func AuthenticateForUser(handlerFunc HandlerFunc) HandlerFunc {
+func AuthenticateUser(handlerFunc HandlerFunc) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {
 		userID, err := jwt.ParseToken(r)
 		if err != nil {

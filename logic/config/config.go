@@ -25,10 +25,8 @@ type HttpServerConfig struct {
 }
 
 type CcAnalyzerConfig struct {
-	Host             string `yaml:"host"`
-	Port             string `yaml:"port"`
-	ConnectPoolSize  int    `yaml:"connect_pool_size"`
-	TimeoutGetClient uint32 `yaml:"timeout_get_client"`
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
 }
 
 type Config struct {

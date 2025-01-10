@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,24 +9,24 @@ import (
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 type TestXXX struct {
-	w         http.ResponseWriter
-	r         *http.Request
-	extractor middleware.Extractor
-	registry  *data.DataManagerRegistry
+	w          http.ResponseWriter
+	r          *http.Request
+	extractor  middleware.Extractor
+	registry   *data.DataManagerRegistry
+	ccanalyzer ccanalyzer_client.CCAnalyzer
 }
 
-func NewTestXXX(registry *data.DataManagerRegistry) middleware.GetHandler {
+func NewTestXXX(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_client.CCAnalyzer) middleware.GetHandler {
 	return func(w http.ResponseWriter, r *http.Request, extractor middleware.Extractor) middleware.Handler {
 		return &TestXXX{
-			w:         w,
-			r:         r,
-			extractor: extractor,
-			registry:  registry,
+			w:          w,
+			r:          r,
+			extractor:  extractor,
+			registry:   registry,
+			ccanalyzer: ccanalyzer,
 		}
 	}
 }
@@ -40,21 +39,25 @@ func (t *TestXXX) Handle() {
 	}
 	log.Printf("TestXXX.handle()|%d", userID)
 
-	// 连接到server端，此处禁用安全传输，没有加密和验证
-	conn, err := grpc.Dial("localhost:8888", grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
+	var (
+		sqlExecutor = t.registry.GetSqlExecutor()
+		ccanalyzer  = t.ccanalyzer
+	)
 
-	// 建立连接
-	client := ccanalyzer_client.NewCcAnalyzerClient(conn)
-	// 执行rpc调用（这个方法在服务端来实现并返回结果）
-	resp, err := client.AddUser(context.Background(), &ccanalyzer_client.UserRequest{Name: "xpl", Age: 23})
+	// test SQL
+	err = sqlExecutor.InsertXXX()
+	if err != nil {
+		return
+	}
+	log.Printf("Insertxxx Successfully")
+
+	// test RPC call
+	resp, err := ccanalyzer.AddUser("xpl", 23)
 	if err != nil {
 		protocol.HandleError(t.w, protocol.ErrorCodeRPCCallFail, err)
 		return
 	}
+	log.Printf("rpc call successfully | call back: %v", resp)
 
 	// 设置HTTP头部的Content-Type为text/plain，表示发送的是纯文本
 	t.w.Header().Set("Content-Type", "text/plain")

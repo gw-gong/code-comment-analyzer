@@ -13,6 +13,7 @@ import (
 
 type SqlExecutor interface {
 	InsertXXX() error
+	Close()
 }
 
 func GetMysqlMasterExecutor(cfgMaster config.MysqlConfig) (SqlExecutor, error) {
@@ -34,7 +35,7 @@ func initMysqlMaster(host, port, userName, password, dbName string) (*mysqlMaste
 	return &mysqlMaster{db: db}, nil
 }
 
-func (master *mysqlMaster) CloseMysqlMaster() {
+func (master *mysqlMaster) Close() {
 	err := master.db.Close()
 	if err != nil {
 		panic(err)
