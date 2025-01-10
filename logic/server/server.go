@@ -1,12 +1,12 @@
 package server
 
 import (
+	"code-comment-analyzer/data"
+	"code-comment-analyzer/server/handler"
+	"code-comment-analyzer/server/middleware"
 	"fmt"
 	"log"
 	"net/http"
-
-	"code-comment-analyzer/server/handler"
-	"code-comment-analyzer/server/middleware"
 )
 
 type Server struct {
@@ -20,9 +20,9 @@ func NewHTTPServer() *Server {
 	return s
 }
 
-func (s *Server) RegisterRouters() {
-	middleware.RegisterRouter(s.mux, "/test", handler.Test, middleware.AuthenticateForUser)
-	middleware.RegisterRouter(s.mux, "/test_login", handler.TestLogin)
+func (s *Server) RegisterRouters(register *data.DataManagerRegistry) {
+	middleware.RegisterRouter(s.mux, "/test", handler.NewTestXXX(register), middleware.AuthenticateForUser)
+	middleware.RegisterRouter(s.mux, "/test_login", handler.NewLogin(register))
 }
 
 func (s *Server) Listen(host, port string) {

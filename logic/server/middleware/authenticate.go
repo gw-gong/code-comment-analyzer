@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"context"
 	"net/http"
 
 	"code-comment-analyzer/protocol"
@@ -11,14 +10,16 @@ import (
 const CtxKeyUserID = "userIDFromAuthenticateForUser"
 
 func AuthenticateForUser(handlerFunc HandlerFunc) HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {
 		userID, err := jwt.ParseToken(r)
 		if err != nil {
 			protocol.HandleError(w, protocol.ErrorCodeAuthenticating, err)
 			return
 		}
-		ctx := context.WithValue(r.Context(), CtxKeyUserID, userID)
-		rWithUser := r.WithContext(ctx)
-		handlerFunc(w, rWithUser)
+		if extractor == nil {
+			extractor = newExtractedData()
+		}
+		extractor.setUserId(userID)
+		handlerFunc(w, r, extractor)
 	}
 }

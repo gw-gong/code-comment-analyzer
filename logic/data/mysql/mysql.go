@@ -11,19 +11,19 @@ import (
 	"code-comment-analyzer/data/mysql/models"
 )
 
-type Executor interface {
+type SqlExecutor interface {
 	InsertXXX() error
 }
 
-func GetMysqlMasterExecutor(cfgMaster config.MysqlConfig) (Executor, error) {
+func GetMysqlMasterExecutor(cfgMaster config.MysqlConfig) (SqlExecutor, error) {
 	return initMysqlMaster(cfgMaster.Host, cfgMaster.Port, cfgMaster.Username, cfgMaster.Password, cfgMaster.DBName)
 }
 
-type MysqlMaster struct {
+type mysqlMaster struct {
 	db *sql.DB
 }
 
-func initMysqlMaster(host, port, userName, password, dbName string) (*MysqlMaster, error) {
+func initMysqlMaster(host, port, userName, password, dbName string) (*mysqlMaster, error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", userName, password, host, port, dbName)
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -31,17 +31,17 @@ func initMysqlMaster(host, port, userName, password, dbName string) (*MysqlMaste
 	}
 	fmt.Println(dsn)
 
-	return &MysqlMaster{db: db}, nil
+	return &mysqlMaster{db: db}, nil
 }
 
-func (master *MysqlMaster) CloseMysqlMaster() {
+func (master *mysqlMaster) CloseMysqlMaster() {
 	err := master.db.Close()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (master *MysqlMaster) InsertXXX() error {
+func (master *mysqlMaster) InsertXXX() error {
 	user := models.User{
 		Username: "username1",
 		Password: "123456",
