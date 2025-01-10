@@ -20,8 +20,7 @@ func RegisterRouter(mux *http.ServeMux, pattern string, getHandler GetHandler, m
 
 func defaultMiddleOp(getHandler GetHandler) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {
-		h := getHandler()
-		h.CarryData(w, r, extractor)
+		h := getHandler(w, r, extractor)
 		h.Handle()
 	}
 }
