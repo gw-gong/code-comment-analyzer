@@ -2,30 +2,15 @@ syntax = "proto3";
 
 option go_package = ".;ccanalyzer_client";
 
-// 定义User rpc服务
 service CcAnalyzer {
-  // 定义rpc服务的方法
-  rpc AddUser (UserRequest) returns (UserResponse);
-  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+  rpc AnalyzeFileContent (AnalyzeFileContentReq) returns (AnalyzeFileContentRes);
 }
 
-// 请求的结构体
-message UserRequest {
-  string name = 1;
-  uint32 age = 2;
+message AnalyzeFileContentReq {
+  string language = 1;
+  string file_content = 2;
 }
 
-// 响应的结构体
-message UserResponse {
-  string msg = 1;
-  int32 code = 2;
-}
-
-message GetUserRequest {
-  string name = 1;
-}
-
-message GetUserResponse {
-  string name = 1;
-  string age = 2;
+message AnalyzeFileContentRes {
+  string analyzed_data = 1;
 }

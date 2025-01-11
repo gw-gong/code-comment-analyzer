@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x63\x63\x61nalyzer.proto\"(\n\x0bUserRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03\x61ge\x18\x02 \x01(\r\")\n\x0cUserResponse\x12\x0b\n\x03msg\x18\x01 \x01(\t\x12\x0c\n\x04\x63ode\x18\x02 \x01(\x05\"\x1e\n\x0eGetUserRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\",\n\x0fGetUserResponse\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03\x61ge\x18\x02 \x01(\t2b\n\nCcAnalyzer\x12&\n\x07\x41\x64\x64User\x12\x0c.UserRequest\x1a\r.UserResponse\x12,\n\x07GetUser\x12\x0f.GetUserRequest\x1a\x10.GetUserResponseB\x15Z\x13.;ccanalyzer_clientb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x63\x63\x61nalyzer.proto\"?\n\x15\x41nalyzeFileContentReq\x12\x10\n\x08language\x18\x01 \x01(\t\x12\x14\n\x0c\x66ile_content\x18\x02 \x01(\t\".\n\x15\x41nalyzeFileContentRes\x12\x15\n\ranalyzed_data\x18\x01 \x01(\t2R\n\nCcAnalyzer\x12\x44\n\x12\x41nalyzeFileContent\x12\x16.AnalyzeFileContentReq\x1a\x16.AnalyzeFileContentResB\x15Z\x13.;ccanalyzer_clientb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,14 +32,10 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'ccanalyzer_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\023.;ccanalyzer_client'
-  _globals['_USERREQUEST']._serialized_start=20
-  _globals['_USERREQUEST']._serialized_end=60
-  _globals['_USERRESPONSE']._serialized_start=62
-  _globals['_USERRESPONSE']._serialized_end=103
-  _globals['_GETUSERREQUEST']._serialized_start=105
-  _globals['_GETUSERREQUEST']._serialized_end=135
-  _globals['_GETUSERRESPONSE']._serialized_start=137
-  _globals['_GETUSERRESPONSE']._serialized_end=181
-  _globals['_CCANALYZER']._serialized_start=183
-  _globals['_CCANALYZER']._serialized_end=281
+  _globals['_ANALYZEFILECONTENTREQ']._serialized_start=20
+  _globals['_ANALYZEFILECONTENTREQ']._serialized_end=83
+  _globals['_ANALYZEFILECONTENTRES']._serialized_start=85
+  _globals['_ANALYZEFILECONTENTRES']._serialized_end=131
+  _globals['_CCANALYZER']._serialized_start=133
+  _globals['_CCANALYZER']._serialized_end=215
 # @@protoc_insertion_point(module_scope)

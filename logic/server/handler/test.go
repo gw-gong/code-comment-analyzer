@@ -52,19 +52,19 @@ func (t *TestXXX) Handle() {
 	log.Printf("Insertxxx Successfully")
 
 	// test RPC call
-	resp, err := ccanalyzer.AddUser("xpl", 23)
+	analyzedData, err := ccanalyzer.AnalyzeFileContent("Python", "# 这是一个注释\n")
 	if err != nil {
 		protocol.HandleError(t.w, protocol.ErrorCodeRPCCallFail, err)
 		return
 	}
-	log.Printf("rpc call successfully | call back: %v", resp)
 
 	// 设置HTTP头部的Content-Type为text/plain，表示发送的是纯文本
-	t.w.Header().Set("Content-Type", "text/plain")
+	t.w.Header().Set("Content-Type", "application/json")
+
 	// 写入响应状态码（HTTP 200 OK）
 	t.w.WriteHeader(http.StatusOK)
 	// 向响应体写入一条消息
-	_, err = fmt.Fprintln(t.w, "This is a test route handler function. Insert successfully"+resp.GetMsg(), resp.GetCode())
+	_, err = fmt.Fprintln(t.w, "This is a test route handler function. Insert successfully\n"+analyzedData)
 	if err != nil {
 		log.Printf("Error writing response:", err)
 	}

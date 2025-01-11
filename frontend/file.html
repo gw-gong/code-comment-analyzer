@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>注释分析 | 单文件</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <link rel="icon" href="\static\images\icon.ico">
+  <link rel="stylesheet" href="\node_modules\amis\sdk\sdk.css" />
+  <link rel="stylesheet" href="\node_modules\amis\sdk\helper.css" />
+  <link rel="stylesheet" href="\node_modules\amis\sdk\iconfont.css" />
+  <!-- 这是默认主题所需的，如果是其他主题则不需要 -->
+  <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+  <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+  <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+  <style>
+    html,
+    body,
+    .app-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root" class="app-wrapper"></div>
+  <script src="\node_modules\amis\sdk\sdk.js"></script>
+  <script type="text/javascript">
+    (function () {
+      let amis = amisRequire('amis/embed');
+      // 通过替换下面这个配置来生成不同页面
+      let amisJSON = {
+  "type": "page",
+  "title": "文件",
+  "body": [
+    {
+      "type": "flex",
+      "className": "p-1",
+      "items": [
+        {
+          "type": "container",
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "block",
+            "flex": "1 1 auto",
+            "flexGrow": 1
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:d65dc6312ab1",
+          "body": [
+            {
+              "id": "u:39969fb15c90",
+              "type": "form",
+              "title": "代码内容",
+              "body": [
+                {
+                  "type": "input-file",
+                  "id": "u:c1fe2bbe7cef",
+                  "label": "",
+                  "name": "file",
+                  "mode": "normal",
+                  "autoUpload": true,
+                  "drag": true,
+                  "receiver": {
+                    "url": "/public/upload_file2string/",
+                    "method": "post",
+                    "adaptor": "",
+                    "dataType": "form-data",
+                    "requestAdaptor": "",
+                    "messages": {}
+                  },
+                  "proxy": true,
+                  "uploadType": "fileReceptor",
+                  "btnLabel": "",
+                  "multiple": false,
+                  "useChunk": false,
+                  "accept": ".py,.go,.html,.css,.js,.java,.cpp,.c",
+                  "autoFill": {
+                    "language": "${language}",
+                    "fileContent": "${fileContent}"
+                  },
+                  "visibleOn": "${AND(!language, !operating_record_id)}",
+                  "onEvent": {
+                    "success": {
+                      "weight": 0,
+                      "actions": [
+                        {
+                          "componentId": "editorId",
+                          "actionType": "reset",
+                          "groupType": "component"
+                        },
+                        {
+                          "componentId": "tableShow",
+                          "ignoreError": false,
+                          "actionType": "reset"
+                        }
+                      ]
+                    }
+                  },
+                  // "reload": "fileContent",
+                  "reload": "fileContent"
+                },
+                {
+                  "id": "u:f40647bcda43",
+                  "type": "input-text",
+                  "mode": "normal",
+                  "label": "语言",
+                  "name": "language",
+                  "size": "sm",
+                  "readOnly": true,
+                  "visibleOn": "${OR(language, operating_record_id)}"
+                },
+                {
+                  "type": "editor",
+                  "label": "文件内容",
+                  "name": "fileContent",
+                  "id": "editorId",
+                  "language": "${LOWER(language)}",
+                  "mode": "normal",
+                  "value": "",
+                  "autoFill": {},
+                  "hidden": false,
+                  "disabled": true,
+                  "visibleOn": "${OR(language, operating_record_id)}",
+                  "onEvent": {
+                    "change": {
+                      "weight": 0,
+                      "actions": []
+                    }
+                  }
+                }
+              ],
+              "mode": "horizontal",
+              "actions": [
+                {
+                  "type": "button",
+                  "label": "再次上传",
+                  "onEvent": {
+                    "click": {
+                      "actions": [
+                        {
+                          "componentId": "u:39969fb15c90",
+                          "ignoreError": false,
+                          "actionType": "reset"
+                        },
+                        {
+                          "componentId": "tableShow",
+                          "ignoreError": false,
+                          "actionType": "reset"
+                        }
+                      ]
+                    }
+                  },
+                  "id": "u:a3f54d20ccb0",
+                  "level": "light",
+                  "visibleOn": "${AND(language, !operating_record_id)}"
+                },
+                {
+                  "type": "button",
+                  "label": "开始分析",
+                  "onEvent": {
+                    "click": {
+                      "actions": [
+                        {
+                          "actionType": "submit",
+                          "componentId": "u:39969fb15c90"
+                        }
+                      ]
+                    }
+                  },
+                  "level": "primary",
+                  "id": "u:5cb120bf99f9",
+                  "visibleOn": "${OR(language, operating_record_id)}"
+                }
+              ],
+              "resetAfterSubmit": false,
+              "feat": "Edit",
+              "dsType": "api",
+              "data": {
+                "language": "${language}"
+              },
+              "onEvent": {},
+              "reload": "tableShow?response=${response}",
+              "api": {
+                "url": "/public/analyze_file/",
+                "method": "post",
+                "requestAdaptor": "",
+                "messages": {},
+                "dataType": "json",
+                "adaptor": "return {\n    ...payload,\n    data: {\n        ...payload.data,\n        response: response.data\n    }\n}"
+              },
+              "initApi": {
+                "method": "get",
+                "url": "/user/get_file_upload_record/?operating_record_id=${operating_record_id}",
+                "data": {
+                  "language": "${language}"
+                },
+                "requestAdaptor": "",
+                "adaptor": "",
+                "messages": {},
+                "sendOn": "${operating_record_id}",
+                "dataType": "json"
+              }
+            }
+          ]
+        },
+        {
+          "type": "container",
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "block",
+            "flex": "1 1 auto",
+            "flexGrow": 1
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:40348a1e935f",
+          "body": [
+            {
+              "id": "tableShow",
+              "type": "form",
+              "title": "分析结果",
+              "mode": "horizontal",
+              "dsType": "api",
+              "feat": "Insert",
+              "body": [
+                {
+                  "type": "anchor-nav",
+                  "links": [
+                    {
+                      "title": "图表分析",
+                      "href": "5",
+                      "body": [
+                        {
+                          "type": "flex",
+                          "className": "p-1",
+                          "items": [
+                            {
+                              "type": "container",
+                              "body": [
+                                {
+                                  "type": "chart",
+                                  "config": {
+                                    "graphic": {
+                                      "elements": [
+                                        {
+                                          "type": "text",
+                                          "left": "",
+                                          "top": "center",
+                                          "style": {
+                                            "text": "图表分析",
+                                            "fontSize": 24,
+                                            "fontWeight": "500",
+                                            "lineDash": [
+                                              0,
+                                              200
+                                            ],
+                                            "lineDashOffset": 0,
+                                            "fill": "transparent",
+                                            "stroke": "#87a9f9",
+                                            "lineWidth": 1
+                                          },
+                                          "keyframeAnimation": {
+                                            "duration": 1500,
+                                            "loop": false,
+                                            "keyframes": [
+                                              {
+                                                "percent": 0.7,
+                                                "style": {
+                                                  "fill": "transparent",
+                                                  "lineDashOffset": 200,
+                                                  "lineDash": [
+                                                    200,
+                                                    0
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "percent": 0.8,
+                                                "style": {
+                                                  "fill": "transparent"
+                                                }
+                                              },
+                                              {
+                                                "percent": 1,
+                                                "style": {
+                                                  "fill": "#7eaaff"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "replaceChartOption": true,
+                                  "id": "u:f9245791aaa4",
+                                  "dataFilter": "",
+                                  "height": "50px"
+                                }
+                              ],
+                              "size": "xs",
+                              "style": {
+                                "position": "static",
+                                "display": "flex",
+                                "flex": "1 1 auto",
+                                "flexGrow": 1,
+                                "maxHeight": "50px",
+                                "overflowY": "visible",
+                                "minHeight": "50px",
+                                "maxWidth": "300px",
+                                "minWidth": "300px",
+                                "flexWrap": "nowrap",
+                                "justifyContent": "flex-start"
+                              },
+                              "wrapperBody": false,
+                              "isFixedHeight": false,
+                              "isFixedWidth": false,
+                              "id": "u:c4fd06f5229e",
+                              "themeCss": {
+                                "baseControlClassName": {
+                                  "padding-and-margin:default": {
+                                    "marginTop": "var(--sizes-size-0)",
+                                    "marginRight": "var(--sizes-size-0)",
+                                    "marginBottom": "var(--sizes-size-0)",
+                                    "marginLeft": "var(--sizes-size-0)",
+                                    "paddingTop": "var(--sizes-size-0)",
+                                    "paddingRight": "var(--sizes-size-0)",
+                                    "paddingBottom": "var(--sizes-size-0)",
+                                    "paddingLeft": "var(--sizes-size-0)"
+                                  }
+                                }
+                              }
+                            }
+                          ],
+                          "style": {
+                            "position": "relative",
+                            "inset": "auto",
+                            "flexWrap": "nowrap",
+                            "justifyContent": "flex-start"
+                          },
+                          "id": "u:f5eade2edda4",
+                          "isFixedHeight": false,
+                          "isFixedWidth": false,
+                          "themeCss": {
+                            "baseControlClassName": {
+                              "padding-and-margin:default": {
+                                "marginTop": "var(--sizes-size-0)",
+                                "marginRight": "var(--sizes-size-0)",
+                                "marginBottom": "var(--sizes-size-0)",
+                                "marginLeft": "var(--sizes-size-0)",
+                                "paddingTop": "var(--sizes-size-0)",
+                                "paddingRight": "var(--sizes-size-0)",
+                                "paddingBottom": "var(--sizes-size-0)",
+                                "paddingLeft": "var(--sizes-size-0)"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "type": "grid",
+                          "columns": [
+                            {
+                              "body": [
+                                {
+                                  "type": "flex",
+                                  "className": "p-1",
+                                  "items": [
+                                    {
+                                      "type": "container",
+                                      "body": [
+                                        {
+                                          "type": "chart",
+                                          "id": "u:bac0a16fb74f",
+                                          "config": {
+                                            "tooltip": {
+                                              "trigger": "item"
+                                            },
+                                            "legend": {},
+                                            "series": [
+                                              {
+                                                "name": "Access From",
+                                                "type": "pie",
+                                                "radius": [
+                                                  "40%",
+                                                  "70%"
+                                                ],
+                                                "data": [
+                                                  {
+                                                    "value": "${response.data.commentLines}",
+                                                    "name": "注释覆盖行数"
+                                                  },
+                                                  {
+                                                    "value": "${response.data.codeLines - response.data.commentLines}",
+                                                    "name": "注释未覆盖行数"
+                                                  }
+                                                ],
+                                                "avoidLabelOverlap": false,
+                                                "label": {
+                                                  "show": false,
+                                                  "position": "center"
+                                                },
+                                                "emphasis": {
+                                                  "label": {
+                                                    "show": false, // 确保在悬停时不显示标签
+                                                    "fontSize": 40,
+                                                    "fontWeight": "bold"
+                                                  }
+                                                },
+                                                "labelLine": {
+                                                  "show": false
+                                                },
+                                                "color": [
+                                                  "#90ae3e",
+                                                  "#c1c1c1"
+                                                ] // 灰色和绿色
+                                              }
+                                            ]
+                                          },
+                                          "dataFilter": "",
+                                          "trackExpression": "${response.data.codeLines - response.data.commentLines}",
+                                          "visibleOn": "${response}"
+                                        }
+                                      ],
+                                      "size": "xs",
+                                      "style": {
+                                        "position": "static",
+                                        "display": "block",
+                                        "flex": "1 1 auto",
+                                        "flexGrow": 1,
+                                        "flexBasis": "auto"
+                                      },
+                                      "wrapperBody": false,
+                                      "isFixedHeight": false,
+                                      "isFixedWidth": false,
+                                      "id": "u:ac776ccacbe5"
+                                    },
+                                    {
+                                      "type": "container",
+                                      "body": [
+                                        {
+                                          "type": "chart",
+                                          "config": {
+                                            "series": [
+                                              {
+                                                "data": [
+                                                  {
+                                                    "value": "${response.data.analyzed_table[7].value}",
+                                                    "name": "词数<2 的注释"
+                                                  },
+                                                  {
+                                                    "value": "${response.data.analyzed_table[8].value}",
+                                                    "name": "2<=词数<=30 的注释"
+                                                  },
+                                                  {
+                                                    "value": "${response.data.analyzed_table[9].value}",
+                                                    "name": "词数>30 的注释"
+                                                  }
+                                                ],
+                                                "type": "pie",
+                                                "name": "Access From",
+                                                "radius": [
+                                                  "40%",
+                                                  "70%"
+                                                ],
+                                                "avoidLabelOverlap": false,
+                                                "label": {
+                                                  "show": false,
+                                                  "position": "center"
+                                                },
+                                                "emphasis": {
+                                                  "label": {
+                                                    "show": false,
+                                                    "fontSize": 40,
+                                                    "fontWeight": "bold"
+                                                  }
+                                                },
+                                                "labelLine": {
+                                                  "show": false
+                                                },
+                                                "color": [
+                                                  "#c1c1c1",
+                                                  "#b5d5fb",
+                                                  "#b3c7f5"
+                                                ]
+                                              }
+                                            ],
+                                            "tooltip": {
+                                              "trigger": "item"
+                                            },
+                                            "legend": {
+                                              "top": "5%",
+                                              "left": "center"
+                                            }
+                                          },
+                                          "replaceChartOption": true,
+                                          "id": "u:f983eb70b6d5",
+                                          "dataFilter": ""
+                                        }
+                                      ],
+                                      "size": "xs",
+                                      "style": {
+                                        "position": "static",
+                                        "display": "block",
+                                        "flex": "1 1 auto",
+                                        "flexGrow": 1,
+                                        "flexBasis": "auto"
+                                      },
+                                      "wrapperBody": false,
+                                      "isFixedHeight": false,
+                                      "isFixedWidth": false,
+                                      "id": "u:9c9b2915b5a8"
+                                    }
+                                  ],
+                                  "style": {
+                                    "position": "relative",
+                                    "flexDirection": "column"
+                                  },
+                                  "id": "u:1b10c7102d40",
+                                  "isFixedHeight": false,
+                                  "isFixedWidth": false
+                                }
+                              ],
+                              "id": "u:db0b67e500b3"
+                            },
+                            {
+                              "id": "u:23e739b142af",
+                              "body": [
+                                {
+                                  "type": "chart",
+                                  "id": "u:f399e5ffbe5d",
+                                  "config": {
+                                    "series": [
+                                      {
+                                        // [
+                                        //   "${response.data.singleLineCommentsLength}",
+                                        //   "${response.data.multiLineCommentsLength}"
+                                        // ],
+                                        "type": "bar",
+                                        "data": [
+                                          {
+                                            "value": "${response.data.singleLineCommentsLength}",
+                                            "itemStyle": {
+                                              "color": "#bcc995"
+                                            }
+                                          },
+                                          {
+                                            "value": "${response.data.multiLineCommentsLength}",
+                                            "itemStyle": {
+                                              "color": "#ce8f8f"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "xAxis": {
+                                      "type": "value"
+                                    },
+                                    "yAxis": {
+                                      "type": "category",
+                                      "data": [
+                                        "单行\n注释",
+                                        "多行\n注释"
+                                      ]
+                                    }
+                                  },
+                                  "dataFilter": "",
+                                  "trackExpression": "${response.data.codeLines - response.data.commentLines}",
+                                  "replaceChartOption": true
+                                }
+                              ]
+                            }
+                          ],
+                          "id": "u:ea847beeca73"
+                        },
+                        {
+                          "type": "table",
+                          "id": "u:9d1b4fc0ac56",
+                          "columns": [
+                            {
+                              "name": "key",
+                              "type": "text",
+                              "id": "u:594ffcddf4ef",
+                              "isHead": true,
+                              "label": ""
+                            },
+                            {
+                              "name": "value",
+                              "id": "u:c0f83019b43a",
+                              "type": "text",
+                              "label": ""
+                            }
+                          ],
+                          "source": "${response.data.analyzed_table}",
+                          "itemBadge": {
+                            "text": "${badgeText}",
+                            "mode": "ribbon",
+                            "position": "top-left",
+                            "level": "${badgeLevel}",
+                            "visibleOn": "this.badgeText"
+                          }
+                        },
+                        {
+                          "type": "divider",
+                          "id": "u:4a20bc9c520a",
+                          "lineStyle": "solid",
+                          "direction": "horizontal",
+                          "rotate": 0,
+                          "style": {
+                            "marginBottom": "12.5rem"
+                          }
+                        }
+                      ],
+                      "id": "u:c48d2d56d271"
+                    },
+                    {
+                      "title": "词频",
+                      "href": "2",
+                      "body": [
+                        {
+                          "type": "flex",
+                          "className": "p-1",
+                          "items": [
+                            {
+                              "type": "container",
+                              "body": [
+                                {
+                                  "type": "chart",
+                                  "config": {
+                                    "graphic": {
+                                      "elements": [
+                                        {
+                                          "type": "text",
+                                          "left": "",
+                                          "top": "center",
+                                          "style": {
+                                            "text": "词频",
+                                            "fontSize": 24,
+                                            "fontWeight": "500",
+                                            "lineDash": [
+                                              0,
+                                              200
+                                            ],
+                                            "lineDashOffset": 0,
+                                            "fill": "transparent",
+                                            "stroke": "#87a9f9",
+                                            "lineWidth": 1
+                                          },
+                                          "keyframeAnimation": {
+                                            "duration": 1500,
+                                            "loop": false,
+                                            "keyframes": [
+                                              {
+                                                "percent": 0.7,
+                                                "style": {
+                                                  "fill": "transparent",
+                                                  "lineDashOffset": 200,
+                                                  "lineDash": [
+                                                    200,
+                                                    0
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "percent": 0.8,
+                                                "style": {
+                                                  "fill": "transparent"
+                                                }
+                                              },
+                                              {
+                                                "percent": 1,
+                                                "style": {
+                                                  "fill": "#7eaaff"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "replaceChartOption": true,
+                                  "id": "u:f8de4c89a71e",
+                                  "dataFilter": "",
+                                  "height": "50px"
+                                }
+                              ],
+                              "size": "xs",
+                              "style": {
+                                "position": "static",
+                                "display": "flex",
+                                "flex": "1 1 auto",
+                                "flexGrow": 1,
+                                "maxHeight": "50px",
+                                "overflowY": "visible",
+                                "minHeight": "50px",
+                                "maxWidth": "300px",
+                                "minWidth": "300px",
+                                "flexWrap": "nowrap",
+                                "justifyContent": "flex-start"
+                              },
+                              "wrapperBody": false,
+                              "isFixedHeight": false,
+                              "isFixedWidth": false,
+                              "id": "u:1256a833d817",
+                              "themeCss": {
+                                "baseControlClassName": {
+                                  "padding-and-margin:default": {
+                                    "marginTop": "var(--sizes-size-0)",
+                                    "marginRight": "var(--sizes-size-0)",
+                                    "marginBottom": "var(--sizes-size-0)",
+                                    "marginLeft": "var(--sizes-size-0)",
+                                    "paddingTop": "var(--sizes-size-0)",
+                                    "paddingRight": "var(--sizes-size-0)",
+                                    "paddingBottom": "var(--sizes-size-0)",
+                                    "paddingLeft": "var(--sizes-size-0)"
+                                  }
+                                }
+                              }
+                            }
+                          ],
+                          "style": {
+                            "position": "relative",
+                            "inset": "auto",
+                            "flexWrap": "nowrap",
+                            "justifyContent": "flex-start"
+                          },
+                          "id": "u:d511ff230d1e",
+                          "isFixedHeight": false,
+                          "isFixedWidth": false,
+                          "themeCss": {
+                            "baseControlClassName": {
+                              "padding-and-margin:default": {
+                                "marginTop": "var(--sizes-size-0)",
+                                "marginRight": "var(--sizes-size-0)",
+                                "marginBottom": "var(--sizes-size-0)",
+                                "marginLeft": "var(--sizes-size-0)",
+                                "paddingTop": "var(--sizes-size-0)",
+                                "paddingRight": "var(--sizes-size-0)",
+                                "paddingBottom": "var(--sizes-size-0)",
+                                "paddingLeft": "var(--sizes-size-0)"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "type": "tabs",
+                          "id": "u:396b608a65ad",
+                          "tabs": [
+                            {
+                              "title": "去停用词后词频",
+                              "body": [
+                                {
+                                  "type": "table",
+                                  "source": "${response.data.wordsAfter}",
+                                  "columns": [
+                                    {
+                                      "label": "词",
+                                      "name": "key",
+                                      "id": "u:de0f6bab431f"
+                                    },
+                                    {
+                                      "label": "频",
+                                      "name": "value",
+                                      "id": "u:aeaefcf55f2b"
+                                    }
+                                  ],
+                                  "id": "u:b5d6d84b96ce"
+                                }
+                              ],
+                              "id": "u:c0516254f8a5"
+                            },
+                            {
+                              "title": "去停用词前词频",
+                              "body": [
+                                {
+                                  "type": "table",
+                                  "source": "${response.data.wordsBefore}",
+                                  "columns": [
+                                    {
+                                      "label": "词",
+                                      "name": "key",
+                                      "id": "u:f65f34c0c9a8"
+                                    },
+                                    {
+                                      "label": "频",
+                                      "name": "value",
+                                      "id": "u:f4cf2e9abe44"
+                                    }
+                                  ],
+                                  "id": "u:916911a0ebf3"
+                                }
+                              ],
+                              "id": "u:bb7aa35898a7"
+                            }
+                          ],
+                          "tabsMode": "line"
+                        },
+                        {
+                          "type": "divider",
+                          "id": "u:5138cca6577d",
+                          "lineStyle": "solid",
+                          "direction": "horizontal",
+                          "rotate": 0,
+                          "style": {
+                            "marginBottom": "12.5rem"
+                          }
+                        }
+                      ],
+                      "id": "u:a86eb3af5656"
+                    },
+                    {
+                      "id": "u:35d5c5a80433",
+                      "title": "多行注释",
+                      "href": "4",
+                      "body": [
+                        {
+                          "type": "flex",
+                          "className": "p-1",
+                          "items": [
+                            {
+                              "type": "container",
+                              "body": [
+                                {
+                                  "type": "chart",
+                                  "config": {
+                                    "graphic": {
+                                      "elements": [
+                                        {
+                                          "type": "text",
+                                          "left": "",
+                                          "top": "center",
+                                          "style": {
+                                            "text": "多行注释",
+                                            "fontSize": 24,
+                                            "fontWeight": "500",
+                                            "lineDash": [
+                                              0,
+                                              200
+                                            ],
+                                            "lineDashOffset": 0,
+                                            "fill": "transparent",
+                                            "stroke": "#87a9f9",
+                                            "lineWidth": 1
+                                          },
+                                          "keyframeAnimation": {
+                                            "duration": 1500,
+                                            "loop": false,
+                                            "keyframes": [
+                                              {
+                                                "percent": 0.7,
+                                                "style": {
+                                                  "fill": "transparent",
+                                                  "lineDashOffset": 200,
+                                                  "lineDash": [
+                                                    200,
+                                                    0
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "percent": 0.8,
+                                                "style": {
+                                                  "fill": "transparent"
+                                                }
+                                              },
+                                              {
+                                                "percent": 1,
+                                                "style": {
+                                                  "fill": "#7eaaff"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "replaceChartOption": true,
+                                  "id": "u:ecb91f277d8c",
+                                  "dataFilter": "",
+                                  "height": "50px"
+                                }
+                              ],
+                              "size": "xs",
+                              "style": {
+                                "position": "static",
+                                "display": "flex",
+                                "flex": "1 1 auto",
+                                "flexGrow": 1,
+                                "maxHeight": "50px",
+                                "overflowY": "visible",
+                                "minHeight": "50px",
+                                "maxWidth": "300px",
+                                "minWidth": "300px",
+                                "flexWrap": "nowrap",
+                                "justifyContent": "flex-start"
+                              },
+                              "wrapperBody": false,
+                              "isFixedHeight": false,
+                              "isFixedWidth": false,
+                              "id": "u:a09a12510275",
+                              "themeCss": {
+                                "baseControlClassName": {
+                                  "padding-and-margin:default": {
+                                    "marginTop": "var(--sizes-size-0)",
+                                    "marginRight": "var(--sizes-size-0)",
+                                    "marginBottom": "var(--sizes-size-0)",
+                                    "marginLeft": "var(--sizes-size-0)",
+                                    "paddingTop": "var(--sizes-size-0)",
+                                    "paddingRight": "var(--sizes-size-0)",
+                                    "paddingBottom": "var(--sizes-size-0)",
+                                    "paddingLeft": "var(--sizes-size-0)"
+                                  }
+                                }
+                              }
+                            }
+                          ],
+                          "style": {
+                            "position": "relative",
+                            "inset": "auto",
+                            "flexWrap": "nowrap",
+                            "justifyContent": "flex-start"
+                          },
+                          "id": "u:48333d73898d",
+                          "isFixedHeight": false,
+                          "isFixedWidth": false,
+                          "themeCss": {
+                            "baseControlClassName": {
+                              "padding-and-margin:default": {
+                                "marginTop": "var(--sizes-size-0)",
+                                "marginRight": "var(--sizes-size-0)",
+                                "marginBottom": "var(--sizes-size-0)",
+                                "marginLeft": "var(--sizes-size-0)",
+                                "paddingTop": "var(--sizes-size-0)",
+                                "paddingRight": "var(--sizes-size-0)",
+                                "paddingBottom": "var(--sizes-size-0)",
+                                "paddingLeft": "var(--sizes-size-0)"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "type": "each",
+                          "id": "u:59ff80689208",
+                          "name": "${response.data.multiLineComments}", // 使用你的数据字段
+                          "items": {
+                            "type": "tpl",
+                            "tpl": "<p>【${index + 1}】<br>${item|raw}</p>\n<hr>\n<p>&nbsp;</p>",
+                            "id": "u:dd6b97273827",
+                            "style": {},
+                            "themeCss": {
+                              "baseControlClassName": {
+                                "border:default": {
+                                  "bottom-border-style": "var(--borders-style-2)",
+                                  "bottom-border-color": "var(--colors-neutral-text-6)"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "type": "divider",
+                          "id": "u:546f9fc1f82f",
+                          "lineStyle": "solid",
+                          "direction": "horizontal",
+                          "rotate": 0,
+                          "style": {
+                            "marginBottom": "12.5rem"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "title": "单行注释",
+                      "href": "3",
+                      "body": [
+                        {
+                          "type": "flex",
+                          "className": "p-1",
+                          "items": [
+                            {
+                              "type": "container",
+                              "body": [
+                                {
+                                  "type": "chart",
+                                  "config": {
+                                    "graphic": {
+                                      "elements": [
+                                        {
+                                          "type": "text",
+                                          "left": "",
+                                          "top": "center",
+                                          "style": {
+                                            "text": "单行注释",
+                                            "fontSize": 24,
+                                            "fontWeight": "500",
+                                            "lineDash": [
+                                              0,
+                                              200
+                                            ],
+                                            "lineDashOffset": 0,
+                                            "fill": "transparent",
+                                            "stroke": "#87a9f9",
+                                            "lineWidth": 1
+                                          },
+                                          "keyframeAnimation": {
+                                            "duration": 1500,
+                                            "loop": false,
+                                            "keyframes": [
+                                              {
+                                                "percent": 0.7,
+                                                "style": {
+                                                  "fill": "transparent",
+                                                  "lineDashOffset": 200,
+                                                  "lineDash": [
+                                                    200,
+                                                    0
+                                                  ]
+                                                }
+                                              },
+                                              {
+                                                "percent": 0.8,
+                                                "style": {
+                                                  "fill": "transparent"
+                                                }
+                                              },
+                                              {
+                                                "percent": 1,
+                                                "style": {
+                                                  "fill": "#7eaaff"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "replaceChartOption": true,
+                                  "id": "u:dd65b986e900",
+                                  "dataFilter": "",
+                                  "height": "50px"
+                                }
+                              ],
+                              "size": "xs",
+                              "style": {
+                                "position": "static",
+                                "display": "flex",
+                                "flex": "1 1 auto",
+                                "flexGrow": 1,
+                                "maxHeight": "50px",
+                                "overflowY": "visible",
+                                "minHeight": "50px",
+                                "maxWidth": "300px",
+                                "minWidth": "300px",
+                                "flexWrap": "nowrap",
+                                "justifyContent": "flex-start"
+                              },
+                              "wrapperBody": false,
+                              "isFixedHeight": false,
+                              "isFixedWidth": false,
+                              "id": "u:a26778ad8074",
+                              "themeCss": {
+                                "baseControlClassName": {
+                                  "padding-and-margin:default": {
+                                    "marginTop": "var(--sizes-size-0)",
+                                    "marginRight": "var(--sizes-size-0)",
+                                    "marginBottom": "var(--sizes-size-0)",
+                                    "marginLeft": "var(--sizes-size-0)",
+                                    "paddingTop": "var(--sizes-size-0)",
+                                    "paddingRight": "var(--sizes-size-0)",
+                                    "paddingBottom": "var(--sizes-size-0)",
+                                    "paddingLeft": "var(--sizes-size-0)"
+                                  }
+                                }
+                              }
+                            }
+                          ],
+                          "style": {
+                            "position": "relative",
+                            "inset": "auto",
+                            "flexWrap": "nowrap",
+                            "justifyContent": "flex-start"
+                          },
+                          "id": "u:5ce5c2c7781b",
+                          "isFixedHeight": false,
+                          "isFixedWidth": false,
+                          "themeCss": {
+                            "baseControlClassName": {
+                              "padding-and-margin:default": {
+                                "marginTop": "var(--sizes-size-0)",
+                                "marginRight": "var(--sizes-size-0)",
+                                "marginBottom": "var(--sizes-size-0)",
+                                "marginLeft": "var(--sizes-size-0)",
+                                "paddingTop": "var(--sizes-size-0)",
+                                "paddingRight": "var(--sizes-size-0)",
+                                "paddingBottom": "var(--sizes-size-0)",
+                                "paddingLeft": "var(--sizes-size-0)"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "type": "each",
+                          "id": "u:300dc9ff054c",
+                          "name": "${response.data.singleLineComments}", // 使用你的数据字段
+                          "items": {
+                            "type": "tpl",
+                            "tpl": "<p>【${index + 1}】<br>${item|raw}</p>\n<hr>\n<p>&nbsp;</p>",
+                            "id": "u:10ec0f1f727d",
+                            "style": {}
+                          }
+                        }
+                      ],
+                      "id": "u:8b5dfead5586"
+                    }
+                  ],
+                  "id": "u:2bdb584419f3",
+                  "active": "5",
+                  "direction": "horizontal",
+                  "visibleOn": "${response}",
+                  "style": {
+                    "height": "700px" // 或者其他你想要的宽度
+                  }
+                }
+              ],
+              "actions": [],
+              "resetAfterSubmit": true
+            }
+          ]
+        }
+      ],
+      "style": {
+        "position": "static",
+        "flexWrap": "nowrap",
+        "flexDirection": "column",
+        "alignItems": "stretch",
+        "maxWidth": "1000px",
+        "overflowX": "visible",
+        "minWidth": "500px"
+      },
+      "id": "u:3cffdb1b5bda",
+      "isFixedHeight": false,
+      "isFixedWidth": false,
+      "themeCss": {
+        "baseControlClassName": {
+          "padding-and-margin:default": {
+            "marginTop": "3.75rem",
+            "marginLeft": "var(--sizes-size-1)",
+            "marginRight": "var(--sizes-size-1)"
+          }
+        }
+      },
+      "wrapperCustomStyle": {}
+    }
+  ],
+  "id": "u:7e4552e2c957",
+  "asideResizor": false,
+  "pullRefresh": {
+    "disabled": true
+  },
+  "regions": [
+    "toolbar",
+    "body"
+  ],
+  "toolbar": [
+    {
+      "type": "flex",
+      "className": "p-1",
+      "items": [
+        {
+          "type": "container",
+          "body": [
+            {
+              "type": "container",
+              "body": [],
+              "size": "",
+              "style": {
+                "position": "static",
+                "display": "block",
+                "flex": "1 1 auto",
+                "flexGrow": 1,
+                "overflowY": "visible",
+                "minHeight": "50px",
+                "minWidth": "50px",
+                "maxWidth": "50px",
+                "maxHeight": "50px"
+              },
+              "wrapperBody": false,
+              "isFixedHeight": false,
+              "isFixedWidth": false,
+              "id": "u:a9e2b8ee6332",
+              "themeCss": {
+                "baseControlClassName": {
+                  "padding-and-margin:default": {
+                    "marginRight": "var(--sizes-base-12)"
+                  },
+                  "background:default": "url(/static/images/CodeComment.svg) center center / contain no-repeat "
+                }
+              },
+              "onEvent": {
+                "click": {
+                  "weight": 0,
+                  "actions": []
+                }
+              }
+            },
+            {
+              "type": "nav",
+              "stacked": false,
+              "popupClassName": "app-popover :AMISCSSWrapper",
+              "links": [
+                {
+                  "label": "主页",
+                  "to": "/index/",
+                  "target": "_self",
+                  "id": "0",
+                  "icon": "",
+                  "badge": "",
+                  "children": []
+                },
+                {
+                  "label": "文件",
+                  "to": "/file/",
+                  "target": "_self",
+                  "id": "1",
+                  "children": []
+                },
+                {
+                  "label": "项目",
+                  "to": "/project/",
+                  "target": "_self",
+                  "id": "2",
+                  "children": []
+                },
+                {
+                  "label": "说明文档",
+                  "to": "/readme/",
+                  "icon": "",
+                  "target": "_blank",
+                  "badge": "",
+                  "children": [],
+                  "id": "3"
+                }
+              ],
+              "id": "u:21c6f26815e2",
+              "style": {
+                "backgroundColor": "rgba(232, 240, 254, 1)"
+              }
+            }
+          ],
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "flex",
+            "flex": "1 1 auto",
+            "flexGrow": 1,
+            "flexWrap": "nowrap",
+            "alignItems": "center"
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:8b7f04a60bae",
+          "themeCss": {
+            "baseControlClassName": {
+              "padding-and-margin:default": {
+                "paddingLeft": "var(--sizes-base-20)"
+              }
+            }
+          }
+        },
+        {
+          "type": "container",
+          "body": [
+            {
+              "type": "form",
+              "id": "u:89e40caa2605",
+              "title": "表单",
+              "mode": "horizontal",
+              "dsType": "api",
+              "feat": "View",
+              "body": [
+                {
+                  "type": "container",
+                  "body": [
+                    {
+                      "type": "avatar",
+                      "showtype": "image",
+                      "icon": "",
+                      "fit": "cover",
+                      "style": {
+                        "width": 40,
+                        "height": 40,
+                        "borderRadius": 20,
+                        "backgroundImage": "linear-gradient(180deg, #76c8ee, #4780e6)",
+                        "boxShadow": "2px 2px 4px",
+                        "fontFamily": "",
+                        "fontSize": 12
+                      },
+                      "id": "u:29ef5d6831fd",
+                      "gap": 4,
+                      "src": "${response.data.profile_picture}",
+                      "text": "${response.data.text}",
+                      "onError": "return true;"
+                    }
+                  ],
+                  "style": {
+                    "position": "static",
+                    "display": "block"
+                  },
+                  "size": "none",
+                  "wrapperBody": false,
+                  "id": "u:d7242f3d219f",
+                  "isFixedHeight": false,
+                  "isFixedWidth": false,
+                  "onEvent": {
+                    "click": {
+                      "weight": 0,
+                      "actions": [
+                        {
+                          "ignoreError": false,
+                          "actionType": "url",
+                          "args": {
+                            "url": "/user/",
+                            "blank": false
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "actions": [],
+              "static": true,
+              "initApi": {
+                "method": "get",
+                "url": "/user/get_user_profile_picture/",
+                "requestAdaptor": "",
+                "adaptor": "return {\n    ...payload,\n    data: {\n        ...payload.data,\n        response: response.data\n    }\n}",
+                "messages": {},
+                "dataType": "json"
+              },
+              "wrapWithPanel": false
+            }
+          ],
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "flex",
+            "flex": "1 1 auto",
+            "flexGrow": 1,
+            "flexWrap": "nowrap",
+            "flexDirection": "row",
+            "justifyContent": "flex-end",
+            "alignItems": "center"
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:b9f6e6e1c8b1",
+          "themeCss": {
+            "baseControlClassName": {
+              "padding-and-margin:default": {
+                "paddingRight": "var(--sizes-base-20)",
+                "paddingTop": "0.5rem"
+              }
+            }
+          }
+        }
+      ],
+      "style": {
+        "position": "fixed",
+        "flexWrap": "nowrap",
+        "flexDirection": "row",
+        "justifyContent": "center",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "width": "100%",
+        "zIndex": 9,
+        "inset": "0px 0px auto 0px"
+      },
+      "id": "u:5435e8b8d608",
+      "isFixedHeight": false,
+      "isFixedWidth": true,
+      "themeCss": {
+        "baseControlClassName": {
+          "padding-and-margin:default": {
+            "margin": "0"
+          },
+          "background:default": "var(--colors-brand-10)"
+        }
+      },
+      "wrapperCustomStyle": {},
+      "originPosition": "left-top"
+    }
+  ]
+}; let amisScoped = amis.embed('#root', amisJSON);
+    })();
+  </script>
+</body>
+
+</html>

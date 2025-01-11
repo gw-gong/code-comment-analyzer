@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>注释分析 | 说明文档</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="icon" href="\static\images\icon.ico">
+    <link rel="stylesheet" href="\node_modules\amis\sdk\sdk.css" />
+    <link rel="stylesheet" href="\node_modules\amis\sdk\helper.css" />
+    <link rel="stylesheet" href="\node_modules\amis\sdk\iconfont.css" />
+    <!-- 这是默认主题所需的，如果是其他主题则不需要 -->
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root" class="app-wrapper"></div>
+    <script src="\node_modules\amis\sdk\sdk.js"></script>
+    <script type="text/javascript">
+        (function () {
+            let amis = amisRequire('amis/embed');
+            // 通过替换下面这个配置来生成不同页面
+            let amisJSON = {
+  "type": "page",
+  "title": "说明文档",
+  "body": [
+    {
+      "type": "flex",
+      "className": "p-1",
+      "items": [
+        {
+          "type": "container",
+          "body": [
+            {
+              "type": "markdown",
+              "value": "",
+              "id": "u:1242a6fb0333",
+              "src": "/public/get_readme/?json=%7B%22status%22%3A0%2C%22data%22%3A%22%23%23%20title%20%5Cn%20content%22%7D"
+            }
+          ],
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "block",
+            "flex": "1 1 auto",
+            "flexGrow": 1
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:14a1db3aa77a"
+        },
+        {
+          "type": "container",
+          "body": [],
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "block",
+            "flex": "1 1 auto",
+            "flexGrow": 1,
+            "flexBasis": "auto"
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:4e8f68fd8b02"
+        }
+      ],
+      "style": {
+        "position": "static",
+        "flexWrap": "nowrap",
+        "flexDirection": "column",
+        "alignItems": "stretch",
+        "justifyContent": "center",
+        "maxWidth": "1000px",
+        "overflowX": "visible",
+        "minWidth": "500px"
+      },
+      "id": "u:67531e9c6aed",
+      "isFixedHeight": false,
+      "isFixedWidth": false,
+      "themeCss": {
+        "baseControlClassName": {
+          "padding-and-margin:default": {
+            "marginTop": "3.75rem",
+            "marginLeft": "var(--sizes-size-1)",
+            "marginRight": "var(--sizes-size-1)"
+          }
+        }
+      }
+    }
+  ],
+  "id": "u:64ed8edb6727",
+  "asideResizor": false,
+  "pullRefresh": {
+    "disabled": true
+  },
+  "regions": [
+    "body",
+    "toolbar"
+  ],
+  "toolbar": [
+    {
+      "type": "flex",
+      "id": "u:5435e8b8d608",
+      "themeCss": {
+        "baseControlClassName": {
+          "padding-and-margin:default": {
+            "margin": "0"
+          },
+          "background:default": "var(--colors-brand-10)"
+        }
+      },
+      "className": "p-1",
+      "items": [
+        {
+          "type": "container",
+          "body": [
+            {
+              "type": "container",
+              "body": [],
+              "size": "",
+              "style": {
+                "position": "static",
+                "display": "block",
+                "flex": "1 1 auto",
+                "flexGrow": 1,
+                "overflowY": "visible",
+                "minHeight": "50px",
+                "minWidth": "50px",
+                "maxWidth": "50px",
+                "maxHeight": "50px"
+              },
+              "wrapperBody": false,
+              "isFixedHeight": false,
+              "isFixedWidth": false,
+              "id": "u:a9e2b8ee6332",
+              "themeCss": {
+                "baseControlClassName": {
+                  "padding-and-margin:default": {
+                    "marginRight": "var(--sizes-base-12)"
+                  },
+                  "background:default": "url(/static/images/CodeComment.svg) center center / contain no-repeat "
+                }
+              },
+              "onEvent": {
+                "click": {
+                  "weight": 0,
+                  "actions": []
+                }
+              }
+            },
+            {
+              "type": "nav",
+              "stacked": false,
+              "popupClassName": "app-popover :AMISCSSWrapper",
+              "links": [
+                {
+                  "label": "主页",
+                  "to": "/index/",
+                  "target": "_self",
+                  "id": "0",
+                  "icon": "",
+                  "badge": "",
+                  "children": []
+                },
+                {
+                  "label": "文件",
+                  "to": "/file/",
+                  "target": "_self",
+                  "id": "1",
+                  "children": []
+                },
+                {
+                  "label": "项目",
+                  "to": "/project/",
+                  "target": "_self",
+                  "id": "2",
+                  "children": []
+                },
+                {
+                  "label": "说明文档",
+                  "to": "/readme/",
+                  "icon": "",
+                  "target": "_blank",
+                  "badge": "",
+                  "children": [],
+                  "id": "3"
+                }
+              ],
+              "id": "u:21c6f26815e2",
+              "style": {
+                "backgroundColor": "rgba(232, 240, 254, 1)"
+              }
+            }
+          ],
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "flex",
+            "flex": "1 1 auto",
+            "flexGrow": 1,
+            "flexWrap": "nowrap",
+            "alignItems": "center"
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:8b7f04a60bae",
+          "themeCss": {
+            "baseControlClassName": {
+              "padding-and-margin:default": {
+                "paddingLeft": "var(--sizes-base-20)"
+              }
+            }
+          }
+        },
+        {
+          "type": "container",
+          "body": [
+            {
+              "type": "form",
+              "id": "u:89e40caa2605",
+              "title": "表单",
+              "mode": "horizontal",
+              "dsType": "api",
+              "feat": "View",
+              "body": [
+                {
+                  "type": "container",
+                  "body": [
+                    {
+                      "type": "avatar",
+                      "showtype": "image",
+                      "icon": "",
+                      "fit": "cover",
+                      "style": {
+                        "width": 40,
+                        "height": 40,
+                        "borderRadius": 20,
+                        "boxShadow": "2px 2px 4px",
+                        "fontFamily": "",
+                        "fontSize": 12,
+                        "backgroundImage": "linear-gradient(180deg, #76c8ee, #4780e6)"
+                      },
+                      "id": "u:29ef5d6831fd",
+                      "gap": 4,
+                      "src": "${response.data.profile_picture}",
+                      "text": "${response.data.text}",
+                      "onError": "return true;"
+                    }
+                  ],
+                  "style": {
+                    "position": "static",
+                    "display": "block"
+                  },
+                  "size": "none",
+                  "wrapperBody": false,
+                  "id": "u:d7242f3d219f",
+                  "isFixedHeight": false,
+                  "isFixedWidth": false,
+                  "onEvent": {
+                    "click": {
+                      "weight": 0,
+                      "actions": [
+                        {
+                          "ignoreError": false,
+                          "actionType": "url",
+                          "args": {
+                            "url": "/user/",
+                            "blank": false
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "actions": [],
+              "static": true,
+              "initApi": {
+                "method": "get",
+                "url": "/user/get_user_profile_picture/",
+                "requestAdaptor": "",
+                "adaptor": "return {\n    ...payload,\n    data: {\n        ...payload.data,\n        response: response.data\n    }\n}",
+                "messages": {},
+                "dataType": "json"
+              },
+              "wrapWithPanel": false
+            }
+          ],
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "flex",
+            "flex": "1 1 auto",
+            "flexGrow": 1,
+            "flexWrap": "nowrap",
+            "flexDirection": "row",
+            "justifyContent": "flex-end",
+            "alignItems": "center"
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:b9f6e6e1c8b1",
+          "themeCss": {
+            "baseControlClassName": {
+              "padding-and-margin:default": {
+                "paddingRight": "var(--sizes-base-20)",
+                "paddingTop": "0.5rem"
+              }
+            }
+          }
+        }
+      ],
+      "style": {
+        "position": "fixed",
+        "flexWrap": "nowrap",
+        "flexDirection": "row",
+        "justifyContent": "center",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "width": "100%",
+        "zIndex": 9,
+        "inset": "0px 0px auto 0px"
+      },
+      "isFixedHeight": false,
+      "isFixedWidth": true,
+      "wrapperCustomStyle": {},
+      "originPosition": "left-top"
+    }
+  ]
+};
+            let amisScoped = amis.embed('#root', amisJSON);
+        })();
+    </script>
+</body>
+
+</html>
