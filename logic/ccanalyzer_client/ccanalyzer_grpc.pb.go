@@ -19,19 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CcAnalyzer_AddUser_FullMethodName = "/CcAnalyzer/AddUser"
-	CcAnalyzer_GetUser_FullMethodName = "/CcAnalyzer/GetUser"
+	CcAnalyzer_AnalyzeFileContent_FullMethodName = "/CcAnalyzer/AnalyzeFileContent"
 )
 
 // CcAnalyzerClient is the client API for CcAnalyzer service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// 定义User rpc服务
 type CcAnalyzerClient interface {
-	// 定义rpc服务的方法
-	AddUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error)
-	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	AnalyzeFileContent(ctx context.Context, in *AnalyzeFileContentReq, opts ...grpc.CallOption) (*AnalyzeFileContentRes, error)
 }
 
 type ccAnalyzerClient struct {
@@ -42,20 +37,10 @@ func NewCcAnalyzerClient(cc grpc.ClientConnInterface) CcAnalyzerClient {
 	return &ccAnalyzerClient{cc}
 }
 
-func (c *ccAnalyzerClient) AddUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+func (c *ccAnalyzerClient) AnalyzeFileContent(ctx context.Context, in *AnalyzeFileContentReq, opts ...grpc.CallOption) (*AnalyzeFileContentRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserResponse)
-	err := c.cc.Invoke(ctx, CcAnalyzer_AddUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *ccAnalyzerClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetUserResponse)
-	err := c.cc.Invoke(ctx, CcAnalyzer_GetUser_FullMethodName, in, out, cOpts...)
+	out := new(AnalyzeFileContentRes)
+	err := c.cc.Invoke(ctx, CcAnalyzer_AnalyzeFileContent_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -65,12 +50,8 @@ func (c *ccAnalyzerClient) GetUser(ctx context.Context, in *GetUserRequest, opts
 // CcAnalyzerServer is the server API for CcAnalyzer service.
 // All implementations must embed UnimplementedCcAnalyzerServer
 // for forward compatibility.
-//
-// 定义User rpc服务
 type CcAnalyzerServer interface {
-	// 定义rpc服务的方法
-	AddUser(context.Context, *UserRequest) (*UserResponse, error)
-	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	AnalyzeFileContent(context.Context, *AnalyzeFileContentReq) (*AnalyzeFileContentRes, error)
 	mustEmbedUnimplementedCcAnalyzerServer()
 }
 
@@ -81,11 +62,8 @@ type CcAnalyzerServer interface {
 // pointer dereference when methods are called.
 type UnimplementedCcAnalyzerServer struct{}
 
-func (UnimplementedCcAnalyzerServer) AddUser(context.Context, *UserRequest) (*UserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
-}
-func (UnimplementedCcAnalyzerServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+func (UnimplementedCcAnalyzerServer) AnalyzeFileContent(context.Context, *AnalyzeFileContentReq) (*AnalyzeFileContentRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AnalyzeFileContent not implemented")
 }
 func (UnimplementedCcAnalyzerServer) mustEmbedUnimplementedCcAnalyzerServer() {}
 func (UnimplementedCcAnalyzerServer) testEmbeddedByValue()                    {}
@@ -108,38 +86,20 @@ func RegisterCcAnalyzerServer(s grpc.ServiceRegistrar, srv CcAnalyzerServer) {
 	s.RegisterService(&CcAnalyzer_ServiceDesc, srv)
 }
 
-func _CcAnalyzer_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRequest)
+func _CcAnalyzer_AnalyzeFileContent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AnalyzeFileContentReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CcAnalyzerServer).AddUser(ctx, in)
+		return srv.(CcAnalyzerServer).AnalyzeFileContent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CcAnalyzer_AddUser_FullMethodName,
+		FullMethod: CcAnalyzer_AnalyzeFileContent_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CcAnalyzerServer).AddUser(ctx, req.(*UserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CcAnalyzer_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CcAnalyzerServer).GetUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: CcAnalyzer_GetUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CcAnalyzerServer).GetUser(ctx, req.(*GetUserRequest))
+		return srv.(CcAnalyzerServer).AnalyzeFileContent(ctx, req.(*AnalyzeFileContentReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -152,12 +112,8 @@ var CcAnalyzer_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CcAnalyzerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddUser",
-			Handler:    _CcAnalyzer_AddUser_Handler,
-		},
-		{
-			MethodName: "GetUser",
-			Handler:    _CcAnalyzer_GetUser_Handler,
+			MethodName: "AnalyzeFileContent",
+			Handler:    _CcAnalyzer_AnalyzeFileContent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -9,7 +9,7 @@ import (
 )
 
 type CCAnalyzer interface {
-	AddUser(string, uint32) (*UserResponse, error)
+	AnalyzeFileContent(language, fileContent string) (analyzedData string, err error)
 	Close()
 }
 
@@ -38,14 +38,15 @@ func (cca *cCAnalyzer) Close() {
 	}
 }
 
-func (cca *cCAnalyzer) AddUser(name string, age uint32) (*UserResponse, error) {
-	userRequest := &UserRequest{
-		Name: name,
-		Age:  age,
+func (cca *cCAnalyzer) AnalyzeFileContent(language, fileContent string) (analyzedData string, err error) {
+	analyzeFileContentReq := &AnalyzeFileContentReq{
+		Language:    language,
+		FileContent: fileContent,
 	}
-	resp, err := cca.client.AddUser(context.Background(), userRequest)
+
+	analyzeFileContentRes, err := cca.client.AnalyzeFileContent(context.Background(), analyzeFileContentReq)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return resp, nil
+	return analyzeFileContentRes.AnalyzedData, nil
 }

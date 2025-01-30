@@ -4,32 +4,16 @@ from typing import ClassVar as _ClassVar, Optional as _Optional
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class UserRequest(_message.Message):
-    __slots__ = ("name", "age")
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    AGE_FIELD_NUMBER: _ClassVar[int]
-    name: str
-    age: int
-    def __init__(self, name: _Optional[str] = ..., age: _Optional[int] = ...) -> None: ...
+class AnalyzeFileContentReq(_message.Message):
+    __slots__ = ("language", "file_content")
+    LANGUAGE_FIELD_NUMBER: _ClassVar[int]
+    FILE_CONTENT_FIELD_NUMBER: _ClassVar[int]
+    language: str
+    file_content: str
+    def __init__(self, language: _Optional[str] = ..., file_content: _Optional[str] = ...) -> None: ...
 
-class UserResponse(_message.Message):
-    __slots__ = ("msg", "code")
-    MSG_FIELD_NUMBER: _ClassVar[int]
-    CODE_FIELD_NUMBER: _ClassVar[int]
-    msg: str
-    code: int
-    def __init__(self, msg: _Optional[str] = ..., code: _Optional[int] = ...) -> None: ...
-
-class GetUserRequest(_message.Message):
-    __slots__ = ("name",)
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    name: str
-    def __init__(self, name: _Optional[str] = ...) -> None: ...
-
-class GetUserResponse(_message.Message):
-    __slots__ = ("name", "age")
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    AGE_FIELD_NUMBER: _ClassVar[int]
-    name: str
-    age: str
-    def __init__(self, name: _Optional[str] = ..., age: _Optional[str] = ...) -> None: ...
+class AnalyzeFileContentRes(_message.Message):
+    __slots__ = ("analyzed_data",)
+    ANALYZED_DATA_FIELD_NUMBER: _ClassVar[int]
+    analyzed_data: str
+    def __init__(self, analyzed_data: _Optional[str] = ...) -> None: ...

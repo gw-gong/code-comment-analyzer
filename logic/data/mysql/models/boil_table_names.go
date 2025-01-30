@@ -4,7 +4,13 @@
 package models
 
 var TableNames = struct {
-	User string
+	UserFilerecord      string
+	UserOperatingrecord string
+	UserProjectrecord   string
+	UserUser            string
 }{
-	User: "user",
+	UserFilerecord:      "user_filerecord",
+	UserOperatingrecord: "user_operatingrecord",
+	UserProjectrecord:   "user_projectrecord",
+	UserUser:            "user_user",
 }

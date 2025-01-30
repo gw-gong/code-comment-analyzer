@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>注释分析 | 登录</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <link rel="icon" href="\static\images\icon.ico">
+  <link rel="stylesheet" href="\node_modules\amis\sdk\sdk.css" />
+  <link rel="stylesheet" href="\node_modules\amis\sdk\helper.css" />
+  <link rel="stylesheet" href="\node_modules\amis\sdk\iconfont.css" />
+  <!-- 这是默认主题所需的，如果是其他主题则不需要 -->
+  <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+  <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+  <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+  <style>
+    html,
+    body,
+    .app-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root" class="app-wrapper"></div>
+  <script src="\node_modules\amis\sdk\sdk.js"></script>
+  <script type="text/javascript">
+    (function () {
+      let amis = amisRequire('amis/embed');
+      // 通过替换下面这个配置来生成不同页面
+      let amisJSON = {
+  "type": "page",
+  "title": "登录",
+  "body": [
+    {
+      "type": "container",
+      "body": [
+        {
+          "id": "u:1d4776bdee0a",
+          "type": "form",
+          "title": "",
+          "mode": "normal",
+          "dsType": "api",
+          "feat": "Insert",
+          "body": [
+            {
+              "type": "input-email",
+              "label": "邮箱",
+              "name": "email",
+              "id": "u:f59fe39c7a1e",
+              "mode": "normal",
+              "validations": {
+                "isEmail": true
+              },
+              "maxLength": 20,
+              "placeholder": "",
+              "description": ""
+            },
+            {
+              "type": "input-password",
+              "label": "密码",
+              "name": "password",
+              "id": "u:3805ac98b1be",
+              "mode": "normal",
+              "showCounter": false,
+              "validations": {},
+              "validationErrors": {},
+              "maxLength": 20
+            },
+            {
+              "type": "container",
+              "body": [
+                {
+                  "type": "link",
+                  "value": "http://www.baidu.com/",
+                  "id": "u:c8459c36ab76",
+                  "href": "/sign_up/",
+                  "body": "注册",
+                  "blank": false
+                }
+              ],
+              "style": {
+                "position": "static",
+                "display": "flex",
+                "flexWrap": "nowrap",
+                "justifyContent": "flex-end"
+              },
+              "size": "none",
+              "wrapperBody": false,
+              "id": "u:a8a2e576a915",
+              "isFixedHeight": false,
+              "isFixedWidth": false
+            }
+          ],
+          "actions": [
+            {
+              "type": "button",
+              "label": "登录",
+              "onEvent": {
+                "click": {
+                  "actions": [
+                    {
+                      "actionType": "submit",
+                      "componentId": "u:1d4776bdee0a"
+                    }
+                  ]
+                }
+              },
+              "level": "primary",
+              "id": "u:d61b45420e31"
+            }
+          ],
+          "resetAfterSubmit": true,
+          "horizontal": {
+            "left": 6,
+            "right": 6
+          },
+          "labelAlign": "left",
+          "api": {
+            "url": "/user/login/",
+            "method": "post",
+            "requestAdaptor": "",
+            "adaptor": "",
+            "messages": {},
+            "dataType": "json"
+          },
+          "onEvent": {
+            "submitSucc": {
+              "weight": 0,
+              "actions": [
+                {
+                  "ignoreError": false,
+                  "actionType": "url",
+                  "args": {
+                    "blank": false,
+                    "url": "/index/"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "style": {
+        "position": "static",
+        "display": "flex",
+        "flexWrap": "nowrap",
+        "flexDirection": "column",
+        "justifyContent": "center",
+        "alignItems": "stretch",
+        "maxHeight": "500px",
+        "overflowY": "visible",
+        "minHeight": "500px",
+        "maxWidth": "500px",
+        "overflowX": "visible",
+        "minWidth": "500px"
+      },
+      "size": "none",
+      "wrapperBody": false,
+      "id": "u:0ef303b00acd",
+      "isFixedHeight": false,
+      "isFixedWidth": false,
+      "themeCss": {
+        "baseControlClassName": {
+          "padding-and-margin:default": {
+            "marginTop": "var(--sizes-size-1)",
+            "marginRight": "var(--sizes-size-1)",
+            "marginBottom": "var(--sizes-size-1)",
+            "marginLeft": "var(--sizes-size-1)"
+          }
+        }
+      },
+      "wrapperCustomStyle": {}
+    }
+  ],
+  "id": "u:0834819a3097",
+  "asideResizor": false,
+  "pullRefresh": {
+    "disabled": true
+  },
+  "regions": [
+    "body",
+    "toolbar"
+  ],
+  "toolbar": [
+    {
+      "type": "flex",
+      "id": "u:5435e8b8d608",
+      "className": "p-1",
+      "items": [
+        {
+          "type": "container",
+          "body": [
+            {
+              "type": "container",
+              "body": [],
+              "size": "",
+              "style": {
+                "position": "static",
+                "display": "block",
+                "flex": "1 1 auto",
+                "flexGrow": 1,
+                "overflowY": "visible",
+                "minHeight": "50px",
+                "minWidth": "50px",
+                "maxWidth": "50px",
+                "maxHeight": "50px"
+              },
+              "wrapperBody": false,
+              "isFixedHeight": false,
+              "isFixedWidth": false,
+              "id": "u:a9e2b8ee6332",
+              "themeCss": {
+                "baseControlClassName": {
+                  "padding-and-margin:default": {
+                    "marginRight": "var(--sizes-base-12)"
+                  },
+                  "background:default": "url(/static/images/CodeComment.svg) center center / contain no-repeat "
+                }
+              },
+              "onEvent": {
+                "click": {
+                  "weight": 0,
+                  "actions": []
+                }
+              }
+            },
+            {
+              "type": "nav",
+              "stacked": false,
+              "popupClassName": "app-popover :AMISCSSWrapper",
+              "links": [
+                {
+                  "label": "主页",
+                  "to": "/index/",
+                  "target": "_self",
+                  "id": "0",
+                  "icon": "",
+                  "badge": "",
+                  "children": []
+                },
+                {
+                  "label": "文件",
+                  "to": "/file/",
+                  "target": "_self",
+                  "id": "1",
+                  "children": []
+                },
+                {
+                  "label": "项目",
+                  "to": "/project/",
+                  "target": "_self",
+                  "id": "2",
+                  "children": []
+                },
+                {
+                  "label": "说明文档",
+                  "to": "/readme/",
+                  "icon": "",
+                  "target": "_blank",
+                  "badge": "",
+                  "children": [],
+                  "id": "3"
+                }
+              ],
+              "id": "u:21c6f26815e2",
+              "style": {
+                "backgroundColor": "rgba(232, 240, 254, 1)"
+              }
+            }
+          ],
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "flex",
+            "flex": "1 1 auto",
+            "flexGrow": 1,
+            "flexWrap": "nowrap",
+            "alignItems": "center"
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:8b7f04a60bae",
+          "themeCss": {
+            "baseControlClassName": {
+              "padding-and-margin:default": {
+                "paddingLeft": "var(--sizes-base-20)"
+              }
+            }
+          }
+        },
+        {
+          "type": "container",
+          "body": [
+            {
+              "type": "form",
+              "id": "u:89e40caa2605",
+              "title": "表单",
+              "mode": "horizontal",
+              "dsType": "api",
+              "feat": "View",
+              "body": [
+                {
+                  "type": "container",
+                  "body": [
+                    {
+                      "type": "avatar",
+                      "showtype": "image",
+                      "icon": "",
+                      "fit": "cover",
+                      "style": {
+                        "width": 40,
+                        "height": 40,
+                        "borderRadius": 20,
+                        "backgroundImage": "linear-gradient(180deg, #76c8ee, #4780e6)",
+                        "boxShadow": "2px 2px 4px",
+                        "fontFamily": "",
+                        "fontSize": 12
+                      },
+                      "id": "u:29ef5d6831fd",
+                      "gap": 4,
+                      "src": "${response.data.profile_picture}",
+                      "text": "${response.data.text}",
+                      "onError": "return true;"
+                    }
+                  ],
+                  "style": {
+                    "position": "static",
+                    "display": "block"
+                  },
+                  "size": "none",
+                  "wrapperBody": false,
+                  "id": "u:d7242f3d219f",
+                  "isFixedHeight": false,
+                  "isFixedWidth": false,
+                  "onEvent": {
+                    "click": {
+                      "weight": 0,
+                      "actions": [
+                        {
+                          "ignoreError": false,
+                          "actionType": "url",
+                          "args": {
+                            "url": "/user/",
+                            "blank": false
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "actions": [],
+              "static": true,
+              "initApi": {
+                "method": "get",
+                "url": "/user/get_user_profile_picture/",
+                "requestAdaptor": "",
+                "adaptor": "return {\n    ...payload,\n    data: {\n        ...payload.data,\n        response: response.data\n    }\n}",
+                "messages": {},
+                "dataType": "json"
+              },
+              "wrapWithPanel": false
+            }
+          ],
+          "size": "xs",
+          "style": {
+            "position": "static",
+            "display": "flex",
+            "flex": "1 1 auto",
+            "flexGrow": 1,
+            "flexWrap": "nowrap",
+            "flexDirection": "row",
+            "justifyContent": "flex-end",
+            "alignItems": "center"
+          },
+          "wrapperBody": false,
+          "isFixedHeight": false,
+          "isFixedWidth": false,
+          "id": "u:b9f6e6e1c8b1",
+          "themeCss": {
+            "baseControlClassName": {
+              "padding-and-margin:default": {
+                "paddingRight": "var(--sizes-base-20)",
+                "paddingTop": "0.5rem"
+              }
+            }
+          }
+        }
+      ],
+      "style": {
+        "position": "fixed",
+        "flexWrap": "nowrap",
+        "flexDirection": "row",
+        "justifyContent": "center",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "width": "100%",
+        "zIndex": 9,
+        "inset": "0px 0px auto 0px"
+      },
+      "isFixedHeight": false,
+      "isFixedWidth": true,
+      "themeCss": {
+        "baseControlClassName": {
+          "padding-and-margin:default": {
+            "margin": "0"
+          },
+          "background:default": "var(--colors-brand-10)"
+        }
+      },
+      "wrapperCustomStyle": {},
+      "originPosition": "left-top"
+    }
+  ]
+}; let amisScoped = amis.embed('#root', amisJSON);
+    })();
+  </script>
+</body>
+
+</html>

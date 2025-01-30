@@ -3,6 +3,7 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -43,10 +44,12 @@ func (master *mysqlMaster) Close() {
 }
 
 func (master *mysqlMaster) InsertXXX() error {
-	user := models.User{
-		Username: "username1",
-		Password: "123456",
-		NickName: "nickName1",
+	user := models.UserUser{
+		Email:      "xpl111@ccanalyzer.com",
+		Password:   "123456",
+		Nickname:   "xpl",
+		DateJoined: time.Now(),
+		IsActive:   true,
 	}
 	err := user.Insert(master.db, boil.Infer())
 	if err != nil {
