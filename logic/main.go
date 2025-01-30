@@ -17,7 +17,7 @@ func main() {
 
 	register := &data.DataManagerRegistry{}
 
-	mysqlMaster, err := mysql.GetMysqlMasterExecutor(cfg.MysqlMaster)
+	mysqlMaster, err := mysql.NewTestSqlExecutor(cfg.MysqlMaster)
 	defer mysqlMaster.Close()
 	exitOnErr(err)
 	register.Register(mysqlMaster)

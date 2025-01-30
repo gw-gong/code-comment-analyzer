@@ -1,26 +1,35 @@
 package jwt
 
 import (
-	"code-comment-analyzer/config"
-	"code-comment-analyzer/data/redis"
-	"code-comment-analyzer/protocol"
 	"fmt"
 	"log"
 	"net/http"
 
+	"code-comment-analyzer/config"
+	"code-comment-analyzer/data/redis"
+	"code-comment-analyzer/protocol"
+
 	"github.com/golang-jwt/jwt"
 )
 
+type UserClaims struct {
+	jwt.StandardClaims
+	UserID uint64 `json:"user_id"`
+}
+
 func AuthorizeUserToken(userID uint64, w http.ResponseWriter, sessionManager redis.SessionManager) {
+	userClaims := &UserClaims{
+		UserID: userID,
+	}
 	jwtKey := []byte(config.Cfg.JwtKey)
-	token := jwt.New(jwt.SigningMethodHS256)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, userClaims)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		protocol.HandleError(w, protocol.ErrorCodeAuthorizing, err)
 		log.Println(err)
 		return
 	}
-	err = sessionManager.SetSession(tokenString, userID)
+	err = sessionManager.SetSession(userID, tokenString)
 	if err != nil {
 		protocol.HandleError(w, protocol.ErrorCodeAuthorizing, err)
 		log.Println(err)
@@ -45,7 +54,8 @@ func ParseToken(r *http.Request, sessionManager redis.SessionManager) (userID ui
 	}
 	tokenString := c.Value
 	jwtKey := []byte(config.Cfg.JwtKey)
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	userClaims := UserClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, userClaims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
 	if err != nil {
@@ -54,16 +64,18 @@ func ParseToken(r *http.Request, sessionManager redis.SessionManager) (userID ui
 	if !token.Valid {
 		return 0, fmt.Errorf("invalid token")
 	}
-	return sessionManager.GetSession(tokenString)
+	validToken, err := sessionManager.GetSession(userClaims.UserID)
+	if err != nil {
+		return 0, err
+	}
+	if tokenString != validToken {
+		return 0, fmt.Errorf("invalid token")
+	}
+	return userClaims.UserID, nil
 }
 
-func RefreshToken(r *http.Request, sessionManager redis.SessionManager) error {
-	c, err := r.Cookie("token")
-	if err != nil {
-		return err
-	}
-	tokenString := c.Value
-	err = sessionManager.RefreshSession(tokenString)
+func RefreshToken(userID uint64, sessionManager redis.SessionManager) error {
+	err := sessionManager.RefreshSession(userID)
 	if err != nil {
 		return err
 	}

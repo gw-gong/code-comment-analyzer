@@ -13,14 +13,14 @@ var (
 )
 
 type DataManagerRegistry struct {
-	sqlExecutor    mysql.SqlExecutor
+	sqlExecutor    mysql.TestSqlExecutor
 	sessionManager redis.SessionManager
 }
 
 func (registry *DataManagerRegistry) Register(elem interface{}) {
 	switch elem.(type) {
-	case mysql.SqlExecutor:
-		registry.sqlExecutor = elem.(mysql.SqlExecutor)
+	case mysql.TestSqlExecutor:
+		registry.sqlExecutor = elem.(mysql.TestSqlExecutor)
 	case redis.SessionManager:
 		registry.sessionManager = elem.(redis.SessionManager)
 	default:
@@ -28,7 +28,7 @@ func (registry *DataManagerRegistry) Register(elem interface{}) {
 	}
 }
 
-func (registry *DataManagerRegistry) GetSqlExecutor() mysql.SqlExecutor {
+func (registry *DataManagerRegistry) GetSqlExecutor() mysql.TestSqlExecutor {
 	if registry.sqlExecutor != nil {
 		return registry.sqlExecutor
 	}
