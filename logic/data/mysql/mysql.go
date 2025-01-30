@@ -45,7 +45,7 @@ func (master *mysqlMaster) Close() {
 
 func (master *mysqlMaster) InsertXXX() error {
 	user := models.UserUser{
-		Email:      "xpl@ccanalyzer.com",
+		Email:      "xpl111@ccanalyzer.com",
 		Password:   "123456",
 		Nickname:   "xpl",
 		DateJoined: time.Now(),

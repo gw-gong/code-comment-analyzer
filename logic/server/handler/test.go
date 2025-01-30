@@ -47,6 +47,7 @@ func (t *TestXXX) Handle() {
 	// test SQL
 	err = sqlExecutor.InsertXXX()
 	if err != nil {
+		protocol.HandleError(t.w, protocol.ErrorCodeRPCCallFail, err)
 		return
 	}
 	log.Printf("Insertxxx Successfully")
