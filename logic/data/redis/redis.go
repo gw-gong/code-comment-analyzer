@@ -1,9 +1,9 @@
 package redis
 
 import (
+	"code-comment-analyzer/util"
 	"context"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -12,10 +12,10 @@ import (
 )
 
 type SessionManager interface {
-	SetSession(sessionID string, userID uint64) error
-	GetSession(sessionID string) (uint64, error)
-	ClearSession(sessionID string) error
-	RefreshSession(sessionID string) error
+	SetSession(userID uint64, token string) error
+	GetSession(userID uint64) (token string, err error)
+	ClearSession(userID uint64) error
+	RefreshSession(userID uint64) error
 	Close()
 }
 
@@ -23,21 +23,21 @@ func NewSessionManager(cfg config.RedisConfig, sessionDuration uint32) SessionMa
 	return newRedisMaster(cfg, sessionDuration)
 }
 
-type redisMaster struct {
+type redisClient struct {
 	ctx             context.Context
 	client          *redis.Client
 	sessionPrefix   string
 	sessionDuration time.Duration
 }
 
-func newRedisMaster(config config.RedisConfig, sessionDuration uint32) *redisMaster {
+func newRedisMaster(config config.RedisConfig, sessionDuration uint32) *redisClient {
 	addr := fmt.Sprintf("%s:%s", config.Host, config.Port)
 	client := redis.NewClient(&redis.Options{
 		Addr:     addr,
 		Password: config.Password,
 		DB:       config.DBNum,
 	})
-	return &redisMaster{
+	return &redisClient{
 		ctx:             context.Background(),
 		client:          client,
 		sessionPrefix:   config.PrefixSession,
@@ -45,41 +45,33 @@ func newRedisMaster(config config.RedisConfig, sessionDuration uint32) *redisMas
 	}
 }
 
-func (r *redisMaster) Close() {
+func (r *redisClient) Close() {
 	err := r.client.Close()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (r *redisMaster) SetSession(sessionID string, userID uint64) error {
-	sessionID = hashKey(sessionID)
-	key := r.sessionPrefix + sessionID
-	value := fmt.Sprintf("%d", userID)
-	status := r.client.Set(r.ctx, key, value, r.sessionDuration)
+func (r *redisClient) SetSession(userID uint64, token string) error {
+	key := r.transformUserIDToKey(userID)
+	status := r.client.Set(r.ctx, key, token, r.sessionDuration)
 	return status.Err()
 }
 
-func (r *redisMaster) GetSession(sessionID string) (uint64, error) {
-	sessionID = hashKey(sessionID)
-	key := r.sessionPrefix + sessionID
-	result, err := r.client.Get(r.ctx, key).Result()
+func (r *redisClient) GetSession(userID uint64) (token string, err error) {
+	key := r.transformUserIDToKey(userID)
+	token, err = r.client.Get(r.ctx, key).Result()
 	if err != nil {
 		if err == redis.Nil {
-			return 0, fmt.Errorf("session not found")
+			return "", fmt.Errorf("session not found")
 		}
-		return 0, err
+		return "", err
 	}
-	userID, err := strconv.ParseUint(result, 10, 64)
-	if err != nil {
-		return 0, fmt.Errorf("error parsing userID from session: %v", err)
-	}
-	return userID, nil
+	return token, nil
 }
 
-func (r *redisMaster) ClearSession(sessionID string) error {
-	sessionID = hashKey(sessionID)
-	key := r.sessionPrefix + sessionID
+func (r *redisClient) ClearSession(userID uint64) error {
+	key := r.transformUserIDToKey(userID)
 	result, err := r.client.Del(r.ctx, key).Result()
 	if err != nil {
 		return err
@@ -90,9 +82,8 @@ func (r *redisMaster) ClearSession(sessionID string) error {
 	return nil
 }
 
-func (r *redisMaster) RefreshSession(sessionID string) error {
-	sessionID = hashKey(sessionID)
-	key := r.sessionPrefix + sessionID
+func (r *redisClient) RefreshSession(userID uint64) error {
+	key := r.transformUserIDToKey(userID)
 	result, err := r.client.Expire(r.ctx, key, r.sessionDuration).Result()
 	if err != nil {
 		return err
@@ -101,4 +92,8 @@ func (r *redisMaster) RefreshSession(sessionID string) error {
 		return fmt.Errorf("no session found to refresh")
 	}
 	return nil
+}
+
+func (r *redisClient) transformUserIDToKey(userID uint64) string {
+	return r.sessionPrefix + util.FormatUserIDStr(userID)
 }

@@ -3,6 +3,7 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -12,38 +13,38 @@ import (
 	"code-comment-analyzer/data/mysql/models"
 )
 
-type SqlExecutor interface {
+type TestSqlExecutor interface {
 	InsertXXX() error
 	Close()
 }
 
-func GetMysqlMasterExecutor(cfgMaster config.MysqlConfig) (SqlExecutor, error) {
+func NewTestSqlExecutor(cfgMaster config.MysqlConfig) (TestSqlExecutor, error) {
 	return initMysqlMaster(cfgMaster.Host, cfgMaster.Port, cfgMaster.Username, cfgMaster.Password, cfgMaster.DBName)
 }
 
-type mysqlMaster struct {
+type mysqlClient struct {
 	db *sql.DB
 }
 
-func initMysqlMaster(host, port, userName, password, dbName string) (*mysqlMaster, error) {
+func initMysqlMaster(host, port, userName, password, dbName string) (*mysqlClient, error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", userName, password, host, port, dbName)
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(dsn)
+	log.Println(dsn)
 
-	return &mysqlMaster{db: db}, nil
+	return &mysqlClient{db: db}, nil
 }
 
-func (master *mysqlMaster) Close() {
+func (master *mysqlClient) Close() {
 	err := master.db.Close()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (master *mysqlMaster) InsertXXX() error {
+func (master *mysqlClient) InsertXXX() error {
 	user := models.UserUser{
 		Email:      "xpl111@ccanalyzer.com",
 		Password:   "123456",

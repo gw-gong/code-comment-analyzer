@@ -23,7 +23,7 @@ func AuthenticateUser(handlerFunc HandlerFunc) HandlerFunc {
 			protocol.HandleError(w, protocol.ErrorCodeAuthenticating, err)
 			return
 		}
-		err = jwt.RefreshToken(r, sessionManager)
+		err = jwt.RefreshToken(userID, sessionManager)
 		if err != nil {
 			protocol.HandleError(w, protocol.ErrorCodeAuthenticating, err)
 			return
