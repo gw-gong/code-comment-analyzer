@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"math/rand"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -46,7 +47,7 @@ func (master *mysqlClient) Close() {
 
 func (master *mysqlClient) InsertXXX() error {
 	user := models.UserUser{
-		Email:      "xpl111@ccanalyzer.com",
+		Email:      fmt.Sprintf("xpl%d@ccanalyzer.com", rand.Int()),
 		Password:   "123456",
 		Nickname:   "xpl",
 		DateJoined: time.Now(),

@@ -54,7 +54,7 @@ func ParseToken(r *http.Request, sessionManager redis.SessionManager) (userID ui
 	}
 	tokenString := c.Value
 	jwtKey := []byte(config.Cfg.JwtKey)
-	userClaims := UserClaims{}
+	userClaims := &UserClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, userClaims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
