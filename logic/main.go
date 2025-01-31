@@ -38,7 +38,7 @@ func main() {
 
 func exitOnErr(err error) {
 	if err != nil {
-		log.Printf("%s", err.Error())
+		log.Printf(err.Error())
 		os.Exit(1)
 	}
 }
