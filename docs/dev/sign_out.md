@@ -7,13 +7,23 @@
 
 ## 二、路由
 ```
-\user\sign_in
+/user/logout/
 ```
 request (json):
 ```json
-
+none
 ```
-response (json):
+response (json):<br>
+success
 ```json
-
+{
+    "status": 0,
+    "msg": "已成功退出登录",
+    "data": {}
+}
+```
+failure
+```json
+重复登出无所谓，返回成功即可
+没有token，也返回成功就行
 ```

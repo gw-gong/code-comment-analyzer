@@ -8,13 +8,33 @@
 
 ## 二、路由
 ```
-\user\sign_in
+/user/login/
 ```
 request (json):
 ```json
-
+{
+    "email": "xxx@qq.com",
+    "password": "123456"
+}
 ```
-response (json):
+response (json):<br>
+success
 ```json
-
+{
+    "status": 0,
+    "msg": "登录成功",
+    "data": {
+        "uid": 3,
+        "email": "xxx@qq.com",
+        "nickname": "xxxxxxxxxxxxx"
+    }
+}
+```
+failure
+```json
+{
+    "status": 1,
+    "msg": "邮箱或密码无效",
+    "data": {}
+}
 ```
