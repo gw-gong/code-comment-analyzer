@@ -1,14 +1,14 @@
 package main
 
 import (
-	"code-comment-analyzer/ccanalyzer_client"
-	"code-comment-analyzer/data/redis"
 	"log"
 	"os"
 
+	"code-comment-analyzer/ccanalyzer_client"
 	"code-comment-analyzer/config"
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/data/mysql"
+	"code-comment-analyzer/data/redis"
 	"code-comment-analyzer/server"
 )
 
@@ -17,14 +17,14 @@ func main() {
 
 	register := &data.DataManagerRegistry{}
 
-	mysqlMaster, err := mysql.NewTestSqlExecutor(cfg.MysqlMaster)
-	defer mysqlMaster.Close()
+	testSqlExecutor, err := mysql.NewTestSqlExecutor(cfg.MysqlMaster)
+	defer testSqlExecutor.Close()
 	exitOnErr(err)
-	register.Register(mysqlMaster)
+	register.Register(testSqlExecutor)
 
-	redisMaster := redis.NewSessionManager(cfg.RedisMaster, cfg.UserTokenDuration)
-	defer redisMaster.Close()
-	register.Register(redisMaster)
+	sessionManager := redis.NewSessionManager(cfg.RedisMaster, cfg.UserTokenDuration)
+	defer sessionManager.Close()
+	register.Register(sessionManager)
 
 	ccanalyzer, err := ccanalyzer_client.NewCCAnalyzer(cfg.CcAnalyzerConfig)
 	defer ccanalyzer.Close()

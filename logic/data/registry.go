@@ -1,10 +1,10 @@
 package data
 
 import (
-	"code-comment-analyzer/data/redis"
 	"fmt"
 
 	"code-comment-analyzer/data/mysql"
+	"code-comment-analyzer/data/redis"
 )
 
 var (
@@ -13,14 +13,14 @@ var (
 )
 
 type DataManagerRegistry struct {
-	sqlExecutor    mysql.TestSqlExecutor
-	sessionManager redis.SessionManager
+	testSqlExecutor mysql.TestSqlExecutor
+	sessionManager  redis.SessionManager
 }
 
 func (registry *DataManagerRegistry) Register(elem interface{}) {
 	switch elem.(type) {
 	case mysql.TestSqlExecutor:
-		registry.sqlExecutor = elem.(mysql.TestSqlExecutor)
+		registry.testSqlExecutor = elem.(mysql.TestSqlExecutor)
 	case redis.SessionManager:
 		registry.sessionManager = elem.(redis.SessionManager)
 	default:
@@ -29,8 +29,8 @@ func (registry *DataManagerRegistry) Register(elem interface{}) {
 }
 
 func (registry *DataManagerRegistry) GetSqlExecutor() mysql.TestSqlExecutor {
-	if registry.sqlExecutor != nil {
-		return registry.sqlExecutor
+	if registry.testSqlExecutor != nil {
+		return registry.testSqlExecutor
 	}
 	panic(ErrDataManagerNotFound)
 }

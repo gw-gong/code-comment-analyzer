@@ -1,14 +1,12 @@
 package middleware
 
 import (
-	"code-comment-analyzer/data/redis"
 	"net/http"
 
+	"code-comment-analyzer/data/redis"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/jwt"
 )
-
-const CtxKeyUserID = "userIDFromAuthenticateForUser"
 
 var sessionManager redis.SessionManager
 
