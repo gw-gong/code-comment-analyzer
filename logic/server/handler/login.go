@@ -28,26 +28,61 @@ func NewLogin(registry *data.DataManagerRegistry) middleware.GetHandler {
 	}
 }
 func (l *Login) Handle() {
-	// 获取提取的数据（如 userID）
-	if l.extractor == nil {
-		log.Println("Extractor is nil")
-		return
+	// 解析请求体中的 JSON 数据
+	var requestData struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
-	userID, err := l.extractor.GetUserId()
+
+	// 解码请求体的 JSON 数据到 requestData 结构体
+	err := json.NewDecoder(l.r.Body).Decode(&requestData)
 	if err != nil {
-		// 如果没有找到用户ID，返回错误响应
+		log.Println("Failed to parse JSON body:", err)
+		// 如果解析失败，返回错误响应
 		response := map[string]interface{}{
 			"status": 1,
-			"msg":    "User ID not found",
+			"msg":    "Invalid JSON format",
 			"data":   map[string]interface{}{},
 		}
 		l.w.Header().Set("Content-Type", "application/json")
 		l.w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(l.w).Encode(response) // 使用 json.NewEncoder 来编码响应
+		json.NewEncoder(l.w).Encode(response)
 		return
 	}
 
-	// 调用 jwt.AuthorizeUserToken 来授权用户
+	// 检查 email 和 password 是否为空
+	if requestData.Email == "" || requestData.Password == "" {
+		log.Println("Email or password is missing")
+		// 如果 email 或 password 为空，返回错误响应
+		response := map[string]interface{}{
+			"status": 1,
+			"msg":    "Email or password is missing",
+			"data":   map[string]interface{}{},
+		}
+		l.w.Header().Set("Content-Type", "application/json")
+		l.w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(l.w).Encode(response)
+		return
+	}
+
+	// 假设你会根据 email 和 password 验证用户（可以在数据库中查询或其他验证方式）
+	// 这里只是简单模拟用户验证
+	if requestData.Email != "xxx@qq.com" || requestData.Password != "123456" {
+		log.Println("Invalid email or password")
+		// 如果验证失败，返回错误响应
+		response := map[string]interface{}{
+			"status": 1,
+			"msg":    "Invalid email or password",
+			"data":   map[string]interface{}{},
+		}
+		l.w.Header().Set("Content-Type", "application/json")
+		l.w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(l.w).Encode(response)
+		return
+	}
+
+	// 用户验证成功，生成 JWT Token
+	userID := uint64(3) // 模拟用户ID，实际应该从数据库获取
 	err = jwt.AuthorizeUserToken(userID, l.w, l.registry.GetSessionManager())
 	if err != nil {
 		// 如果授权失败，返回错误响应
@@ -58,7 +93,7 @@ func (l *Login) Handle() {
 		}
 		l.w.Header().Set("Content-Type", "application/json")
 		l.w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(l.w).Encode(response) // 使用 json.NewEncoder 来编码响应
+		json.NewEncoder(l.w).Encode(response)
 		return
 	}
 
@@ -70,11 +105,11 @@ func (l *Login) Handle() {
 		Nickname string `json:"nickname"`
 	}{
 		UID:      userID,
-		Email:    "paipai@qq.com", // 示例：模拟的邮箱
+		Email:    requestData.Email,
 		Nickname: "xxxxxxxxxxxxx", // 示例：模拟的昵称
 	}
 
-	// 如果授权成功，返回成功响应
+	// 返回成功响应
 	response := map[string]interface{}{
 		"status": 0,
 		"msg":    "登录成功",
@@ -83,5 +118,5 @@ func (l *Login) Handle() {
 
 	l.w.Header().Set("Content-Type", "application/json")
 	l.w.WriteHeader(http.StatusOK)
-	json.NewEncoder(l.w).Encode(response) // 使用 json.NewEncoder 来编码响应
+	json.NewEncoder(l.w).Encode(response)
 }
