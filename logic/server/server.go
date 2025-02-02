@@ -25,6 +25,9 @@ func NewHTTPServer() *Server {
 func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_client.CCAnalyzer) {
 	middleware.RegisterSessionManager(registry.GetSessionManager())
 	middleware.RegisterRouter(s.mux, "/test", handler.NewTestXXX(registry, ccanalyzer), middleware.EnforceGet, middleware.AuthenticateUser)
+
+	middleware.RegisterRouter(s.mux, "/public/analyze_file/", handler.NewAnalyzeFile(registry, ccanalyzer), middleware.EnforcePost)
+
 	middleware.RegisterRouter(s.mux, "/user/login", handler.NewLogin(registry), middleware.EnforcePost)
 }
 

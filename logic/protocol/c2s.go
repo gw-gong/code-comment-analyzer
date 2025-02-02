@@ -16,3 +16,13 @@ type LoginResponse struct {
 // *********** sign up ***********
 
 // *********** sign out ***********
+
+// *********** analyze file ***********
+
+type AnalyzeFileRequest struct {
+	Language    string `json:"language"`
+	FileContent string `json:"fileContent"`
+}
+
+type AnalyzeFileResponse struct {
+}
