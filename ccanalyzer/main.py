@@ -58,8 +58,7 @@ class CcAnalyzer(ccanalyzer_pb2_grpc.CcAnalyzerServicer):
         # 转换换行符号位html符号
         for i in range(len(analyzedData['multiLineComments'])):
             analyzedData['multiLineComments'][i] = analyzedData['multiLineComments'][i].replace("\n", "<br>").replace(" ", "&nbsp;")
-        return ccanalyzer_pb2.AnalyzeFileContentRes(analyzed_data=json.dumps(analyzedData))
-
+        return ccanalyzer_pb2.AnalyzeFileContentRes(analyzed_data=analyzedData)
 
 
 def serve():

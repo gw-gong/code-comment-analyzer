@@ -29,14 +29,8 @@ func NewLogin(registry *data.DataManagerRegistry) middleware.GetHandler {
 }
 
 func (l *Login) Handle() {
-	// 解析请求体中的 JSON 数据
-	var requestData protocol.LoginRequest
-
-	// 解码请求体的 JSON 数据到 requestData 结构体
-	err := json.NewDecoder(l.r.Body).Decode(&requestData)
+	requestData, err := l.DecodeRequest()
 	if err != nil {
-		log.Println("Failed to parse JSON body:", err)
-		protocol.HttpResponseFail(l.w, http.StatusBadRequest, protocol.ErrorCodeParseRequestFailed, "Invalid JSON format")
 		return
 	}
 
@@ -47,6 +41,8 @@ func (l *Login) Handle() {
 		protocol.HttpResponseFail(l.w, http.StatusBadRequest, protocol.ErrorCodeParamError, "Email or password is missing")
 		return
 	}
+
+	// 验证数据库信息
 	um := l.registry.GetUserManager()
 	userID, nickname, password, err := um.GetUserInfoByEmail(requestData.Email)
 	if err != nil {
@@ -81,4 +77,16 @@ func (l *Login) Handle() {
 		Nickname: nickname,
 	}
 	protocol.HttpResponseSuccess(l.w, http.StatusOK, "登录成功", response)
+}
+
+func (l *Login) DecodeRequest() (*protocol.LoginRequest, error) {
+	var requestData protocol.LoginRequest
+	// 解码请求体的 JSON 数据到 requestData 结构体
+	err := json.NewDecoder(l.r.Body).Decode(&requestData)
+	if err != nil {
+		log.Println("Failed to parse JSON body:", err)
+		protocol.HttpResponseFail(l.w, http.StatusBadRequest, protocol.ErrorCodeParseRequestFailed, "Invalid JSON format")
+		return nil, err
+	}
+	return &requestData, nil
 }

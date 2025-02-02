@@ -35,6 +35,7 @@ func AuthorizeUserToken(userID uint64, w http.ResponseWriter, sessionManager red
 	http.SetCookie(w, &http.Cookie{
 		Name:  "token",
 		Value: tokenString,
+		Path:  "/", // cookie is valid for all paths
 	})
 	return nil
 }
