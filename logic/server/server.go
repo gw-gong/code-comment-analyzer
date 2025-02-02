@@ -1,6 +1,8 @@
 package server
 
 import (
+	"code-comment-analyzer/server/handler/public"
+	"code-comment-analyzer/server/handler/user"
 	"fmt"
 	"log"
 	"net/http"
@@ -24,11 +26,12 @@ func NewHTTPServer() *Server {
 
 func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_client.CCAnalyzer) {
 	middleware.RegisterSessionManager(registry.GetSessionManager())
-	middleware.RegisterRouter(s.mux, "/test", handler.NewTestXXX(registry, ccanalyzer), middleware.EnforceGet, middleware.AuthenticateUser)
+	middleware.RegisterRouter(s.mux, "/test/", handler.NewTestXXX(registry, ccanalyzer), middleware.EnforceGet, middleware.AuthenticateUser)
 
-	middleware.RegisterRouter(s.mux, "/public/analyze_file/", handler.NewAnalyzeFile(registry, ccanalyzer), middleware.EnforcePost)
+	middleware.RegisterRouter(s.mux, "/public/upload_file2string/", public.NewFile2String(), middleware.EnforcePost)
+	middleware.RegisterRouter(s.mux, "/public/analyze_file/", public.NewAnalyzeFile(registry, ccanalyzer), middleware.EnforcePost)
 
-	middleware.RegisterRouter(s.mux, "/user/login", handler.NewLogin(registry), middleware.EnforcePost)
+	middleware.RegisterRouter(s.mux, "/user/login/", user.NewLogin(registry), middleware.EnforcePost)
 }
 
 func (s *Server) Listen(host, port string) {

@@ -18,4 +18,7 @@ const (
 	ErrorCodeInternalServerError
 
 	ErrorCodeLanguageNotSupported
+
+	ErrorCodeFileTooLarge
+	ErrorCodeFileNotFound
 )

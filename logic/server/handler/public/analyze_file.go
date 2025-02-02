@@ -1,4 +1,4 @@
-package handler
+package public
 
 import (
 	"encoding/json"
@@ -43,7 +43,8 @@ func (af *AnalyzeFile) Handle() {
 		return
 	}
 
-	analyzedData, err := af.ccanalyzer.AnalyzeFileContent(requestData.Language, requestData.FileContent)
+	var analyzedData protocol.AnalyzeFileResponse
+	analyzedData, err = af.ccanalyzer.AnalyzeFileContent(requestData.Language, requestData.FileContent)
 	if err != nil {
 		protocol.HttpResponseFail(af.w, http.StatusInternalServerError, protocol.ErrorCodeRPCCallFail, fmt.Sprintf("%v", err))
 		return

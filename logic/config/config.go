@@ -44,6 +44,8 @@ type Config struct {
 	CcAnalyzerConfig  CcAnalyzerConfig `yaml:"ccanalyzer_conf"`
 	UserTokenDuration uint32           `yaml:"user_token_duration"`
 	JwtKey            string           `yaml:"jwt_key"`
+	MaxFileSize       int64            `yaml:"max_file_size"`
+	MaxProjectSize    int64            `yaml:"max_project_size"`
 }
 
 func init() {

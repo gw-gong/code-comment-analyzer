@@ -24,5 +24,11 @@ type AnalyzeFileRequest struct {
 	FileContent string `json:"fileContent"`
 }
 
-type AnalyzeFileResponse struct {
+type AnalyzeFileResponse map[string]interface{}
+
+// *********** file to string ***********
+
+type File2StringResponse struct {
+	Language    string `json:"language"`
+	FileContent string `json:"fileContent"`
 }
