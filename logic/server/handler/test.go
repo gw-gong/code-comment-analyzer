@@ -1,14 +1,13 @@
 package handler
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-
 	"code-comment-analyzer/ccanalyzer_client"
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
+	"fmt"
+	"log"
+	"net/http"
 )
 
 type TestXXX struct {
@@ -34,20 +33,20 @@ func NewTestXXX(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_client
 func (t *TestXXX) Handle() {
 	userID, err := t.extractor.GetUserId()
 	if err != nil {
-		protocol.HandleError(t.w, protocol.ErrorCodeMissingUserId, err)
+		protocol.HttpResponseFail(t.w, http.StatusInternalServerError, protocol.ErrorCodeMissingUserId, fmt.Sprintf("%v", err))
 		return
 	}
 	log.Printf("TestXXX.handle()|%d", userID)
 
 	var (
-		sqlExecutor = t.registry.GetSqlExecutor()
+		sqlExecutor = t.registry.GetTestSqlExecutor()
 		ccanalyzer  = t.ccanalyzer
 	)
 
 	// test SQL
 	err = sqlExecutor.InsertXXX()
 	if err != nil {
-		protocol.HandleError(t.w, protocol.ErrorCodeRPCCallFail, err)
+		protocol.HttpResponseFail(t.w, http.StatusInternalServerError, protocol.ErrorCodeRPCCallFail, fmt.Sprintf("%v", err))
 		return
 	}
 	log.Printf("Insertxxx Successfully")
@@ -55,7 +54,7 @@ func (t *TestXXX) Handle() {
 	// test RPC call
 	analyzedData, err := ccanalyzer.AnalyzeFileContent("Python", "# 这是一个注释\n")
 	if err != nil {
-		protocol.HandleError(t.w, protocol.ErrorCodeRPCCallFail, err)
+		protocol.HttpResponseFail(t.w, http.StatusInternalServerError, protocol.ErrorCodeRPCCallFail, fmt.Sprintf("%v", err))
 		return
 	}
 

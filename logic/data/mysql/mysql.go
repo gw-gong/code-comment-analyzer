@@ -7,27 +7,18 @@ import (
 	"math/rand"
 	"time"
 
+	"code-comment-analyzer/data/mysql/models"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/volatiletech/sqlboiler/v4/boil"
-
-	"code-comment-analyzer/config"
-	"code-comment-analyzer/data/mysql/models"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
-
-type TestSqlExecutor interface {
-	InsertXXX() error
-	Close()
-}
-
-func NewTestSqlExecutor(cfgMaster config.MysqlConfig) (TestSqlExecutor, error) {
-	return initMysqlMaster(cfgMaster.Host, cfgMaster.Port, cfgMaster.Username, cfgMaster.Password, cfgMaster.DBName)
-}
 
 type mysqlClient struct {
 	db *sql.DB
 }
 
-func initMysqlMaster(host, port, userName, password, dbName string) (*mysqlClient, error) {
+func initMysqlClient(host, port, userName, password, dbName string) (*mysqlClient, error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", userName, password, host, port, dbName)
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -61,4 +52,19 @@ func (master *mysqlClient) InsertXXX() error {
 
 	fmt.Printf("User inserted: %+v\n", user)
 	return nil
+}
+
+func (master *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname string, password string, err error) {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, qm.Select(models.UserUserColumns.UID, models.UserUserColumns.Nickname, models.UserUserColumns.Password))
+	queryMods = append(queryMods, models.UserUserWhere.Email.EQ(email))
+	user, err := models.UserUsers(queryMods...).One(master.db)
+	if err != nil {
+		return
+	}
+	if user == nil {
+		err = fmt.Errorf("user not found")
+		return
+	}
+	return user.UID, user.Nickname, user.Password, err
 }

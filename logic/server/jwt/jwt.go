@@ -7,7 +7,6 @@ import (
 
 	"code-comment-analyzer/config"
 	"code-comment-analyzer/data/redis"
-	"code-comment-analyzer/protocol"
 
 	"github.com/golang-jwt/jwt"
 )
@@ -17,7 +16,7 @@ type UserClaims struct {
 	UserID uint64 `json:"user_id"`
 }
 
-func AuthorizeUserToken(userID uint64, w http.ResponseWriter, sessionManager redis.SessionManager) {
+func AuthorizeUserToken(userID uint64, w http.ResponseWriter, sessionManager redis.SessionManager) error {
 	userClaims := &UserClaims{
 		UserID: userID,
 	}
@@ -25,26 +24,19 @@ func AuthorizeUserToken(userID uint64, w http.ResponseWriter, sessionManager red
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, userClaims)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
-		protocol.HandleError(w, protocol.ErrorCodeAuthorizing, err)
 		log.Println(err)
-		return
+		return fmt.Errorf("error signing token: %w", err)
 	}
 	err = sessionManager.SetSession(userID, tokenString)
 	if err != nil {
-		protocol.HandleError(w, protocol.ErrorCodeAuthorizing, err)
 		log.Println(err)
-		return
+		return fmt.Errorf("error setting session: %w", err)
 	}
 	http.SetCookie(w, &http.Cookie{
 		Name:  "token",
 		Value: tokenString,
 	})
-	w.WriteHeader(http.StatusOK)
-	_, err = w.Write([]byte("Login successful and token has been set."))
-	if err != nil {
-		protocol.HandleError(w, protocol.ErrorCodeAuthorizing, err)
-		return
-	}
+	return nil
 }
 
 func ParseToken(r *http.Request, sessionManager redis.SessionManager) (userID uint64, err error) {

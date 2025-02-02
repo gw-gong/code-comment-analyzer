@@ -1,7 +1,7 @@
 package protocol
 
 const (
-	Success int = iota
+	StatusSuccess int = iota
 )
 
 const (
@@ -11,4 +11,7 @@ const (
 	ErrorCodeRPCCallFail
 	ErrorCodeMustBeGet
 	ErrorCodeMustBePost
+	ErrorCodeParseRequestFailed
+	ErrorCodeParamError
+	ErrorCodeInternalServerError
 )
