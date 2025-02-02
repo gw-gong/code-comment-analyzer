@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"code-comment-analyzer/protocol"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -27,26 +28,16 @@ func NewLogin(registry *data.DataManagerRegistry) middleware.GetHandler {
 		}
 	}
 }
+
 func (l *Login) Handle() {
 	// 解析请求体中的 JSON 数据
-	var requestData struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
+	var requestData protocol.LoginRequest
 
 	// 解码请求体的 JSON 数据到 requestData 结构体
 	err := json.NewDecoder(l.r.Body).Decode(&requestData)
 	if err != nil {
 		log.Println("Failed to parse JSON body:", err)
-		// 如果解析失败，返回错误响应
-		response := map[string]interface{}{
-			"status": 1,
-			"msg":    "Invalid JSON format",
-			"data":   map[string]interface{}{},
-		}
-		l.w.Header().Set("Content-Type", "application/json")
-		l.w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(l.w).Encode(response)
+		protocol.HttpResponseFail(l.w, http.StatusBadRequest, "Invalid JSON format")
 		return
 	}
 
@@ -54,14 +45,7 @@ func (l *Login) Handle() {
 	if requestData.Email == "" || requestData.Password == "" {
 		log.Println("Email or password is missing")
 		// 如果 email 或 password 为空，返回错误响应
-		response := map[string]interface{}{
-			"status": 1,
-			"msg":    "Email or password is missing",
-			"data":   map[string]interface{}{},
-		}
-		l.w.Header().Set("Content-Type", "application/json")
-		l.w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(l.w).Encode(response)
+		protocol.HttpResponseFail(l.w, http.StatusBadRequest, "Email or password is missing")
 		return
 	}
 
@@ -70,14 +54,7 @@ func (l *Login) Handle() {
 	if requestData.Email != "xxx@qq.com" || requestData.Password != "123456" {
 		log.Println("Invalid email or password")
 		// 如果验证失败，返回错误响应
-		response := map[string]interface{}{
-			"status": 1,
-			"msg":    "Invalid email or password",
-			"data":   map[string]interface{}{},
-		}
-		l.w.Header().Set("Content-Type", "application/json")
-		l.w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(l.w).Encode(response)
+		protocol.HttpResponseFail(l.w, http.StatusUnauthorized, "Invalid email or password")
 		return
 	}
 
@@ -86,37 +63,17 @@ func (l *Login) Handle() {
 	err = jwt.AuthorizeUserToken(userID, l.w, l.registry.GetSessionManager())
 	if err != nil {
 		// 如果授权失败，返回错误响应
-		response := map[string]interface{}{
-			"status": 1,
-			"msg":    "Authorization failed",
-			"data":   map[string]interface{}{},
-		}
-		l.w.Header().Set("Content-Type", "application/json")
-		l.w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(l.w).Encode(response)
+		protocol.HttpResponseFail(l.w, http.StatusUnauthorized, "Authorization failed")
 		return
 	}
 
 	// 假设通过授权后可以获取用户的其他信息（如 email, nickname），在此简单模拟：
 	// 获取用户信息（例如：通过 userID 查询数据库）
-	user := struct {
-		UID      uint64 `json:"uid"`
-		Email    string `json:"email"`
-		Nickname string `json:"nickname"`
-	}{
+	// 返回成功响应
+	response := protocol.LoginResponse{
 		UID:      userID,
 		Email:    requestData.Email,
-		Nickname: "xxxxxxxxxxxxx", // 示例：模拟的昵称
+		Nickname: "xxxxxxxxxxxxx",
 	}
-
-	// 返回成功响应
-	response := map[string]interface{}{
-		"status": 0,
-		"msg":    "登录成功",
-		"data":   user,
-	}
-
-	l.w.Header().Set("Content-Type", "application/json")
-	l.w.WriteHeader(http.StatusOK)
-	json.NewEncoder(l.w).Encode(response)
+	protocol.HttpResponseSuccess(l.w, http.StatusOK, "登录成功", response)
 }
