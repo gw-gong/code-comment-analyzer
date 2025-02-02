@@ -33,7 +33,7 @@ func NewAnalyzeFile(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_cl
 }
 
 func (af *AnalyzeFile) Handle() {
-	requestData, err := af.DecodeRequest()
+	requestData, err := af.decodeRequest()
 	if err != nil {
 		return
 	}
@@ -52,7 +52,7 @@ func (af *AnalyzeFile) Handle() {
 	protocol.HttpResponseSuccess(af.w, http.StatusOK, "Success", analyzedData, requestData.Language)
 }
 
-func (af *AnalyzeFile) DecodeRequest() (*protocol.AnalyzeFileRequest, error) {
+func (af *AnalyzeFile) decodeRequest() (*protocol.AnalyzeFileRequest, error) {
 	var requestData protocol.AnalyzeFileRequest
 	err := json.NewDecoder(af.r.Body).Decode(&requestData)
 	if err != nil {

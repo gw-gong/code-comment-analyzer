@@ -10,7 +10,7 @@ import (
 	"code-comment-analyzer/ccanalyzer_client"
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/server/handler"
-	"code-comment-analyzer/server/middleware"
+	m "code-comment-analyzer/server/middleware"
 )
 
 type Server struct {
@@ -25,13 +25,13 @@ func NewHTTPServer() *Server {
 }
 
 func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_client.CCAnalyzer) {
-	middleware.RegisterSessionManager(registry.GetSessionManager())
-	middleware.RegisterRouter(s.mux, "/test/", handler.NewTestXXX(registry, ccanalyzer), middleware.EnforceGet, middleware.AuthenticateUser)
+	m.RegisterSessionManager(registry.GetSessionManager())
+	m.RegisterRouter(s.mux, "/test/", handler.NewTestXXX(registry, ccanalyzer), m.EnforceGet, m.AuthenticateUser)
 
-	middleware.RegisterRouter(s.mux, "/public/upload_file2string/", public.NewFile2String(), middleware.EnforcePost)
-	middleware.RegisterRouter(s.mux, "/public/analyze_file/", public.NewAnalyzeFile(registry, ccanalyzer), middleware.EnforcePost)
+	m.RegisterRouter(s.mux, "/public/upload_file2string/", public.NewFile2String(), m.EnforcePost, m.CheckLoginStatus)
+	m.RegisterRouter(s.mux, "/public/analyze_file/", public.NewAnalyzeFile(registry, ccanalyzer), m.EnforcePost)
 
-	middleware.RegisterRouter(s.mux, "/user/login/", user.NewLogin(registry), middleware.EnforcePost)
+	m.RegisterRouter(s.mux, "/user/login/", user.NewLogin(registry), m.EnforcePost)
 }
 
 func (s *Server) Listen(host, port string) {

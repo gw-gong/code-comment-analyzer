@@ -29,7 +29,7 @@ func NewLogin(registry *data.DataManagerRegistry) middleware.GetHandler {
 }
 
 func (l *Login) Handle() {
-	requestData, err := l.DecodeRequest()
+	requestData, err := l.decodeRequest()
 	if err != nil {
 		return
 	}
@@ -79,7 +79,7 @@ func (l *Login) Handle() {
 	protocol.HttpResponseSuccess(l.w, http.StatusOK, "登录成功", response)
 }
 
-func (l *Login) DecodeRequest() (*protocol.LoginRequest, error) {
+func (l *Login) decodeRequest() (*protocol.LoginRequest, error) {
 	var requestData protocol.LoginRequest
 	// 解码请求体的 JSON 数据到 requestData 结构体
 	err := json.NewDecoder(l.r.Body).Decode(&requestData)

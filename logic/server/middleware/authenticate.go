@@ -4,16 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"code-comment-analyzer/data/redis"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/jwt"
 )
-
-var sessionManager redis.SessionManager
-
-func RegisterSessionManager(s redis.SessionManager) {
-	sessionManager = s
-}
 
 func AuthenticateUser(handlerFunc HandlerFunc) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {

@@ -8,12 +8,15 @@ import (
 type extractorKey string
 
 const (
-	keyUserID extractorKey = "user_id"
+	keyUserID      extractorKey = "user_id"
+	keyLoginStatus extractorKey = "login_status"
 )
 
 type Extractor interface {
 	setUserId(userID uint64)
 	GetUserId() (uint64, error)
+	setLoginStatus(status bool)
+	GetLoginStatus() (bool, error)
 }
 
 type extractedData map[extractorKey]interface{}
@@ -36,4 +39,20 @@ func (e extractedData) GetUserId() (uint64, error) {
 		return 0, fmt.Errorf("userId not found in extracted data")
 	}
 	return userID.(uint64), nil
+}
+
+func (e extractedData) setLoginStatus(status bool) {
+	if e == nil {
+		log.Println("extractedData is not initialized")
+		return
+	}
+	e[keyLoginStatus] = status
+}
+
+func (e extractedData) GetLoginStatus() (bool, error) {
+	status, ok := e[keyLoginStatus]
+	if !ok {
+		return false, fmt.Errorf("login status not found in extracted data")
+	}
+	return status.(bool), nil
 }

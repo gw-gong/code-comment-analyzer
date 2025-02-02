@@ -2,6 +2,7 @@ package public
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"path/filepath"
 
@@ -12,33 +13,38 @@ import (
 )
 
 type File2String struct {
-	w http.ResponseWriter
-	r *http.Request
+	w         http.ResponseWriter
+	r         *http.Request
+	extractor middleware.Extractor
 }
 
 func NewFile2String() middleware.GetHandler {
 	return func(w http.ResponseWriter, r *http.Request, extractor middleware.Extractor) middleware.Handler {
 		return &File2String{
-			w: w,
-			r: r,
+			w:         w,
+			r:         r,
+			extractor: extractor,
 		}
 	}
 }
 
 func (f2s *File2String) Handle() {
-	fileBytes, language, err := f2s.DecodeRequest()
+	fileBytes, language, err := f2s.decodeRequest()
 	if err != nil {
 		return
 	}
 
+	fileContent := string(fileBytes)
 	response := &protocol.File2StringResponse{
 		Language:    language,
-		FileContent: string(fileBytes),
+		FileContent: fileContent,
 	}
 	protocol.HttpResponseSuccess(f2s.w, http.StatusOK, "已读取", response)
+
+	go f2s.saveFileContent(language, fileContent)
 }
 
-func (f2s *File2String) DecodeRequest() (fileContent []byte, fileType string, err error) {
+func (f2s *File2String) decodeRequest() (fileContent []byte, fileType string, err error) {
 	maxFileSize := config.Cfg.MaxFileSize
 	err = f2s.r.ParseMultipartForm(maxFileSize << 20) // 限制上传文件大小为 10MB
 	if err != nil {
@@ -63,4 +69,20 @@ func (f2s *File2String) DecodeRequest() (fileContent []byte, fileType string, er
 	fileSuffix := filepath.Ext(fileName)
 	language := util.FileSuffixToLanguage(fileSuffix)
 	return fileBytes, language, nil
+}
+
+func (f2s *File2String) saveFileContent(language, fileContent string) {
+	loginStatus, err := f2s.extractor.GetLoginStatus()
+	if err != nil {
+		return
+	}
+	if loginStatus == false {
+		return
+	}
+	userID, err := f2s.extractor.GetUserId()
+	if err != nil {
+		return
+	}
+	log.Println("saveFileContent|userID", userID)
+	// 保存文件内容到数据库
 }
