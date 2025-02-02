@@ -66,6 +66,6 @@ func (t *TestXXX) Handle() {
 	// 向响应体写入一条消息
 	_, err = fmt.Fprintln(t.w, "This is a test route handler function. Insert successfully\n"+analyzedData)
 	if err != nil {
-		log.Printf("Error writing response:%+v", err)
+		log.Printf("Error writing response:%v", err)
 	}
 }
