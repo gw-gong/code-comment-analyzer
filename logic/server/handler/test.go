@@ -1,14 +1,13 @@
 package handler
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-
 	"code-comment-analyzer/ccanalyzer_client"
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
+	"fmt"
+	"log"
+	"net/http"
 )
 
 type TestXXX struct {
@@ -67,6 +66,6 @@ func (t *TestXXX) Handle() {
 	// 向响应体写入一条消息
 	_, err = fmt.Fprintln(t.w, "This is a test route handler function. Insert successfully\n"+analyzedData)
 	if err != nil {
-		log.Printf("Error writing response:", err)
+		log.Printf("Error writing response:%+v", err)
 	}
 }
