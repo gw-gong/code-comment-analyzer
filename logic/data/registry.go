@@ -13,9 +13,10 @@ var (
 )
 
 type DataManagerRegistry struct {
-	testSqlExecutor mysql.TestSqlExecutor
-	userManager     mysql.UserManager
-	sessionManager  redis.SessionManager
+	testSqlExecutor  mysql.TestSqlExecutor
+	userManager      mysql.UserManager
+	operationManager mysql.OperationManager
+	sessionManager   redis.SessionManager
 }
 
 func (registry *DataManagerRegistry) RegisterTestSqlExecutor(testSqlExecutor mysql.TestSqlExecutor) {
@@ -38,6 +39,18 @@ func (registry *DataManagerRegistry) RegisterUserManager(userManager mysql.UserM
 func (registry *DataManagerRegistry) GetUserManager() mysql.UserManager {
 	if registry.userManager != nil {
 		return registry.userManager
+	}
+	panic(ErrDataManagerNotFound)
+}
+
+func (registry *DataManagerRegistry) RegisterOperationManager(operationManager mysql.OperationManager) {
+	registry.operationManager = operationManager
+	log.Println("Registered OperationManager")
+}
+
+func (registry *DataManagerRegistry) GetOperationManager() mysql.OperationManager {
+	if registry.operationManager != nil {
+		return registry.operationManager
 	}
 	panic(ErrDataManagerNotFound)
 }

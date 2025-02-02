@@ -1,6 +1,7 @@
 package public
 
 import (
+	"code-comment-analyzer/data"
 	"io"
 	"log"
 	"net/http"
@@ -16,14 +17,16 @@ type File2String struct {
 	w         http.ResponseWriter
 	r         *http.Request
 	extractor middleware.Extractor
+	registry  *data.DataManagerRegistry
 }
 
-func NewFile2String() middleware.GetHandler {
+func NewFile2String(registry *data.DataManagerRegistry) middleware.GetHandler {
 	return func(w http.ResponseWriter, r *http.Request, extractor middleware.Extractor) middleware.Handler {
 		return &File2String{
 			w:         w,
 			r:         r,
 			extractor: extractor,
+			registry:  registry,
 		}
 	}
 }
@@ -84,5 +87,10 @@ func (f2s *File2String) saveFileContent(language, fileContent string) {
 		return
 	}
 	log.Println("saveFileContent|userID", userID)
-	// 保存文件内容到数据库
+
+	om := f2s.registry.GetOperationManager()
+	err = om.RecordFileUpload(userID, language, fileContent)
+	if err != nil {
+		log.Println("saveFileContent|RecordFileUpload|err", err)
+	}
 }
