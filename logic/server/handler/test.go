@@ -34,7 +34,7 @@ func NewTestXXX(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_client
 func (t *TestXXX) Handle() {
 	userID, err := t.extractor.GetUserId()
 	if err != nil {
-		protocol.HandleError(t.w, protocol.ErrorCodeMissingUserId, err)
+		protocol.HttpResponseFail(t.w, http.StatusInternalServerError, protocol.ErrorCodeMissingUserId, fmt.Sprintf("%v", err))
 		return
 	}
 	log.Printf("TestXXX.handle()|%d", userID)
@@ -47,7 +47,7 @@ func (t *TestXXX) Handle() {
 	// test SQL
 	err = sqlExecutor.InsertXXX()
 	if err != nil {
-		protocol.HandleError(t.w, protocol.ErrorCodeRPCCallFail, err)
+		protocol.HttpResponseFail(t.w, http.StatusInternalServerError, protocol.ErrorCodeRPCCallFail, fmt.Sprintf("%v", err))
 		return
 	}
 	log.Printf("Insertxxx Successfully")
@@ -55,7 +55,7 @@ func (t *TestXXX) Handle() {
 	// test RPC call
 	analyzedData, err := ccanalyzer.AnalyzeFileContent("Python", "# 这是一个注释\n")
 	if err != nil {
-		protocol.HandleError(t.w, protocol.ErrorCodeRPCCallFail, err)
+		protocol.HttpResponseFail(t.w, http.StatusInternalServerError, protocol.ErrorCodeRPCCallFail, fmt.Sprintf("%v", err))
 		return
 	}
 

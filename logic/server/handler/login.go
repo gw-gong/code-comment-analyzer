@@ -36,7 +36,7 @@ func (l *Login) Handle() {
 	err := json.NewDecoder(l.r.Body).Decode(&requestData)
 	if err != nil {
 		log.Println("Failed to parse JSON body:", err)
-		protocol.HttpResponseFail(l.w, http.StatusBadRequest, "Invalid JSON format")
+		protocol.HttpResponseFail(l.w, http.StatusBadRequest, protocol.ErrorCodeParseRequestFailed, "Invalid JSON format")
 		return
 	}
 
@@ -44,14 +44,14 @@ func (l *Login) Handle() {
 	if requestData.Email == "" || requestData.Password == "" {
 		log.Println("Email or password is missing")
 		// 如果 email 或 password 为空，返回错误响应
-		protocol.HttpResponseFail(l.w, http.StatusBadRequest, "Email or password is missing")
+		protocol.HttpResponseFail(l.w, http.StatusBadRequest, protocol.ErrorCodeParamError, "Email or password is missing")
 		return
 	}
 	um := l.registry.GetUserManager()
 	userID, nickname, password, err := um.GetUserInfoByEmail(requestData.Email)
 	if err != nil {
 		log.Printf("Error|GetUserInfoByEmail|err: %v", err)
-		protocol.HttpResponseFail(l.w, http.StatusBadRequest, fmt.Sprintf("Error|GetUserInfoByEmail|err: %v", err))
+		protocol.HttpResponseFail(l.w, http.StatusBadRequest, protocol.ErrorCodeInternalServerError, fmt.Sprintf("Error|GetUserInfoByEmail|err: %v", err))
 		return
 	}
 
@@ -60,7 +60,7 @@ func (l *Login) Handle() {
 	if requestData.Password != password {
 		log.Println("Invalid email or password")
 		// 如果验证失败，返回错误响应
-		protocol.HttpResponseFail(l.w, http.StatusUnauthorized, "Invalid email or password")
+		protocol.HttpResponseFail(l.w, http.StatusUnauthorized, protocol.ErrorCodeAuthorizing, "Invalid email or password")
 		return
 	}
 
@@ -68,7 +68,7 @@ func (l *Login) Handle() {
 	err = jwt.AuthorizeUserToken(userID, l.w, l.registry.GetSessionManager())
 	if err != nil {
 		// 如果授权失败，返回错误响应
-		protocol.HttpResponseFail(l.w, http.StatusUnauthorized, "Authorization failed")
+		protocol.HttpResponseFail(l.w, http.StatusUnauthorized, protocol.ErrorCodeAuthorizing, "Authorization failed")
 		return
 	}
 

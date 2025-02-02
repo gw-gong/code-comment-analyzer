@@ -28,9 +28,9 @@ func httpResponse(w http.ResponseWriter, httpStatusCode int, status int, msg str
 }
 
 func HttpResponseSuccess(w http.ResponseWriter, httpStatusCode int, msg string, data interface{}) {
-	httpResponse(w, httpStatusCode, 0, msg, data)
+	httpResponse(w, httpStatusCode, StatusSuccess, msg, data)
 }
 
-func HttpResponseFail(w http.ResponseWriter, httpStatusCode int, msg string) {
-	httpResponse(w, httpStatusCode, 1, msg, nil)
+func HttpResponseFail(w http.ResponseWriter, httpStatusCode int, errorCode int, msg string) {
+	httpResponse(w, httpStatusCode, errorCode, msg, nil)
 }
