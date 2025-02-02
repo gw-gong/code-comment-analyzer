@@ -29,14 +29,14 @@ func initMysqlClient(host, port, userName, password, dbName string) (*mysqlClien
 	return &mysqlClient{db: db}, nil
 }
 
-func (master *mysqlClient) Close() {
-	err := master.db.Close()
+func (m *mysqlClient) Close() {
+	err := m.db.Close()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (master *mysqlClient) InsertXXX() error {
+func (m *mysqlClient) InsertXXX() error {
 	user := models.UserUser{
 		Email:      fmt.Sprintf("xpl%d@ccanalyzer.com", rand.Int()),
 		Password:   "123456",
@@ -44,21 +44,21 @@ func (master *mysqlClient) InsertXXX() error {
 		DateJoined: time.Now(),
 		IsActive:   true,
 	}
-	err := user.Insert(master.db, boil.Infer())
+	err := user.Insert(m.db, boil.Infer())
 	if err != nil {
-		fmt.Printf("Error inserting user: %v\n", err)
+		log.Printf("Error inserting user: %v\n", err)
 		return err
 	}
 
-	fmt.Printf("User inserted: %+v\n", user)
+	log.Printf("User inserted: %+v\n", user)
 	return nil
 }
 
-func (master *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname string, password string, err error) {
+func (m *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname string, password string, err error) {
 	var queryMods []qm.QueryMod
 	queryMods = append(queryMods, qm.Select(models.UserUserColumns.UID, models.UserUserColumns.Nickname, models.UserUserColumns.Password))
 	queryMods = append(queryMods, models.UserUserWhere.Email.EQ(email))
-	user, err := models.UserUsers(queryMods...).One(master.db)
+	user, err := models.UserUsers(queryMods...).One(m.db)
 	if err != nil {
 		return
 	}
@@ -67,4 +67,60 @@ func (master *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nick
 		return
 	}
 	return user.UID, user.Nickname, user.Password, err
+}
+
+func (m *mysqlClient) createOperate(tx *sql.Tx, userID uint64, operationType string) (operateID int64, err error) {
+	op := models.UserOperatingrecord{
+		UserID:        userID,
+		OperationType: operationType,
+	}
+	err = op.Insert(tx, boil.Infer()) // 使用事务对象 tx
+	if err != nil {
+		log.Printf("Error inserting operating record: %v\n", err)
+		return -1, err
+	}
+	return op.ID, nil
+}
+
+func (m *mysqlClient) RecordFileUpload(userID uint64, language, fileContent string) (err error) {
+	tx, err := m.db.Begin()
+	if err != nil {
+		log.Printf("Error starting transaction: %v\n", err)
+		return err
+	}
+
+	// 确保事务最终被提交或回滚
+	defer func() {
+		if p := recover(); p != nil {
+			// 发生 panic，回滚事务
+			tx.Rollback()
+			panic(p) // 重新抛出 panic
+		} else if err != nil {
+			// 发生错误，回滚事务
+			tx.Rollback()
+		} else {
+			// 提交事务
+			err = tx.Commit()
+			if err != nil {
+				log.Printf("Error committing transaction: %v\n", err)
+			}
+		}
+	}()
+
+	operationID, err := m.createOperate(tx, userID, OperationTypeFileUpload)
+	if err != nil {
+		return err
+	}
+
+	fileUpload := models.UserFilerecord{
+		OperatingRecordID: operationID,
+		FileType:          language,
+		FileContent:       fileContent,
+	}
+	err = fileUpload.Insert(tx, boil.Infer())
+	if err != nil {
+		log.Printf("Error inserting file record: %v\n", err)
+		return err
+	}
+	return nil
 }

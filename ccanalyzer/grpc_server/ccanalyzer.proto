@@ -2,6 +2,9 @@ syntax = "proto3";
 
 option go_package = ".;ccanalyzer_client";
 
+// 引入 google/protobuf/struct.proto
+import "google/protobuf/struct.proto";
+
 service CcAnalyzer {
   rpc AnalyzeFileContent (AnalyzeFileContentReq) returns (AnalyzeFileContentRes);
 }
@@ -12,5 +15,6 @@ message AnalyzeFileContentReq {
 }
 
 message AnalyzeFileContentRes {
-  string analyzed_data = 1;
+  // 使用 google.protobuf.Struct 表示动态键值对
+  google.protobuf.Struct analyzed_data = 1;
 }

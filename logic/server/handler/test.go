@@ -58,14 +58,5 @@ func (t *TestXXX) Handle() {
 		return
 	}
 
-	// 设置HTTP头部的Content-Type为text/plain，表示发送的是纯文本
-	t.w.Header().Set("Content-Type", "application/json")
-
-	// 写入响应状态码（HTTP 200 OK）
-	t.w.WriteHeader(http.StatusOK)
-	// 向响应体写入一条消息
-	_, err = fmt.Fprintln(t.w, "This is a test route handler function. Insert successfully\n"+analyzedData)
-	if err != nil {
-		log.Printf("Error writing response:%v", err)
-	}
+	protocol.HttpResponseSuccess(t.w, http.StatusOK, "Success", analyzedData)
 }

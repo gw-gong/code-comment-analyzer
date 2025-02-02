@@ -22,3 +22,6 @@ ccanalyzer_conf:
 
 user_token_duration: 5  # min
 jwt_key: secret_key_for_user
+
+max_file_size: 10  # MB
+max_project_size: 100  # MB

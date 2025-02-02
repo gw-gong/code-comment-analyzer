@@ -16,3 +16,19 @@ type LoginResponse struct {
 // *********** sign up ***********
 
 // *********** sign out ***********
+
+// *********** analyze file ***********
+
+type AnalyzeFileRequest struct {
+	Language    string `json:"language"`
+	FileContent string `json:"fileContent"`
+}
+
+type AnalyzeFileResponse map[string]interface{}
+
+// *********** file to string ***********
+
+type File2StringResponse struct {
+	Language    string `json:"language"`
+	FileContent string `json:"fileContent"`
+}

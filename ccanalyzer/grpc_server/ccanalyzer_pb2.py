@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x63\x63\x61nalyzer.proto\"?\n\x15\x41nalyzeFileContentReq\x12\x10\n\x08language\x18\x01 \x01(\t\x12\x14\n\x0c\x66ile_content\x18\x02 \x01(\t\".\n\x15\x41nalyzeFileContentRes\x12\x15\n\ranalyzed_data\x18\x01 \x01(\t2R\n\nCcAnalyzer\x12\x44\n\x12\x41nalyzeFileContent\x12\x16.AnalyzeFileContentReq\x1a\x16.AnalyzeFileContentResB\x15Z\x13.;ccanalyzer_clientb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x63\x63\x61nalyzer.proto\x1a\x1cgoogle/protobuf/struct.proto\"?\n\x15\x41nalyzeFileContentReq\x12\x10\n\x08language\x18\x01 \x01(\t\x12\x14\n\x0c\x66ile_content\x18\x02 \x01(\t\"G\n\x15\x41nalyzeFileContentRes\x12.\n\ranalyzed_data\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct2R\n\nCcAnalyzer\x12\x44\n\x12\x41nalyzeFileContent\x12\x16.AnalyzeFileContentReq\x1a\x16.AnalyzeFileContentResB\x15Z\x13.;ccanalyzer_clientb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,10 +33,10 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'ccanalyzer_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\023.;ccanalyzer_client'
-  _globals['_ANALYZEFILECONTENTREQ']._serialized_start=20
-  _globals['_ANALYZEFILECONTENTREQ']._serialized_end=83
-  _globals['_ANALYZEFILECONTENTRES']._serialized_start=85
-  _globals['_ANALYZEFILECONTENTRES']._serialized_end=131
-  _globals['_CCANALYZER']._serialized_start=133
-  _globals['_CCANALYZER']._serialized_end=215
+  _globals['_ANALYZEFILECONTENTREQ']._serialized_start=50
+  _globals['_ANALYZEFILECONTENTREQ']._serialized_end=113
+  _globals['_ANALYZEFILECONTENTRES']._serialized_start=115
+  _globals['_ANALYZEFILECONTENTRES']._serialized_end=186
+  _globals['_CCANALYZER']._serialized_start=188
+  _globals['_CCANALYZER']._serialized_end=270
 # @@protoc_insertion_point(module_scope)

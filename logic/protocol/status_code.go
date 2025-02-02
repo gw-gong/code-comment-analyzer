@@ -9,9 +9,16 @@ const (
 	ErrorCodeAuthorizing
 	ErrorCodeMissingUserId
 	ErrorCodeRPCCallFail
+
 	ErrorCodeMustBeGet
 	ErrorCodeMustBePost
+
 	ErrorCodeParseRequestFailed
 	ErrorCodeParamError
 	ErrorCodeInternalServerError
+
+	ErrorCodeLanguageNotSupported
+
+	ErrorCodeFileTooLarge
+	ErrorCodeFileNotFound
 )

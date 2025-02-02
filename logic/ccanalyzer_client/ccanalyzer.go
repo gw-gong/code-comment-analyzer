@@ -9,7 +9,7 @@ import (
 )
 
 type CCAnalyzer interface {
-	AnalyzeFileContent(language, fileContent string) (analyzedData string, err error)
+	AnalyzeFileContent(language, fileContent string) (analyzedData map[string]interface{}, err error)
 	Close()
 }
 
@@ -38,7 +38,7 @@ func (cca *cCAnalyzer) Close() {
 	}
 }
 
-func (cca *cCAnalyzer) AnalyzeFileContent(language, fileContent string) (analyzedData string, err error) {
+func (cca *cCAnalyzer) AnalyzeFileContent(language, fileContent string) (analyzedData map[string]interface{}, err error) {
 	analyzeFileContentReq := &AnalyzeFileContentReq{
 		Language:    language,
 		FileContent: fileContent,
@@ -46,7 +46,7 @@ func (cca *cCAnalyzer) AnalyzeFileContent(language, fileContent string) (analyze
 
 	analyzeFileContentRes, err := cca.client.AnalyzeFileContent(context.Background(), analyzeFileContentReq)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return analyzeFileContentRes.AnalyzedData, nil
+	return analyzeFileContentRes.AnalyzedData.AsMap(), nil
 }
