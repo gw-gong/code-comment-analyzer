@@ -38,6 +38,11 @@ func (af *AnalyzeFile) Handle() {
 		return
 	}
 
+	if protocol.IsLanguageSupported(requestData.Language) == false {
+		protocol.HttpResponseFail(af.w, http.StatusBadRequest, protocol.ErrorCodeLanguageNotSupported, "Language not supported")
+		return
+	}
+
 	analyzedData, err := af.ccanalyzer.AnalyzeFileContent(requestData.Language, requestData.FileContent)
 	if err != nil {
 		protocol.HttpResponseFail(af.w, http.StatusInternalServerError, protocol.ErrorCodeRPCCallFail, fmt.Sprintf("%v", err))
