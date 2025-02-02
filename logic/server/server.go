@@ -22,10 +22,10 @@ func NewHTTPServer() *Server {
 	return s
 }
 
-func (s *Server) RegisterRouters(register *data.DataManagerRegistry, ccanalyzer ccanalyzer_client.CCAnalyzer) {
-	middleware.RegisterSessionManager(register.GetSessionManager())
-	middleware.RegisterRouter(s.mux, "/test", handler.NewTestXXX(register, ccanalyzer), middleware.EnforceGet, middleware.AuthenticateUser)
-	middleware.RegisterRouter(s.mux, "/user/login", handler.NewLogin(register), middleware.EnforcePost)
+func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_client.CCAnalyzer) {
+	middleware.RegisterSessionManager(registry.GetSessionManager())
+	middleware.RegisterRouter(s.mux, "/test", handler.NewTestXXX(registry, ccanalyzer), middleware.EnforceGet, middleware.AuthenticateUser)
+	middleware.RegisterRouter(s.mux, "/user/login", handler.NewLogin(registry), middleware.EnforcePost)
 }
 
 func (s *Server) Listen(host, port string) {

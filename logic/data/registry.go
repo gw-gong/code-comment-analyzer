@@ -1,10 +1,10 @@
 package data
 
 import (
-	"fmt"
-
 	"code-comment-analyzer/data/mysql"
 	"code-comment-analyzer/data/redis"
+	"fmt"
+	"log"
 )
 
 var (
@@ -18,17 +18,9 @@ type DataManagerRegistry struct {
 	sessionManager  redis.SessionManager
 }
 
-func (registry *DataManagerRegistry) Register(elem interface{}) {
-	switch elem.(type) {
-	case mysql.TestSqlExecutor:
-		registry.testSqlExecutor = elem.(mysql.TestSqlExecutor)
-	case mysql.UserManager:
-		registry.userManager = elem.(mysql.UserManager)
-	case redis.SessionManager:
-		registry.sessionManager = elem.(redis.SessionManager)
-	default:
-		panic(ErrUnknownDataManager)
-	}
+func (registry *DataManagerRegistry) RegisterTestSqlExecutor(testSqlExecutor mysql.TestSqlExecutor) {
+	registry.testSqlExecutor = testSqlExecutor
+	log.Println("Registered TestSqlExecutor")
 }
 
 func (registry *DataManagerRegistry) GetTestSqlExecutor() mysql.TestSqlExecutor {
@@ -38,11 +30,21 @@ func (registry *DataManagerRegistry) GetTestSqlExecutor() mysql.TestSqlExecutor 
 	panic(ErrDataManagerNotFound)
 }
 
+func (registry *DataManagerRegistry) RegisterUserManager(userManager mysql.UserManager) {
+	registry.userManager = userManager
+	log.Println("Registered UserManager")
+}
+
 func (registry *DataManagerRegistry) GetUserManager() mysql.UserManager {
 	if registry.userManager != nil {
 		return registry.userManager
 	}
 	panic(ErrDataManagerNotFound)
+}
+
+func (registry *DataManagerRegistry) RegisterSessionManager(sessionManager redis.SessionManager) {
+	registry.sessionManager = sessionManager
+	log.Println("Registered SessionManager")
 }
 
 func (registry *DataManagerRegistry) GetSessionManager() redis.SessionManager {

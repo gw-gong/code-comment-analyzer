@@ -47,12 +47,12 @@ func (l *Login) Handle() {
 		protocol.HttpResponseFail(l.w, http.StatusBadRequest, "Email or password is missing")
 		return
 	}
-
 	um := l.registry.GetUserManager()
 	userID, nickname, password, err := um.GetUserInfoByEmail(requestData.Email)
 	if err != nil {
 		log.Printf("Error|GetUserInfoByEmail|err: %v", err)
 		protocol.HttpResponseFail(l.w, http.StatusBadRequest, fmt.Sprintf("Error|GetUserInfoByEmail|err: %v", err))
+		return
 	}
 
 	// 假设你会根据 email 和 password 验证用户（可以在数据库中查询或其他验证方式）
@@ -75,7 +75,7 @@ func (l *Login) Handle() {
 	// 假设通过授权后可以获取用户的其他信息（如 email, nickname），在此简单模拟：
 	// 获取用户信息（例如：通过 userID 查询数据库）
 	// 返回成功响应
-	response := protocol.LoginResponse{
+	response := &protocol.LoginResponse{
 		UID:      userID,
 		Email:    requestData.Email,
 		Nickname: nickname,

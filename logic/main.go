@@ -15,28 +15,28 @@ import (
 func main() {
 	cfg := config.Cfg
 
-	register := &data.DataManagerRegistry{}
+	registry := &data.DataManagerRegistry{}
 
 	testSqlExecutor, err := mysql.NewTestSqlExecutor(cfg.MysqlMaster)
 	defer testSqlExecutor.Close()
 	exitOnErr(err)
-	register.Register(testSqlExecutor)
+	registry.RegisterTestSqlExecutor(testSqlExecutor)
 
 	userManager, err := mysql.NewUserManager(cfg.MysqlMaster)
 	defer userManager.Close()
 	exitOnErr(err)
-	register.Register(userManager)
+	registry.RegisterUserManager(userManager)
 
 	sessionManager := redis.NewSessionManager(cfg.RedisMaster, cfg.UserTokenDuration)
 	defer sessionManager.Close()
-	register.Register(sessionManager)
+	registry.RegisterSessionManager(sessionManager)
 
 	ccanalyzer, err := ccanalyzer_client.NewCCAnalyzer(cfg.CcAnalyzerConfig)
 	defer ccanalyzer.Close()
 	exitOnErr(err)
 
 	httpServer := server.NewHTTPServer()
-	httpServer.RegisterRouters(register, ccanalyzer)
+	httpServer.RegisterRouters(registry, ccanalyzer)
 	httpServerCfg := config.Cfg.HttpServerConfig
 	httpServer.Listen(httpServerCfg.Host, httpServerCfg.Port)
 }

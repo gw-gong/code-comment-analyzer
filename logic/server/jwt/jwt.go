@@ -36,12 +36,6 @@ func AuthorizeUserToken(userID uint64, w http.ResponseWriter, sessionManager red
 		Name:  "token",
 		Value: tokenString,
 	})
-	w.WriteHeader(http.StatusOK)
-	_, err = w.Write([]byte("Login successful and token has been set."))
-	if err != nil {
-		log.Println(err)
-		return fmt.Errorf("error writing response body: %w", err)
-	}
 	return nil
 }
 
