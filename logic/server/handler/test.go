@@ -40,7 +40,7 @@ func (t *TestXXX) Handle() {
 	log.Printf("TestXXX.handle()|%d", userID)
 
 	var (
-		sqlExecutor = t.registry.GetSqlExecutor()
+		sqlExecutor = t.registry.GetTestSqlExecutor()
 		ccanalyzer  = t.ccanalyzer
 	)
 

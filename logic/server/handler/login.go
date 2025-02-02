@@ -3,6 +3,7 @@ package handler
 import (
 	"code-comment-analyzer/protocol"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,19 +13,17 @@ import (
 )
 
 type Login struct {
-	w         http.ResponseWriter
-	r         *http.Request
-	extractor middleware.Extractor
-	registry  *data.DataManagerRegistry
+	w        http.ResponseWriter
+	r        *http.Request
+	registry *data.DataManagerRegistry
 }
 
 func NewLogin(registry *data.DataManagerRegistry) middleware.GetHandler {
 	return func(w http.ResponseWriter, r *http.Request, extractor middleware.Extractor) middleware.Handler {
 		return &Login{
-			w:         w,
-			r:         r,
-			extractor: extractor,
-			registry:  registry,
+			w:        w,
+			r:        r,
+			registry: registry,
 		}
 	}
 }
@@ -49,9 +48,16 @@ func (l *Login) Handle() {
 		return
 	}
 
+	um := l.registry.GetUserManager()
+	userID, nickname, password, err := um.GetUserInfoByEmail(requestData.Email)
+	if err != nil {
+		log.Printf("Error|GetUserInfoByEmail|err: %v", err)
+		protocol.HttpResponseFail(l.w, http.StatusBadRequest, fmt.Sprintf("Error|GetUserInfoByEmail|err: %v", err))
+	}
+
 	// 假设你会根据 email 和 password 验证用户（可以在数据库中查询或其他验证方式）
 	// 这里只是简单模拟用户验证
-	if requestData.Email != "xxx@qq.com" || requestData.Password != "123456" {
+	if requestData.Password != password {
 		log.Println("Invalid email or password")
 		// 如果验证失败，返回错误响应
 		protocol.HttpResponseFail(l.w, http.StatusUnauthorized, "Invalid email or password")
@@ -59,7 +65,6 @@ func (l *Login) Handle() {
 	}
 
 	// 用户验证成功，生成 JWT Token
-	userID := uint64(3) // 模拟用户ID，实际应该从数据库获取
 	err = jwt.AuthorizeUserToken(userID, l.w, l.registry.GetSessionManager())
 	if err != nil {
 		// 如果授权失败，返回错误响应
@@ -73,7 +78,7 @@ func (l *Login) Handle() {
 	response := protocol.LoginResponse{
 		UID:      userID,
 		Email:    requestData.Email,
-		Nickname: "xxxxxxxxxxxxx",
+		Nickname: nickname,
 	}
 	protocol.HttpResponseSuccess(l.w, http.StatusOK, "登录成功", response)
 }

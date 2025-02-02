@@ -22,6 +22,11 @@ func main() {
 	exitOnErr(err)
 	register.Register(testSqlExecutor)
 
+	userManager, err := mysql.NewUserManager(cfg.MysqlMaster)
+	defer userManager.Close()
+	exitOnErr(err)
+	register.Register(userManager)
+
 	sessionManager := redis.NewSessionManager(cfg.RedisMaster, cfg.UserTokenDuration)
 	defer sessionManager.Close()
 	register.Register(sessionManager)
