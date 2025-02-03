@@ -69,6 +69,43 @@ func (m *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname 
 	return user.UID, user.Nickname, user.Password, err
 }
 
+func (m *mysqlClient) GetUserByEmail(email string) (*models.UserUser, error) {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, qm.Select(models.UserUserColumns.UID, models.UserUserColumns.Nickname, models.UserUserColumns.Password))
+	queryMods = append(queryMods, models.UserUserWhere.Email.EQ(email))
+	user, err := models.UserUsers(queryMods...).One(m.db)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		err = fmt.Errorf("user not found")
+		return nil, err
+	}
+	return user, err
+}
+
+func (m *mysqlClient) CreateUser(email string, password string, nickname string) (uint64, error) {
+	// 创建一个新的用户对象
+	user := models.UserUser{
+		Email:      email,
+		Password:   password,
+		Nickname:   nickname,
+		DateJoined: time.Now(),
+		IsActive:   true,
+	}
+
+	// 将用户数据插入数据库
+	err := user.Insert(m.db, boil.Infer())
+	if err != nil {
+		log.Printf("Error inserting user: %v\n", err)
+		return 0, err
+	}
+
+	// 返回新创建的用户 ID
+	log.Printf("User created: %+v\n", user)
+	return user.UID, nil
+}
+
 func (m *mysqlClient) createOperate(tx *sql.Tx, userID uint64, operationType string) (operateID int64, err error) {
 	op := models.UserOperatingrecord{
 		UserID:        userID,
