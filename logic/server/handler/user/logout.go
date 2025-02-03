@@ -4,44 +4,51 @@ import (
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
-	"log"
+	"fmt"
 	"net/http"
 )
 
 type Logout struct {
-	w        http.ResponseWriter
-	r        *http.Request
-	registry *data.DataManagerRegistry
+	w         http.ResponseWriter
+	r         *http.Request
+	extractor middleware.Extractor
+	registry  *data.DataManagerRegistry
 }
 
 func NewLogout(registry *data.DataManagerRegistry) middleware.GetHandler {
 	return func(w http.ResponseWriter, r *http.Request, extractor middleware.Extractor) middleware.Handler {
 		return &Logout{
-			w:        w,
-			r:        r,
-			registry: registry,
+			w:         w,
+			r:         r,
+			extractor: extractor,
+			registry:  registry,
 		}
 	}
 }
 
 func (l *Logout) Handle() {
-	// 检查请求中的 token（通过 Cookie 获取）
-	tokenCookie, err := l.r.Cookie("token")
-	if err != nil || tokenCookie == nil {
-		log.Println("No token found in request")
-		// 如果没有 token，认为用户已经退出（无 token 也返回成功）
-		protocol.HttpResponseSuccess(l.w, http.StatusOK, "用户已成功退出登录", map[string]interface{}{})
+	// 获取登录状态，未登录直接成功
+	loginStatus, err := l.extractor.GetLoginStatus()
+	if err != nil {
+		protocol.HttpResponseFail(l.w, http.StatusBadRequest, protocol.ErrorCodeInternalServerError, fmt.Sprintf("%v", err))
+		return
+	}
+	if !loginStatus {
+		protocol.HttpResponseSuccess(l.w, http.StatusOK, "success! 用户本来未登录", nil)
+		return
+	}
+	// 从token中获取UserID，使用UserID清除redis中的token，ToDo: 是否有必要清除浏览器的token
+	userID, err := l.extractor.GetUserId()
+	if err != nil {
+		protocol.HttpResponseFail(l.w, http.StatusInternalServerError, protocol.ErrorCodeMissingUserId, fmt.Sprintf("%v", err))
+		return
+	}
+	sm := l.registry.GetSessionManager()
+	err = sm.ClearSession(userID)
+	if err != nil {
+		protocol.HttpResponseFail(l.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, fmt.Sprintf("%v", err))
 		return
 	}
 
-	// 删除浏览器中的 token Cookie
-	http.SetCookie(l.w, &http.Cookie{
-		Name:   "token",
-		Value:  "",
-		Path:   "/",
-		MaxAge: -1, // 使 Cookie 立即过期
-	})
-
-	// 返回成功响应
-	protocol.HttpResponseSuccess(l.w, http.StatusOK, "已成功退出登录", map[string]interface{}{})
+	protocol.HttpResponseSuccess(l.w, http.StatusOK, "已成功退出登录", nil)
 }
