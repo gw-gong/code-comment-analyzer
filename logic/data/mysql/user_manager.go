@@ -2,12 +2,11 @@ package mysql
 
 import (
 	"code-comment-analyzer/config"
-	"code-comment-analyzer/data/mysql/models"
 )
 
 type UserManager interface {
 	GetUserInfoByEmail(email string) (userID uint64, nickname string, password string, err error)
-	GetUserByEmail(email string) (*models.UserUser, error)
+	IsExistUserByEmail(email string) (isExist bool, err error)
 	CreateUser(email string, password string, nickname string) (uint64, error)
 	Close()
 }

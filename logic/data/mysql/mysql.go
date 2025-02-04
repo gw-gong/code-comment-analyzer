@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
@@ -60,28 +61,26 @@ func (m *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname 
 	queryMods = append(queryMods, models.UserUserWhere.Email.EQ(email))
 	user, err := models.UserUsers(queryMods...).One(m.db)
 	if err != nil {
-		return
-	}
-	if user == nil {
-		err = fmt.Errorf("user not found")
+		if errors.Is(err, sql.ErrNoRows) {
+			err = fmt.Errorf("user not found")
+			return
+		}
 		return
 	}
 	return user.UID, user.Nickname, user.Password, err
 }
 
-func (m *mysqlClient) GetUserByEmail(email string) (*models.UserUser, error) {
+func (m *mysqlClient) IsExistUserByEmail(email string) (isExist bool, err error) {
 	var queryMods []qm.QueryMod
-	queryMods = append(queryMods, qm.Select(models.UserUserColumns.UID, models.UserUserColumns.Nickname, models.UserUserColumns.Password))
 	queryMods = append(queryMods, models.UserUserWhere.Email.EQ(email))
-	user, err := models.UserUsers(queryMods...).One(m.db)
+	_, err = models.UserUsers(queryMods...).One(m.db)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return false, nil
+		}
+		return false, err
 	}
-	if user == nil {
-		err = fmt.Errorf("user not found")
-		return nil, err
-	}
-	return user, err
+	return true, nil
 }
 
 func (m *mysqlClient) CreateUser(email string, password string, nickname string) (uint64, error) {

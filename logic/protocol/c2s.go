@@ -15,7 +15,17 @@ type LoginResponse struct {
 
 // *********** sign up ***********
 
-// *********** sign out ***********
+type SignupRequest struct {
+	Email         string `json:"email"`
+	Password      string `json:"password"`
+	PasswordAgain string `json:"password_again"`
+}
+
+type SignupResponse struct {
+	UID      uint64 `json:"uid"`
+	Email    string `json:"email"`
+	Nickname string `json:"nickname"`
+}
 
 // *********** analyze file ***********
 
@@ -31,16 +41,4 @@ type AnalyzeFileResponse map[string]interface{}
 type File2StringResponse struct {
 	Language    string `json:"language"`
 	FileContent string `json:"fileContent"`
-}
-
-type SignupRequest struct {
-	Email         string `json:"email"`          // 用户邮箱
-	Password      string `json:"password"`       // 用户密码
-	PasswordAgain string `json:"password_again"` // 确认密码
-}
-
-type SignupResponse struct {
-	UID      uint64 `json:"uid"`      // 用户ID
-	Email    string `json:"email"`    // 用户邮箱
-	Nickname string `json:"nickname"` // 用户昵称
 }

@@ -1,13 +1,15 @@
 package user
 
 import (
-	"code-comment-analyzer/data"
-	"code-comment-analyzer/protocol"
-	"code-comment-analyzer/server/middleware"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+
+	"code-comment-analyzer/config"
+	"code-comment-analyzer/data"
+	"code-comment-analyzer/protocol"
+	"code-comment-analyzer/server/middleware"
 )
 
 type Signup struct {
@@ -40,7 +42,7 @@ func (s *Signup) Handle() {
 		return
 	}
 
-	// 检查密码是否一致
+	// 检查用户输入两边密码是否一致
 	if requestData.Password != requestData.PasswordAgain {
 		log.Println("Passwords do not match")
 		protocol.HttpResponseFail(s.w, http.StatusBadRequest, protocol.ErrorCodeParamError, "Passwords do not match")
@@ -49,21 +51,23 @@ func (s *Signup) Handle() {
 
 	// 检查邮箱是否已被注册
 	um := s.registry.GetUserManager()
-	user, err := um.GetUserByEmail(requestData.Email)
+	isExistUser, err := um.IsExistUserByEmail(requestData.Email)
 	if err != nil {
 		log.Printf("Error|GetUserByEmail|err: %v", err)
+		protocol.HttpResponseFail(s.w, http.StatusBadRequest, protocol.ErrorCodeRegisteredEmail, fmt.Sprintf("%v", err))
+		return
 	}
-	if user != nil {
+	if isExistUser {
 		log.Println("Email already registered")
-		protocol.HttpResponseFail(s.w, http.StatusBadRequest, protocol.ErrorCodeParamError, "Email already registered")
+		protocol.HttpResponseFail(s.w, http.StatusBadRequest, protocol.ErrorCodeRegisteredEmail, "Email already registered")
 		return
 	}
 
 	// 设置默认的nickname
-	nickname := "Anonymous"
+	defaultNickname := config.Cfg.DefaultNickname
 
 	// 创建新用户并保存
-	userID, err := um.CreateUser(requestData.Email, requestData.Password, nickname)
+	userID, err := um.CreateUser(requestData.Email, requestData.Password, defaultNickname)
 	if err != nil {
 		log.Printf("Error|CreateUser|err: %v", err)
 		protocol.HttpResponseFail(s.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, fmt.Sprintf("Error|CreateUser|err: %v", err))
@@ -74,7 +78,7 @@ func (s *Signup) Handle() {
 	response := &protocol.SignupResponse{
 		UID:      userID,
 		Email:    requestData.Email,
-		Nickname: nickname,
+		Nickname: defaultNickname,
 	}
 	protocol.HttpResponseSuccess(s.w, http.StatusOK, "注册成功", response)
 }

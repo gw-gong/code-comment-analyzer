@@ -15,6 +15,7 @@ const (
 
 	ErrorCodeParseRequestFailed
 	ErrorCodeParamError
+	ErrorCodeRegisteredEmail
 	ErrorCodeInternalServerError
 
 	ErrorCodeLanguageNotSupported
