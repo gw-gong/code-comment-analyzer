@@ -52,8 +52,6 @@ func (s *Signup) Handle() {
 	user, err := um.GetUserByEmail(requestData.Email)
 	if err != nil {
 		log.Printf("Error|GetUserByEmail|err: %v", err)
-		protocol.HttpResponseFail(s.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, fmt.Sprintf("Error|GetUserByEmail|err: %v", err))
-		return
 	}
 	if user != nil {
 		log.Println("Email already registered")
