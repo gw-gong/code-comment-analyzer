@@ -15,7 +15,17 @@ type LoginResponse struct {
 
 // *********** sign up ***********
 
-// *********** sign out ***********
+type SignupRequest struct {
+	Email         string `json:"email"`
+	Password      string `json:"password"`
+	PasswordAgain string `json:"password_again"`
+}
+
+type SignupResponse struct {
+	UID      uint64 `json:"uid"`
+	Email    string `json:"email"`
+	Nickname string `json:"nickname"`
+}
 
 // *********** analyze file ***********
 
