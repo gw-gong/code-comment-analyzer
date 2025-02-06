@@ -1,13 +1,13 @@
 package public
 
 import (
-	"code-comment-analyzer/data"
 	"io"
 	"log"
 	"net/http"
 	"path/filepath"
 
 	"code-comment-analyzer/config"
+	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
 	"code-comment-analyzer/util"
