@@ -23,7 +23,7 @@ type UploadAndGetTree struct {
 
 func NewUploadAndGetTree(registry *data.DataManagerRegistry) middleware.GetHandler {
 	return func(w http.ResponseWriter, r *http.Request, extractor middleware.Extractor) middleware.Handler {
-		return &File2String{
+		return &UploadAndGetTree{
 			w:         w,
 			r:         r,
 			extractor: extractor,
@@ -39,16 +39,16 @@ func (uagt *UploadAndGetTree) Handle() {
 	}
 	defer file.Close()
 
-	projectsRootPath := config.Cfg.FileStoragePath.Projects
 	projectName := strings.TrimSuffix(header.Filename, protocol.FileSuffixZIP)
-	destDir := filepath.Join(projectsRootPath, projectName)
+	projectsStorageRootPath := config.Cfg.FileStoragePath.Projects
+	projectStorageName := util.GenerateUUIDProjectName()
+	destDir := filepath.Join(projectsStorageRootPath, projectStorageName)
 	if err = os.MkdirAll(destDir, 0755); err != nil {
 		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeCreatePathFailed, "创建目录失败")
 		return
 	}
 
 	tempZipPath := filepath.Join(destDir, header.Filename)
-	defer os.Remove(tempZipPath)
 
 	out, err := os.Create(tempZipPath)
 	if err != nil {
@@ -66,14 +66,17 @@ func (uagt *UploadAndGetTree) Handle() {
 		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeUnzipFailed, "解压文件失败")
 		return
 	}
+	os.Remove(tempZipPath)
 
-	rootNode := uagt.buildDirectoryTree(destDir, destDir)
+	rootNode := uagt.buildDirectoryTree(destDir, destDir, projectStorageName)
 	response := protocol.FileNode{
 		Label:    projectName,
 		Children: rootNode.Children,
 	}
 
 	protocol.HttpResponseSuccess(uagt.w, http.StatusOK, "文件已解压", response)
+
+	go uagt.recordProjectUpload()
 }
 
 func (uagt *UploadAndGetTree) decodeRequest() (file multipart.File, header *multipart.FileHeader, err error) {
@@ -95,7 +98,7 @@ func (uagt *UploadAndGetTree) decodeRequest() (file multipart.File, header *mult
 	return
 }
 
-func (uagt *UploadAndGetTree) buildDirectoryTree(rootPath, currentPath string) protocol.FileNode {
+func (uagt *UploadAndGetTree) buildDirectoryTree(currentPath, rootPath, projectStorageName string) protocol.FileNode {
 	node := protocol.FileNode{
 		Label: filepath.Base(currentPath),
 	}
@@ -111,15 +114,19 @@ func (uagt *UploadAndGetTree) buildDirectoryTree(rootPath, currentPath string) p
 		relPath = filepath.ToSlash(relPath) // 统一使用斜杠
 
 		if entry.IsDir() {
-			child := uagt.buildDirectoryTree(rootPath, fullPath)
+			child := uagt.buildDirectoryTree(fullPath, rootPath, projectStorageName)
 			node.Children = append(node.Children, child)
 		} else {
 			node.Children = append(node.Children, protocol.FileNode{
 				Label: entry.Name(),
-				Value: filepath.Join("file_storage", "projects", relPath),
+				Value: filepath.Join(projectStorageName, relPath),
 			})
 		}
 	}
 
 	return node
+}
+
+func (uagt *UploadAndGetTree) recordProjectUpload() {
+
 }

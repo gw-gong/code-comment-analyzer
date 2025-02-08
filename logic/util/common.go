@@ -1,8 +1,10 @@
 package util
 
 import (
-	"code-comment-analyzer/protocol"
 	"strconv"
+
+	"code-comment-analyzer/protocol"
+	"github.com/google/uuid"
 )
 
 func FormatUserIDStr(userID uint64) string {
@@ -30,4 +32,8 @@ func FileSuffixToLanguage(suffix string) string {
 	default:
 		return protocol.LanguageUnknown
 	}
+}
+
+func GenerateUUIDName() string {
+	return uuid.New().String()
 }

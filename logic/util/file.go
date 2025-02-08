@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func Unzip(src, dest string) error {
@@ -15,6 +16,10 @@ func Unzip(src, dest string) error {
 	defer r.Close()
 
 	for _, f := range r.File {
+		if strings.HasPrefix(f.Name, "__MACOSX/") {
+			continue // 跳过 __MACOSX 目录和其中的文件 (针对mac系统)
+		}
+
 		path := filepath.Join(dest, f.Name)
 
 		if f.FileInfo().IsDir() {
@@ -45,4 +50,9 @@ func Unzip(src, dest string) error {
 		}
 	}
 	return nil
+}
+
+func GenerateUUIDProjectName() string {
+	prefix := "proj_"
+	return prefix + GenerateUUIDName()
 }
