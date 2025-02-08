@@ -16,7 +16,7 @@ type Extractor interface {
 	setUserId(userID uint64)
 	GetUserId() (uint64, error)
 	setLoginStatus(status bool)
-	GetLoginStatus() (bool, error)
+	IsUserLoggedIn() (bool, error)
 }
 
 type extractedData map[extractorKey]interface{}
@@ -49,7 +49,7 @@ func (e extractedData) setLoginStatus(status bool) {
 	e[keyLoginStatus] = status
 }
 
-func (e extractedData) GetLoginStatus() (bool, error) {
+func (e extractedData) IsUserLoggedIn() (bool, error) {
 	status, ok := e[keyLoginStatus]
 	if !ok {
 		return false, fmt.Errorf("login status not found in extracted data")

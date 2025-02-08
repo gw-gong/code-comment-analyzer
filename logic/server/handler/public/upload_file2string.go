@@ -75,11 +75,7 @@ func (f2s *File2String) decodeRequest() (fileContent []byte, fileType string, er
 }
 
 func (f2s *File2String) recordFileUpload(language, fileContent string) {
-	loginStatus, err := f2s.extractor.GetLoginStatus()
-	if err != nil {
-		return
-	}
-	if loginStatus == false {
+	if isUserLoggedIn, err := f2s.extractor.IsUserLoggedIn(); err != nil || !isUserLoggedIn {
 		return
 	}
 	userID, err := f2s.extractor.GetUserId()

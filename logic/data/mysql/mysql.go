@@ -121,7 +121,7 @@ func (m *mysqlClient) createOperate(tx *sql.Tx, userID uint64, operationType str
 func (m *mysqlClient) RecordFileUpload(userID uint64, language, fileContent string) (err error) {
 	tx, err := m.db.Begin()
 	if err != nil {
-		log.Printf("Error starting transaction: %v\n", err)
+		log.Printf("RecordFileUpload|Error starting transaction: %v\n", err)
 		return err
 	}
 
@@ -156,6 +156,44 @@ func (m *mysqlClient) RecordFileUpload(userID uint64, language, fileContent stri
 	err = fileUpload.Insert(tx, boil.Infer())
 	if err != nil {
 		log.Printf("Error inserting file record: %v\n", err)
+		return err
+	}
+	return nil
+}
+
+func (m *mysqlClient) RecordProjectUpload(userID uint64, projectUrl string) (err error) {
+	tx, err := m.db.Begin()
+	if err != nil {
+		log.Printf("RecordProjectUpload|Error starting transaction: %v\n", err)
+		return err
+	}
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		} else {
+			err = tx.Commit()
+			if err != nil {
+				log.Printf("Error committing transaction: %v\n", err)
+			}
+		}
+	}()
+
+	operationID, err := m.createOperate(tx, userID, OperationTypeProjectUpload)
+	if err != nil {
+		return err
+	}
+
+	projectUpload := models.UserProjectrecord{
+		OperatingRecordID: operationID,
+		ProjectURL:        projectUrl,
+	}
+	err = projectUpload.Insert(tx, boil.Infer())
+	if err != nil {
+		log.Printf("Error inserting project record: %v\n", err)
 		return err
 	}
 	return nil

@@ -1,17 +1,19 @@
 package public
 
 import (
-	"code-comment-analyzer/config"
-	"code-comment-analyzer/data"
-	"code-comment-analyzer/protocol"
-	"code-comment-analyzer/server/middleware"
-	"code-comment-analyzer/util"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"code-comment-analyzer/config"
+	"code-comment-analyzer/data"
+	"code-comment-analyzer/protocol"
+	"code-comment-analyzer/server/middleware"
+	"code-comment-analyzer/util"
 )
 
 type UploadAndGetTree struct {
@@ -76,7 +78,7 @@ func (uagt *UploadAndGetTree) Handle() {
 
 	protocol.HttpResponseSuccess(uagt.w, http.StatusOK, "文件已解压", response)
 
-	go uagt.recordProjectUpload()
+	go uagt.recordProjectUpload(destDir)
 }
 
 func (uagt *UploadAndGetTree) decodeRequest() (file multipart.File, header *multipart.FileHeader, err error) {
@@ -127,6 +129,19 @@ func (uagt *UploadAndGetTree) buildDirectoryTree(currentPath, rootPath, projectS
 	return node
 }
 
-func (uagt *UploadAndGetTree) recordProjectUpload() {
+func (uagt *UploadAndGetTree) recordProjectUpload(projectUrl string) {
+	if isUserLoggedIn, err := uagt.extractor.IsUserLoggedIn(); err != nil || !isUserLoggedIn {
+		return
+	}
+	userID, err := uagt.extractor.GetUserId()
+	if err != nil {
+		return
+	}
+	log.Println("recordProjectUpload|userID", userID)
 
+	om := uagt.registry.GetOperationManager()
+	err = om.RecordProjectUpload(userID, projectUrl)
+	if err != nil {
+		log.Println("recordProjectUpload|RecordProjectUpload|err:", err)
+	}
 }
