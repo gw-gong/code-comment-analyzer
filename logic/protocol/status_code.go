@@ -22,4 +22,8 @@ const (
 
 	ErrorCodeFileTooLarge
 	ErrorCodeFileNotFound
+
+	ErrorCodeCreatePathFailed
+	ErrorCodeSaveFileFailed
+	ErrorCodeUnzipFailed
 )

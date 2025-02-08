@@ -27,3 +27,7 @@ default_nickname: "Anonymous"
 
 max_file_size: 10  # MB
 max_project_size: 100  # MB
+
+file_storage_path:
+  avatar: "file_storage/avatar"
+  projects: "file_storage/projects"

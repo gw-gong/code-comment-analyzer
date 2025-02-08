@@ -42,3 +42,11 @@ type File2StringResponse struct {
 	Language    string `json:"language"`
 	FileContent string `json:"fileContent"`
 }
+
+// *********** upload and get tree ***********
+
+type FileNode struct {
+	Label    string     `json:"label"`
+	Value    string     `json:"value,omitempty"`
+	Children []FileNode `json:"children,omitempty"`
+}

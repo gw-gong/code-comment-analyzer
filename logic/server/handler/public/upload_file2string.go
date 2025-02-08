@@ -44,18 +44,18 @@ func (f2s *File2String) Handle() {
 	}
 	protocol.HttpResponseSuccess(f2s.w, http.StatusOK, "已读取", response)
 
-	go f2s.saveFileContent(language, fileContent)
+	go f2s.recordFileUpload(language, fileContent)
 }
 
 func (f2s *File2String) decodeRequest() (fileContent []byte, fileType string, err error) {
 	maxFileSize := config.Cfg.MaxFileSize
-	err = f2s.r.ParseMultipartForm(maxFileSize << 20) // 限制上传文件大小为 10MB
+	err = f2s.r.ParseMultipartForm(maxFileSize << 20)
 	if err != nil {
 		protocol.HttpResponseFail(f2s.w, http.StatusBadRequest, protocol.ErrorCodeFileTooLarge, "file too large")
 		return nil, "", err
 	}
 
-	file, header, err := f2s.r.FormFile("file") // "file" 是表单中的 key
+	file, header, err := f2s.r.FormFile(protocol.MultipartFormKeyFile)
 	if err != nil {
 		protocol.HttpResponseFail(f2s.w, http.StatusBadRequest, protocol.ErrorCodeFileNotFound, "file not found")
 		return nil, "", err
@@ -74,7 +74,7 @@ func (f2s *File2String) decodeRequest() (fileContent []byte, fileType string, er
 	return fileBytes, language, nil
 }
 
-func (f2s *File2String) saveFileContent(language, fileContent string) {
+func (f2s *File2String) recordFileUpload(language, fileContent string) {
 	loginStatus, err := f2s.extractor.GetLoginStatus()
 	if err != nil {
 		return
@@ -86,11 +86,11 @@ func (f2s *File2String) saveFileContent(language, fileContent string) {
 	if err != nil {
 		return
 	}
-	log.Println("saveFileContent|userID", userID)
+	log.Println("recordFileUpload|userID", userID)
 
 	om := f2s.registry.GetOperationManager()
 	err = om.RecordFileUpload(userID, language, fileContent)
 	if err != nil {
-		log.Println("saveFileContent|RecordFileUpload|err", err)
+		log.Println("recordFileUpload|RecordFileUpload|err", err)
 	}
 }

@@ -2,14 +2,16 @@ package public
 
 import (
 	"code-comment-analyzer/config"
+	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
+	"code-comment-analyzer/server/middleware"
 	"code-comment-analyzer/util"
 	"io"
+	"mime/multipart"
 	"net/http"
+	"os"
 	"path/filepath"
-
-	"code-comment-analyzer/data"
-	"code-comment-analyzer/server/middleware"
+	"strings"
 )
 
 type UploadAndGetTree struct {
@@ -31,32 +33,93 @@ func NewUploadAndGetTree(registry *data.DataManagerRegistry) middleware.GetHandl
 }
 
 func (uagt *UploadAndGetTree) Handle() {
-
-}
-
-func (uagt *UploadAndGetTree) decodeRequest() (fileContent []byte, fileType string, err error) {
-	maxFileSize := config.Cfg.MaxFileSize
-	err = uagt.r.ParseMultipartForm(maxFileSize << 20) // 限制上传文件大小为 10MB
+	file, header, err := uagt.decodeRequest()
 	if err != nil {
-		protocol.HttpResponseFail(uagt.w, http.StatusBadRequest, protocol.ErrorCodeFileTooLarge, "file too large")
-		return nil, "", err
-	}
-
-	file, header, err := uagt.r.FormFile("file") // "file" 是表单中的 key
-	if err != nil {
-		protocol.HttpResponseFail(uagt.w, http.StatusBadRequest, protocol.ErrorCodeFileNotFound, "file not found")
-		return nil, "", err
+		return
 	}
 	defer file.Close()
 
-	fileBytes, err := io.ReadAll(file)
-	if err != nil {
-		protocol.HttpResponseFail(uagt.w, http.StatusBadRequest, protocol.ErrorCodeInternalServerError, "Unable to read file")
-		return nil, "", err
+	projectsRootPath := config.Cfg.FileStoragePath.Projects
+	projectName := strings.TrimSuffix(header.Filename, protocol.FileSuffixZIP)
+	destDir := filepath.Join(projectsRootPath, projectName)
+	if err = os.MkdirAll(destDir, 0755); err != nil {
+		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeCreatePathFailed, "创建目录失败")
+		return
 	}
 
-	fileName := header.Filename
-	fileSuffix := filepath.Ext(fileName)
-	language := util.FileSuffixToLanguage(fileSuffix)
-	return fileBytes, language, nil
+	tempZipPath := filepath.Join(destDir, header.Filename)
+	defer os.Remove(tempZipPath)
+
+	out, err := os.Create(tempZipPath)
+	if err != nil {
+		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeSaveFileFailed, "创建临时文件失败")
+		return
+	}
+	defer out.Close()
+
+	if _, err = io.Copy(out, file); err != nil {
+		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeSaveFileFailed, "保存文件失败")
+		return
+	}
+
+	if err = util.Unzip(tempZipPath, destDir); err != nil {
+		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeUnzipFailed, "解压文件失败")
+		return
+	}
+
+	rootNode := uagt.buildDirectoryTree(destDir, destDir)
+	response := protocol.FileNode{
+		Label:    projectName,
+		Children: rootNode.Children,
+	}
+
+	protocol.HttpResponseSuccess(uagt.w, http.StatusOK, "文件已解压", response)
+}
+
+func (uagt *UploadAndGetTree) decodeRequest() (file multipart.File, header *multipart.FileHeader, err error) {
+	maxProjectSize := config.Cfg.MaxProjectSize
+	err = uagt.r.ParseMultipartForm(maxProjectSize << 20)
+	if err != nil {
+		protocol.HttpResponseFail(uagt.w, http.StatusBadRequest, protocol.ErrorCodeFileTooLarge, "file too large")
+		return nil, nil, err
+	}
+
+	file, header, err = uagt.r.FormFile(protocol.MultipartFormKeyFile)
+	if err != nil {
+		protocol.HttpResponseFail(uagt.w, http.StatusBadRequest, protocol.ErrorCodeFileNotFound, "file not found")
+		return nil, nil, err
+	}
+
+	// todo 判断是不是.zip，不是zip，直接file.close()
+
+	return
+}
+
+func (uagt *UploadAndGetTree) buildDirectoryTree(rootPath, currentPath string) protocol.FileNode {
+	node := protocol.FileNode{
+		Label: filepath.Base(currentPath),
+	}
+
+	entries, err := os.ReadDir(currentPath)
+	if err != nil {
+		return node
+	}
+
+	for _, entry := range entries {
+		fullPath := filepath.Join(currentPath, entry.Name())
+		relPath, _ := filepath.Rel(rootPath, fullPath)
+		relPath = filepath.ToSlash(relPath) // 统一使用斜杠
+
+		if entry.IsDir() {
+			child := uagt.buildDirectoryTree(rootPath, fullPath)
+			node.Children = append(node.Children, child)
+		} else {
+			node.Children = append(node.Children, protocol.FileNode{
+				Label: entry.Name(),
+				Value: filepath.Join("file_storage", "projects", relPath),
+			})
+		}
+	}
+
+	return node
 }
