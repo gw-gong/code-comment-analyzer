@@ -9,6 +9,7 @@ type OperationManager interface {
 	createOperate(tx *sql.Tx, userID uint64, operationType string) (operateID int64, err error)
 
 	RecordFileUpload(userID uint64, language, fileContent string) (err error)
+	RecordProjectUpload(userID uint64, projectUrl string) (err error)
 	Close()
 }
 

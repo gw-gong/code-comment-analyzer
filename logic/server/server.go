@@ -30,6 +30,7 @@ func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer 
 
 	m.RegisterRouter(s.mux, "/public/upload_file2string/", public.NewFile2String(registry), m.EnforcePost, m.CheckLoginStatus)
 	m.RegisterRouter(s.mux, "/public/analyze_file/", public.NewAnalyzeFile(registry, ccanalyzer), m.EnforcePost)
+	m.RegisterRouter(s.mux, "/public/upload_and_get_tree/", public.NewUploadAndGetTree(registry), m.EnforcePost, m.CheckLoginStatus)
 
 	m.RegisterRouter(s.mux, "/user/login/", user.NewLogin(registry), m.EnforcePost)
 	m.RegisterRouter(s.mux, "/user/logout/", user.NewLogout(registry), m.EnforceGet, m.CheckLoginStatus)

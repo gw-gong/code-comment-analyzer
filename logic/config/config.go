@@ -37,16 +37,22 @@ type CcAnalyzerConfig struct {
 	Port string `yaml:"port"`
 }
 
+type FileStoragePathConfig struct {
+	Avatar   string `yaml:"avatar"`
+	Projects string `yaml:"projects"`
+}
+
 type Config struct {
-	HttpServerConfig  HttpServerConfig `yaml:"http_server"`
-	MysqlMaster       MysqlConfig      `yaml:"mysql_master"`
-	RedisMaster       RedisConfig      `yaml:"redis_master"`
-	CcAnalyzerConfig  CcAnalyzerConfig `yaml:"ccanalyzer_conf"`
-	UserTokenDuration uint32           `yaml:"user_token_duration"`
-	JwtKey            string           `yaml:"jwt_key"`
-	DefaultNickname   string           `yaml:"default_nickname"`
-	MaxFileSize       int64            `yaml:"max_file_size"`
-	MaxProjectSize    int64            `yaml:"max_project_size"`
+	HttpServerConfig  HttpServerConfig      `yaml:"http_server"`
+	MysqlMaster       MysqlConfig           `yaml:"mysql_master"`
+	RedisMaster       RedisConfig           `yaml:"redis_master"`
+	CcAnalyzerConfig  CcAnalyzerConfig      `yaml:"ccanalyzer_conf"`
+	UserTokenDuration uint32                `yaml:"user_token_duration"`
+	JwtKey            string                `yaml:"jwt_key"`
+	DefaultNickname   string                `yaml:"default_nickname"`
+	MaxFileSize       int64                 `yaml:"max_file_size"`
+	MaxProjectSize    int64                 `yaml:"max_project_size"`
+	FileStoragePath   FileStoragePathConfig `yaml:"file_storage_path"`
 }
 
 func init() {

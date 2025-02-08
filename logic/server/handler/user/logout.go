@@ -28,12 +28,12 @@ func NewLogout(registry *data.DataManagerRegistry) middleware.GetHandler {
 
 func (l *Logout) Handle() {
 	// 获取登录状态，未登录直接成功
-	loginStatus, err := l.extractor.GetLoginStatus()
+	isUserLoggedIn, err := l.extractor.IsUserLoggedIn()
 	if err != nil {
 		protocol.HttpResponseFail(l.w, http.StatusBadRequest, protocol.ErrorCodeInternalServerError, fmt.Sprintf("%v", err))
 		return
 	}
-	if !loginStatus {
+	if !isUserLoggedIn {
 		protocol.HttpResponseSuccess(l.w, http.StatusOK, "success! 用户本来未登录", nil)
 		return
 	}

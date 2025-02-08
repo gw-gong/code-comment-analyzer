@@ -20,26 +20,3 @@ func IsLanguageSupported(language string) bool {
 		return false
 	}
 }
-
-func FileSuffixToLanguage(suffix string) string {
-	switch suffix {
-	case ".py":
-		return LanguagePython
-	case ".go":
-		return LanguageGo
-	case ".java":
-		return LanguageJava
-	case ".c":
-		return LanguageC
-	case ".cpp":
-		return LanguageCpp
-	case ".js":
-		return LanguageJs
-	case ".html":
-		return LanguageHtml
-	case ".css":
-		return LanguageCss
-	default:
-		return LanguageUnknown
-	}
-}

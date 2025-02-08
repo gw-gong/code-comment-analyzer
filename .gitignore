@@ -6,3 +6,5 @@ ccanalyzer/venv
 
 __pycache__/
 *.pyc
+
+logic/file_storage
