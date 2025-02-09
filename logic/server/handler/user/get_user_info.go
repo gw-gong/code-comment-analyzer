@@ -1,11 +1,12 @@
 package user
 
 import (
+	"fmt"
+	"net/http"
+
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
-	"fmt"
-	"net/http"
 )
 
 type GetUserInfo struct {
@@ -40,7 +41,7 @@ func (g *GetUserInfo) Handle() {
 		return
 	}
 
-	response := &protocol.GetUserInfo{
+	response := &protocol.GetUserInfoResponse{
 		Email:      email,
 		NickName:   nickname,
 		DateJoined: dateJoined.Format("2006-01-02"),
