@@ -53,7 +53,7 @@ type FileNode struct {
 
 // *********** get user info ***********
 
-type GetUserInfo struct {
+type GetUserInfoResponse struct {
 	NickName   string `json:"nick_name"`
 	Email      string `json:"email"`
 	DateJoined string `json:"date_joined"`
@@ -64,4 +64,14 @@ type GetUserInfo struct {
 type GetUserProfilePictureResponse struct {
 	ProfilePicture *string `json:"profile_picture"` // 为了和重构前返回的结果一致
 	Text           string  `json:"text"`
+}
+
+// *********** read file ***********
+
+type ReadFileRequest struct {
+	Path string `json:"path"`
+}
+
+type ReadFileResponse struct {
+	FileContent string `json:"fileContent"`
 }

@@ -14,7 +14,7 @@ type responseFormat struct {
 	Status   int         `json:"status"`
 	Msg      string      `json:"msg"`
 	Data     interface{} `json:"data"`
-	Language string      `json:"language"`
+	Language string      `json:"language,omitempty"`
 }
 
 func httpResponse(w http.ResponseWriter, httpStatusCode int, status int, msg string, data interface{}, language ...string) {

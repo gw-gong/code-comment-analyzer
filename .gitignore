@@ -8,3 +8,5 @@ __pycache__/
 *.pyc
 
 logic/file_storage
+!logic/file_storage/README.md
+!logic/file_storage/avatars/default_avatar.jpg

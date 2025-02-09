@@ -1,13 +1,13 @@
 package user
 
 import (
-	"code-comment-analyzer/config"
-	"code-comment-analyzer/protocol"
 	"fmt"
 	"net/http"
 	"path/filepath"
 
+	"code-comment-analyzer/config"
 	"code-comment-analyzer/data"
+	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
 )
 
