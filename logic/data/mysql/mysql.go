@@ -62,12 +62,27 @@ func (m *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname 
 	user, err := models.UserUsers(queryMods...).One(m.db)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			err = fmt.Errorf("user not found")
+			err = fmt.Errorf("user not found|email:%v", email)
 			return
 		}
 		return
 	}
 	return user.UID, user.Nickname, user.Password, nil
+}
+
+func (m *mysqlClient) GetUserInfoByUserID(userID uint64) (email string, nickname string, dateJoined time.Time, err error) {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, qm.Select(models.UserUserColumns.Email, models.UserUserColumns.Nickname, models.UserUserColumns.DateJoined))
+	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
+	user, err := models.UserUsers(queryMods...).One(m.db)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			err = fmt.Errorf("user not found|userID:%v", userID)
+			return
+		}
+		return
+	}
+	return user.Email, user.Nickname, user.DateJoined, nil
 }
 
 func (m *mysqlClient) GetUserProfilePictureByUserID(userID uint64) (isSetProfilePicture bool, profilePictureUrl string, err error) {
