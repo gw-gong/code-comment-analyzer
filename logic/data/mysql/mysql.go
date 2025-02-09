@@ -67,7 +67,25 @@ func (m *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname 
 		}
 		return
 	}
-	return user.UID, user.Nickname, user.Password, err
+	return user.UID, user.Nickname, user.Password, nil
+}
+
+func (m *mysqlClient) GetUserProfilePictureByUserID(userID uint64) (isSetProfilePicture bool, profilePictureUrl string, err error) {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, qm.Select(models.UserUserColumns.ProfilePicture))
+	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
+	user, err := models.UserUsers(queryMods...).One(m.db)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			err = fmt.Errorf("user not found")
+			return
+		}
+		return
+	}
+	if user.ProfilePicture.Valid == false {
+		return
+	}
+	return true, user.ProfilePicture.String, nil
 }
 
 func (m *mysqlClient) IsExistUserByEmail(email string) (isExist bool, err error) {

@@ -50,3 +50,10 @@ type FileNode struct {
 	Value    string     `json:"value,omitempty"`
 	Children []FileNode `json:"children,omitempty"`
 }
+
+// *********** get user profile picture ***********
+
+type GetUserProfilePictureResponse struct {
+	ProfilePicture *string `json:"profile_picture"` // 为了和重构前返回的结果一致
+	Text           string  `json:"text"`
+}
