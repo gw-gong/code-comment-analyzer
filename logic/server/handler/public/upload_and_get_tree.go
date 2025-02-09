@@ -34,8 +34,8 @@ func NewUploadAndGetTree(registry *data.DataManagerRegistry) middleware.GetHandl
 	}
 }
 
-func (uagt *UploadAndGetTree) Handle() {
-	file, header, err := uagt.decodeRequest()
+func (u *UploadAndGetTree) Handle() {
+	file, header, err := u.decodeRequest()
 	if err != nil {
 		return
 	}
@@ -46,7 +46,7 @@ func (uagt *UploadAndGetTree) Handle() {
 	projectStorageName := util.GenerateUUIDProjectName()
 	destDir := filepath.Join(projectsStorageRootPath, projectStorageName)
 	if err = os.MkdirAll(destDir, 0755); err != nil {
-		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeCreatePathFailed, "创建目录失败")
+		protocol.HttpResponseFail(u.w, http.StatusInternalServerError, protocol.ErrorCodeCreatePathFailed, "创建目录失败")
 		return
 	}
 
@@ -54,44 +54,44 @@ func (uagt *UploadAndGetTree) Handle() {
 
 	out, err := os.Create(tempZipPath)
 	if err != nil {
-		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeSaveFileFailed, "创建临时文件失败")
+		protocol.HttpResponseFail(u.w, http.StatusInternalServerError, protocol.ErrorCodeSaveFileFailed, "创建临时文件失败")
 		return
 	}
 	defer out.Close()
 
 	if _, err = io.Copy(out, file); err != nil {
-		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeSaveFileFailed, "保存文件失败")
+		protocol.HttpResponseFail(u.w, http.StatusInternalServerError, protocol.ErrorCodeSaveFileFailed, "保存文件失败")
 		return
 	}
 
 	if err = util.Unzip(tempZipPath, destDir); err != nil {
-		protocol.HttpResponseFail(uagt.w, http.StatusInternalServerError, protocol.ErrorCodeUnzipFailed, "解压文件失败")
+		protocol.HttpResponseFail(u.w, http.StatusInternalServerError, protocol.ErrorCodeUnzipFailed, "解压文件失败")
 		return
 	}
 	os.Remove(tempZipPath)
 
-	rootNode := uagt.buildDirectoryTree(destDir, destDir, projectStorageName)
+	rootNode := u.buildDirectoryTree(destDir, destDir, projectStorageName)
 	response := protocol.FileNode{
 		Label:    projectName,
 		Children: rootNode.Children,
 	}
 
-	protocol.HttpResponseSuccess(uagt.w, http.StatusOK, "文件已解压", response)
+	protocol.HttpResponseSuccess(u.w, http.StatusOK, "文件已解压", response)
 
-	go uagt.recordProjectUpload(destDir)
+	go u.recordProjectUpload(destDir)
 }
 
-func (uagt *UploadAndGetTree) decodeRequest() (file multipart.File, header *multipart.FileHeader, err error) {
+func (u *UploadAndGetTree) decodeRequest() (file multipart.File, header *multipart.FileHeader, err error) {
 	maxProjectSize := config.Cfg.MaxProjectSize
-	err = uagt.r.ParseMultipartForm(maxProjectSize << 20)
+	err = u.r.ParseMultipartForm(maxProjectSize << 20)
 	if err != nil {
-		protocol.HttpResponseFail(uagt.w, http.StatusBadRequest, protocol.ErrorCodeFileTooLarge, "file too large")
+		protocol.HttpResponseFail(u.w, http.StatusBadRequest, protocol.ErrorCodeFileTooLarge, "file too large")
 		return nil, nil, err
 	}
 
-	file, header, err = uagt.r.FormFile(protocol.MultipartFormKeyFile)
+	file, header, err = u.r.FormFile(protocol.MultipartFormKeyFile)
 	if err != nil {
-		protocol.HttpResponseFail(uagt.w, http.StatusBadRequest, protocol.ErrorCodeFileNotFound, "file not found")
+		protocol.HttpResponseFail(u.w, http.StatusBadRequest, protocol.ErrorCodeFileNotFound, "file not found")
 		return nil, nil, err
 	}
 
@@ -100,7 +100,7 @@ func (uagt *UploadAndGetTree) decodeRequest() (file multipart.File, header *mult
 	return
 }
 
-func (uagt *UploadAndGetTree) buildDirectoryTree(currentPath, rootPath, projectStorageName string) protocol.FileNode {
+func (u *UploadAndGetTree) buildDirectoryTree(currentPath, rootPath, projectStorageName string) protocol.FileNode {
 	node := protocol.FileNode{
 		Label: filepath.Base(currentPath),
 	}
@@ -116,7 +116,7 @@ func (uagt *UploadAndGetTree) buildDirectoryTree(currentPath, rootPath, projectS
 		relPath = filepath.ToSlash(relPath) // 统一使用斜杠
 
 		if entry.IsDir() {
-			child := uagt.buildDirectoryTree(fullPath, rootPath, projectStorageName)
+			child := u.buildDirectoryTree(fullPath, rootPath, projectStorageName)
 			node.Children = append(node.Children, child)
 		} else {
 			node.Children = append(node.Children, protocol.FileNode{
@@ -129,17 +129,17 @@ func (uagt *UploadAndGetTree) buildDirectoryTree(currentPath, rootPath, projectS
 	return node
 }
 
-func (uagt *UploadAndGetTree) recordProjectUpload(projectUrl string) {
-	if isUserLoggedIn, err := uagt.extractor.IsUserLoggedIn(); err != nil || !isUserLoggedIn {
+func (u *UploadAndGetTree) recordProjectUpload(projectUrl string) {
+	if isUserLoggedIn, err := u.extractor.IsUserLoggedIn(); err != nil || !isUserLoggedIn {
 		return
 	}
-	userID, err := uagt.extractor.GetUserId()
+	userID, err := u.extractor.GetUserId()
 	if err != nil {
 		return
 	}
 	log.Println("recordProjectUpload|userID", userID)
 
-	om := uagt.registry.GetOperationManager()
+	om := u.registry.GetOperationManager()
 	err = om.RecordProjectUpload(userID, projectUrl)
 	if err != nil {
 		log.Println("recordProjectUpload|RecordProjectUpload|err:", err)

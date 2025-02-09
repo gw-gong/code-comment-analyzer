@@ -51,6 +51,14 @@ type FileNode struct {
 	Children []FileNode `json:"children,omitempty"`
 }
 
+// *********** get user info ***********
+
+type GetUserInfo struct {
+	NickName   string `json:"nick_name"`
+	Email      string `json:"email"`
+	DateJoined string `json:"date_joined"`
+}
+
 // *********** get user profile picture ***********
 
 type GetUserProfilePictureResponse struct {
