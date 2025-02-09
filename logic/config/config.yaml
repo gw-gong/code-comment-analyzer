@@ -24,10 +24,11 @@ user_token_duration: 5  # min
 jwt_key: secret_key_for_user
 
 default_nickname: "Anonymous"
+default_avatar: "default_avatar.jpg"
 
 max_file_size: 10  # MB
 max_project_size: 100  # MB
 
 file_storage_path:
-  avatar: "file_storage/avatar"
+  avatar: "file_storage/avatars"
   projects: "file_storage/projects"

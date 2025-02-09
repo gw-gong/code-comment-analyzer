@@ -38,7 +38,7 @@ type CcAnalyzerConfig struct {
 }
 
 type FileStoragePathConfig struct {
-	Avatar   string `yaml:"avatar"`
+	Avatar   string `yaml:"avatars"`
 	Projects string `yaml:"projects"`
 }
 
@@ -50,6 +50,7 @@ type Config struct {
 	UserTokenDuration uint32                `yaml:"user_token_duration"`
 	JwtKey            string                `yaml:"jwt_key"`
 	DefaultNickname   string                `yaml:"default_nickname"`
+	DefaultAvatar     string                `yaml:"default_avatar"`
 	MaxFileSize       int64                 `yaml:"max_file_size"`
 	MaxProjectSize    int64                 `yaml:"max_project_size"`
 	FileStoragePath   FileStoragePathConfig `yaml:"file_storage_path"`
