@@ -11,7 +11,6 @@ import (
 	"code-comment-analyzer/server/handler/public"
 	"code-comment-analyzer/server/handler/user"
 	m "code-comment-analyzer/server/middleware"
-	_ "code-comment-analyzer/server/server_info"
 )
 
 type Server struct {
@@ -32,7 +31,8 @@ func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer 
 	m.RegisterRouter(s.mux, "/public/upload_file2string/", public.NewFile2String(registry), m.EnforcePost, m.CheckLoginStatus)
 	m.RegisterRouter(s.mux, "/public/analyze_file/", public.NewAnalyzeFile(registry, ccanalyzer), m.EnforcePost)
 	m.RegisterRouter(s.mux, "/public/upload_and_get_tree/", public.NewUploadAndGetTree(registry), m.EnforcePost, m.CheckLoginStatus)
-	m.RegisterRouter(s.mux, "/public/read_file/", public.NewReadFile(registry), m.EnforcePost)
+	m.RegisterRouter(s.mux, "/public/read_file/", public.NewReadFile(), m.EnforcePost)
+	m.RegisterRouter(s.mux, "/public/get_readme/", public.NewGetReadme(), m.EnforceGet)
 
 	m.RegisterRouter(s.mux, "/user/login/", user.NewLogin(registry), m.EnforcePost)
 	m.RegisterRouter(s.mux, "/user/logout/", user.NewLogout(registry), m.EnforceGet, m.CheckLoginStatus)

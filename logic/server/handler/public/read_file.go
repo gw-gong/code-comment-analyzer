@@ -2,34 +2,28 @@ package public
 
 import (
 	"encoding/json"
-	"io"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 
 	"code-comment-analyzer/config"
-	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
-	"code-comment-analyzer/server/server_info"
 	"code-comment-analyzer/util"
 )
 
 type ReadFile struct {
-	w         http.ResponseWriter
-	r         *http.Request
-	extractor middleware.Extractor
-	registry  *data.DataManagerRegistry
+	w http.ResponseWriter
+	r *http.Request
 }
 
-func NewReadFile(registry *data.DataManagerRegistry) middleware.GetHandler {
+func NewReadFile() middleware.GetHandler {
 	return func(w http.ResponseWriter, r *http.Request, extractor middleware.Extractor) middleware.Handler {
 		return &ReadFile{
-			w:         w,
-			r:         r,
-			extractor: extractor,
-			registry:  registry,
+			w: w,
+			r: r,
 		}
 	}
 }
@@ -45,10 +39,9 @@ func (rf *ReadFile) Handle() {
 		return
 	}
 
-	curProjectRunningPath := server_info.GetServerRunningPath()
-	absolutePath := filepath.Join(curProjectRunningPath, config.Cfg.FileStoragePath.Projects, requestData.Path)
+	realPath := filepath.Join(config.Cfg.FileStoragePath.Projects, requestData.Path)
 
-	if _, err = os.Stat(absolutePath); os.IsNotExist(err) {
+	if _, err = os.Stat(realPath); os.IsNotExist(err) {
 		protocol.HttpResponseFail(rf.w, http.StatusNotFound, protocol.ErrorCodeFileNotFound, "文件不存在")
 		return
 	} else if err != nil {
@@ -56,24 +49,17 @@ func (rf *ReadFile) Handle() {
 		return
 	}
 
-	file, err := os.Open(absolutePath)
+	fileContent, err := util.ReadFileContentByPath(realPath)
 	if err != nil {
-		protocol.HttpResponseFail(rf.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, "打开文件失败")
-		return
-	}
-	defer file.Close()
-
-	fileContent, err := io.ReadAll(file)
-	if err != nil {
-		protocol.HttpResponseFail(rf.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, "读取文件失败")
+		protocol.HttpResponseFail(rf.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, fmt.Sprintf("%v", err))
 		return
 	}
 
-	fileSuffix := filepath.Ext(absolutePath)
+	fileSuffix := filepath.Ext(realPath)
 	language := util.FileSuffixToLanguage(fileSuffix)
 
 	response := protocol.ReadFileResponse{
-		FileContent: string(fileContent),
+		FileContent: fileContent,
 	}
 
 	protocol.HttpResponseSuccess(rf.w, http.StatusOK, "Success", response, language)

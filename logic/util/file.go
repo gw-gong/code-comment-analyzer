@@ -2,6 +2,7 @@ package util
 
 import (
 	"archive/zip"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -55,4 +56,21 @@ func Unzip(src, dest string) error {
 func GenerateUUIDProjectName() string {
 	prefix := "proj_"
 	return prefix + GenerateUUIDName()
+}
+
+func ReadFileContentByPath(path string) (fileContent string, err error) {
+	file, err := os.Open(path)
+	if err != nil {
+		err = fmt.Errorf("打开文件失败")
+		return
+	}
+	defer file.Close()
+
+	fileContentBytes, err := io.ReadAll(file)
+	if err != nil {
+		err = fmt.Errorf("读取文件失败")
+		return
+	}
+
+	return string(fileContentBytes), nil
 }

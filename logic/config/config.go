@@ -54,6 +54,7 @@ type Config struct {
 	MaxFileSize       int64                 `yaml:"max_file_size"`
 	MaxProjectSize    int64                 `yaml:"max_project_size"`
 	FileStoragePath   FileStoragePathConfig `yaml:"file_storage_path"`
+	ReadmePath        string                `yaml:"code-comment-analyzer_readme_path"`
 }
 
 func init() {
