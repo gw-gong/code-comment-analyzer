@@ -62,7 +62,7 @@ func (g *GetUserProfilePicture) Handle() {
 		response.ProfilePicture = &profilePictureUrl
 		// response.Text = ？？？看一下python项目代码逻辑
 	} else {
-		avatarsStorageRootPath := config.Cfg.FileStoragePath.Avatar
+		avatarsStorageRootPath := config.Cfg.FileStoragePath.Avatars
 		defaultAvatar := config.Cfg.DefaultAvatar
 		defaultAvatarUrl := filepath.Join(avatarsStorageRootPath, defaultAvatar)
 		response.ProfilePicture = &defaultAvatarUrl

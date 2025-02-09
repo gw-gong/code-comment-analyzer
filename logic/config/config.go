@@ -38,7 +38,7 @@ type CcAnalyzerConfig struct {
 }
 
 type FileStoragePathConfig struct {
-	Avatar   string `yaml:"avatars"`
+	Avatars  string `yaml:"avatars"`
 	Projects string `yaml:"projects"`
 }
 
