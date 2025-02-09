@@ -33,4 +33,4 @@ file_storage_path:
   avatars: "file_storage/avatars"
   projects: "file_storage/projects"
 
-code-comment-analyzer_readme_path: ../docs/code-comment-analyzer_readme.go
+code-comment-analyzer_readme_path: ../docs/code-comment-analyzer_readme.md
