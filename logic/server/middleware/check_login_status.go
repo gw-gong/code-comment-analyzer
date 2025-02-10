@@ -6,14 +6,14 @@ import (
 	"code-comment-analyzer/server/jwt"
 )
 
-func CheckLoginStatus(handlerFunc HandlerFunc) HandlerFunc {
+func CheckLoginStatus(rg *routerGroup, handlerFunc HandlerFunc) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {
 		loginStatus := true
-		userID, err := jwt.ParseToken(r, sessionManager)
+		userID, err := jwt.ParseToken(r, rg.getSessionManager())
 		if err != nil {
 			loginStatus = false
 		}
-		_ = jwt.RefreshToken(userID, sessionManager)
+		_ = jwt.RefreshToken(userID, rg.getSessionManager())
 		if extractor == nil {
 			extractor = newExtractedData()
 		}

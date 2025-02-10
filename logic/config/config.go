@@ -68,5 +68,10 @@ func init() {
 		panic("Error parsing config file")
 	}
 
-	fmt.Printf("%+v\n", Cfg)
+	// print to console
+	yamlCfg, err := yaml.Marshal(Cfg)
+	if err != nil {
+		panic("Error marshalling config to YAML")
+	}
+	fmt.Println(string(yamlCfg))
 }

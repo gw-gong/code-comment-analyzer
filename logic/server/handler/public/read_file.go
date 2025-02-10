@@ -62,7 +62,7 @@ func (rf *ReadFile) Handle() {
 		FileContent: fileContent,
 	}
 
-	protocol.HttpResponseSuccess(rf.w, http.StatusOK, "Success", response, language)
+	protocol.HttpResponseSuccess(rf.w, http.StatusOK, "Success", protocol.WithData(response), protocol.WithLanguage(language))
 }
 
 func (rf *ReadFile) decodeRequest() (*protocol.ReadFileRequest, error) {

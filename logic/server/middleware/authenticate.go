@@ -8,14 +8,14 @@ import (
 	"code-comment-analyzer/server/jwt"
 )
 
-func AuthenticateUser(handlerFunc HandlerFunc) HandlerFunc {
+func AuthenticateUser(rg *routerGroup, handlerFunc HandlerFunc) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {
-		userID, err := jwt.ParseToken(r, sessionManager)
+		userID, err := jwt.ParseToken(r, rg.getSessionManager())
 		if err != nil {
 			protocol.HttpResponseFail(w, http.StatusInternalServerError, protocol.ErrorCodeAuthenticating, fmt.Sprintf("%v", err))
 			return
 		}
-		err = jwt.RefreshToken(userID, sessionManager)
+		err = jwt.RefreshToken(userID, rg.getSessionManager())
 		if err != nil {
 			protocol.HttpResponseFail(w, http.StatusInternalServerError, protocol.ErrorCodeAuthenticating, fmt.Sprintf("%v", err))
 			return

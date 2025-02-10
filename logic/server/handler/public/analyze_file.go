@@ -2,7 +2,6 @@ package public
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -46,10 +45,12 @@ func (af *AnalyzeFile) Handle() {
 	var analyzedData protocol.AnalyzeFileResponse
 	analyzedData, err = af.ccanalyzer.AnalyzeFileContent(requestData.Language, requestData.FileContent)
 	if err != nil {
-		protocol.HttpResponseFail(af.w, http.StatusInternalServerError, protocol.ErrorCodeRPCCallFail, fmt.Sprintf("%v", err))
+		log.Println("Failed to analyze file content:", err)
+		protocol.HttpResponseFail(af.w, http.StatusInternalServerError, protocol.ErrorCodeAnalyzeFileFailed, "Failed to analyze file content")
 		return
 	}
-	protocol.HttpResponseSuccess(af.w, http.StatusOK, "Success", analyzedData, requestData.Language)
+
+	protocol.HttpResponseSuccess(af.w, http.StatusOK, "Success", protocol.WithData(analyzedData), protocol.WithLanguage(requestData.Language))
 }
 
 func (af *AnalyzeFile) decodeRequest() (*protocol.AnalyzeFileRequest, error) {

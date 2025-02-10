@@ -17,11 +17,6 @@ func main() {
 
 	registry := &data.DataManagerRegistry{}
 
-	testSqlExecutor, err := mysql.NewTestSqlExecutor(cfg.MysqlMaster)
-	defer testSqlExecutor.Close()
-	exitOnErr(err)
-	registry.RegisterTestSqlExecutor(testSqlExecutor)
-
 	userManager, err := mysql.NewUserManager(cfg.MysqlMaster)
 	defer userManager.Close()
 	exitOnErr(err)
