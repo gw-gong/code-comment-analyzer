@@ -4,10 +4,14 @@ import (
 	"net/http"
 )
 
-type HandlerFunc func(http.ResponseWriter, *http.Request, Extractor)
-type MiddleOpFunc func(HandlerFunc) HandlerFunc
+type HandlerFunc func(w http.ResponseWriter, r *http.Request, extractor Extractor)
+type MiddleOpFunc func(rg *routerGroup, handlerFunc HandlerFunc) HandlerFunc
 
-type GetHandler = func(http.ResponseWriter, *http.Request, Extractor) Handler
+type GetHandler func(w http.ResponseWriter, r *http.Request, extractor Extractor) Handler
+
+type Handler interface {
+	Handle()
+}
 
 const (
 	Get  = "GET"

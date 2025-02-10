@@ -24,20 +24,21 @@ func NewHTTPServer() *Server {
 }
 
 func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_client.CCAnalyzer) {
-	m.RegisterMux(s.mux)
-	m.RegisterSessionManager(registry.GetSessionManager())
+	sm := registry.GetSessionManager()
 
-	m.RegisterRouter(m.Post, "/public/upload_file2string/", public.NewFile2String(registry), m.CheckLoginStatus)
-	m.RegisterRouter(m.Post, "/public/analyze_file/", public.NewAnalyzeFile(registry, ccanalyzer))
-	m.RegisterRouter(m.Post, "/public/upload_and_get_tree/", public.NewUploadAndGetTree(registry), m.CheckLoginStatus)
-	m.RegisterRouter(m.Post, "/public/read_file/", public.NewReadFile())
-	m.RegisterRouter(m.Get, "/public/get_readme/", public.NewGetReadme())
+	publicGroup := m.NewRouterGroup("/public/", s.mux, m.WithSessionManager(sm))
+	publicGroup.Post("upload_file2string/", public.NewFile2String(registry), m.CheckLoginStatus)
+	publicGroup.Post("analyze_file/", public.NewAnalyzeFile(registry, ccanalyzer))
+	publicGroup.Post("upload_and_get_tree/", public.NewUploadAndGetTree(registry), m.CheckLoginStatus)
+	publicGroup.Post("read_file/", public.NewReadFile())
+	publicGroup.Get("get_readme/", public.NewGetReadme())
 
-	m.RegisterRouter(m.Post, "/user/login/", user.NewLogin(registry))
-	m.RegisterRouter(m.Get, "/user/logout/", user.NewLogout(registry), m.CheckLoginStatus)
-	m.RegisterRouter(m.Post, "/user/sign_up/", user.NewSignup(registry))
-	m.RegisterRouter(m.Get, "/user/get_user_info/", user.NewGetUserInfo(registry), m.AuthenticateUser)
-	m.RegisterRouter(m.Get, "/user/get_user_profile_picture/", user.NewGetUserProfilePicture(registry), m.CheckLoginStatus)
+	userGroup := m.NewRouterGroup("/user/", s.mux, m.WithSessionManager(sm))
+	userGroup.Post("login/", user.NewLogin(registry))
+	userGroup.Get("logout/", user.NewLogout(registry), m.CheckLoginStatus)
+	userGroup.Post("sign_up/", user.NewSignup(registry))
+	userGroup.Get("get_user_info/", user.NewGetUserInfo(registry), m.AuthenticateUser)
+	userGroup.Get("get_user_profile_picture/", user.NewGetUserProfilePicture(registry), m.CheckLoginStatus)
 }
 
 func (s *Server) Listen(host, port string) {
