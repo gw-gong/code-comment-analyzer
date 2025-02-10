@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"math/rand"
 	"time"
 
 	"code-comment-analyzer/data/mysql/models"
@@ -35,24 +34,6 @@ func (m *mysqlClient) Close() {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func (m *mysqlClient) InsertXXX() error {
-	user := models.UserUser{
-		Email:      fmt.Sprintf("xpl%d@ccanalyzer.com", rand.Int()),
-		Password:   "123456",
-		Nickname:   "xpl",
-		DateJoined: time.Now(),
-		IsActive:   true,
-	}
-	err := user.Insert(m.db, boil.Infer())
-	if err != nil {
-		log.Printf("Error inserting user: %v\n", err)
-		return err
-	}
-
-	log.Printf("User inserted: %+v\n", user)
-	return nil
 }
 
 func (m *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname string, password string, err error) {

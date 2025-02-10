@@ -7,7 +7,6 @@ import (
 
 	"code-comment-analyzer/ccanalyzer_client"
 	"code-comment-analyzer/data"
-	"code-comment-analyzer/server/handler"
 	"code-comment-analyzer/server/handler/public"
 	"code-comment-analyzer/server/handler/user"
 	m "code-comment-analyzer/server/middleware"
@@ -26,7 +25,6 @@ func NewHTTPServer() *Server {
 
 func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer ccanalyzer_client.CCAnalyzer) {
 	m.RegisterSessionManager(registry.GetSessionManager())
-	m.RegisterRouter(s.mux, "/test/", handler.NewTestXXX(registry, ccanalyzer), m.EnforceGet, m.AuthenticateUser)
 
 	m.RegisterRouter(s.mux, "/public/upload_file2string/", public.NewFile2String(registry), m.EnforcePost, m.CheckLoginStatus)
 	m.RegisterRouter(s.mux, "/public/analyze_file/", public.NewAnalyzeFile(registry, ccanalyzer), m.EnforcePost)
