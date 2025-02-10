@@ -39,6 +39,7 @@ func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer 
 	userGroup.Post("sign_up/", user.NewSignup(registry))
 	userGroup.Get("get_user_info/", user.NewGetUserInfo(registry), m.AuthenticateUser)
 	userGroup.Get("get_user_profile_picture/", user.NewGetUserProfilePicture(registry), m.CheckLoginStatus)
+	userGroup.Get("get_project_upload_record/", user.NewGetProjectUploadRecord(registry), m.AuthenticateUser)
 }
 
 func (s *Server) Listen(host, port string) {

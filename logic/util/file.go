@@ -2,6 +2,7 @@ package util
 
 import (
 	"archive/zip"
+	"code-comment-analyzer/protocol"
 	"fmt"
 	"io"
 	"os"
@@ -73,4 +74,33 @@ func ReadFileContentByPath(path string) (fileContent string, err error) {
 	}
 
 	return string(fileContentBytes), nil
+}
+
+func BuildDirectoryTree(currentPath, rootPath, projectStorageName string) protocol.FileNode {
+	node := protocol.FileNode{
+		Label: filepath.Base(currentPath),
+	}
+
+	entries, err := os.ReadDir(currentPath)
+	if err != nil {
+		return node
+	}
+
+	for _, entry := range entries {
+		fullPath := filepath.Join(currentPath, entry.Name())
+		relPath, _ := filepath.Rel(rootPath, fullPath)
+		relPath = filepath.ToSlash(relPath) // 统一使用斜杠
+
+		if entry.IsDir() {
+			child := BuildDirectoryTree(fullPath, rootPath, projectStorageName)
+			node.Children = append(node.Children, child)
+		} else {
+			node.Children = append(node.Children, protocol.FileNode{
+				Label: entry.Name(),
+				Value: filepath.Join(projectStorageName, relPath),
+			})
+		}
+	}
+
+	return node
 }
