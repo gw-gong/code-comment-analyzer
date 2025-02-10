@@ -71,12 +71,8 @@ func (u *UploadAndGetTree) Handle() {
 	os.Remove(tempZipPath)
 
 	rootNode := util.BuildDirectoryTree(destDir, destDir, projectStorageName)
-	response := protocol.FileNode{
-		Label:    projectName,
-		Children: rootNode.Children,
-	}
 
-	protocol.HttpResponseSuccess(u.w, http.StatusOK, "文件已解压", protocol.WithData(response))
+	protocol.HttpResponseSuccess(u.w, http.StatusOK, "文件已解压", protocol.WithData(rootNode.Children[0]))
 
 	go u.recordProjectUpload(filepath.Join(destDir, projectName))
 }

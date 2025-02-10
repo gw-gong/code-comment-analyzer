@@ -47,17 +47,11 @@ func (g *GetProjectUploadRecord) Handle() {
 		protocol.HttpResponseFail(g.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, "获取项目名称失败")
 		return
 	}
-	projectName := directorys[len(directorys)-1]
-	projectStorageName := directorys[len(directorys)-2]
-	destDir := strings.Join(directorys[:len(directorys)-1], "/")
+	projectStorageName := directorys[len(directorys)-1]
 
-	rootNode := util.BuildDirectoryTree(destDir, destDir, projectStorageName)
-	response := protocol.FileNode{
-		Label:    projectName,
-		Children: rootNode.Children,
-	}
+	rootNode := util.BuildDirectoryTree(projectUrl, projectUrl, projectStorageName)
 
-	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取项目上传记录成功", protocol.WithData(response))
+	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取项目上传记录成功", protocol.WithData(rootNode.Children[0]))
 }
 
 func (g *GetProjectUploadRecord) decodeRequest() (operatingRecordId int64, err error) {
