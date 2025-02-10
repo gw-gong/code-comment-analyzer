@@ -40,7 +40,7 @@ func (g *GetUserProfilePicture) Handle() {
 
 	if !isUserLoggedIn {
 		response.Text = "?"
-		protocol.HttpResponseSuccess(g.w, http.StatusOK, "未登录", response)
+		protocol.HttpResponseSuccess(g.w, http.StatusOK, "未登录", protocol.WithData(response))
 		return
 	}
 
@@ -69,5 +69,5 @@ func (g *GetUserProfilePicture) Handle() {
 		response.Text = "未设置"
 	}
 
-	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取用户头像成功", response)
+	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取用户头像成功", protocol.WithData(response))
 }

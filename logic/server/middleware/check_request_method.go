@@ -7,25 +7,20 @@ import (
 	"code-comment-analyzer/protocol"
 )
 
-const (
-	MethodGet  = "GET"
-	MethodPost = "POST"
-)
-
-func EnforceGet(handlerFunc HandlerFunc) HandlerFunc {
+func enforceGet(handlerFunc HandlerFunc) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {
-		if r.Method != MethodGet {
-			protocol.HttpResponseFail(w, http.StatusInternalServerError, protocol.ErrorCodeMustBeGet, fmt.Sprintf("request method must be %s", MethodGet))
+		if r.Method != Get {
+			protocol.HttpResponseFail(w, http.StatusInternalServerError, protocol.ErrorCodeMustBeGet, fmt.Sprintf("request method must be %s", Get))
 			return
 		}
 		handlerFunc(w, r, extractor)
 	}
 }
 
-func EnforcePost(handlerFunc HandlerFunc) HandlerFunc {
+func enforcePost(handlerFunc HandlerFunc) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {
-		if r.Method != MethodPost {
-			protocol.HttpResponseFail(w, http.StatusInternalServerError, protocol.ErrorCodeMustBePost, fmt.Sprintf("request method must be %s", MethodPost))
+		if r.Method != Post {
+			protocol.HttpResponseFail(w, http.StatusInternalServerError, protocol.ErrorCodeMustBePost, fmt.Sprintf("request method must be %s", Post))
 			return
 		}
 		handlerFunc(w, r, extractor)

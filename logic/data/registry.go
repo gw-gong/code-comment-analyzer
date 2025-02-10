@@ -13,22 +13,9 @@ var (
 )
 
 type DataManagerRegistry struct {
-	testSqlExecutor  mysql.TestSqlExecutor
 	userManager      mysql.UserManager
 	operationManager mysql.OperationManager
 	sessionManager   redis.SessionManager
-}
-
-func (registry *DataManagerRegistry) RegisterTestSqlExecutor(testSqlExecutor mysql.TestSqlExecutor) {
-	registry.testSqlExecutor = testSqlExecutor
-	log.Println("Registered TestSqlExecutor")
-}
-
-func (registry *DataManagerRegistry) GetTestSqlExecutor() mysql.TestSqlExecutor {
-	if registry.testSqlExecutor != nil {
-		return registry.testSqlExecutor
-	}
-	panic(ErrDataManagerNotFound)
 }
 
 func (registry *DataManagerRegistry) RegisterUserManager(userManager mysql.UserManager) {

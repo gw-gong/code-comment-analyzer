@@ -49,7 +49,7 @@ func (af *AnalyzeFile) Handle() {
 		protocol.HttpResponseFail(af.w, http.StatusInternalServerError, protocol.ErrorCodeRPCCallFail, fmt.Sprintf("%v", err))
 		return
 	}
-	protocol.HttpResponseSuccess(af.w, http.StatusOK, "Success", analyzedData, requestData.Language)
+	protocol.HttpResponseSuccess(af.w, http.StatusOK, "Success", protocol.WithData(analyzedData), protocol.WithLanguage(requestData.Language))
 }
 
 func (af *AnalyzeFile) decodeRequest() (*protocol.AnalyzeFileRequest, error) {

@@ -80,7 +80,7 @@ func (s *Signup) Handle() {
 		Email:    requestData.Email,
 		Nickname: defaultNickname,
 	}
-	protocol.HttpResponseSuccess(s.w, http.StatusOK, "注册成功", response)
+	protocol.HttpResponseSuccess(s.w, http.StatusOK, "注册成功", protocol.WithData(response))
 }
 
 func (s *Signup) decodeRequest() (*protocol.SignupRequest, error) {

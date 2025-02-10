@@ -34,7 +34,7 @@ func (l *Logout) Handle() {
 		return
 	}
 	if !isUserLoggedIn {
-		protocol.HttpResponseSuccess(l.w, http.StatusOK, "success! 用户本来未登录", nil)
+		protocol.HttpResponseSuccess(l.w, http.StatusOK, "success! 用户本来未登录")
 		return
 	}
 	// 从token中获取UserID，使用UserID清除redis中的token，ToDo: 是否有必要清除浏览器的token
@@ -50,5 +50,5 @@ func (l *Logout) Handle() {
 		return
 	}
 
-	protocol.HttpResponseSuccess(l.w, http.StatusOK, "已成功退出登录", nil)
+	protocol.HttpResponseSuccess(l.w, http.StatusOK, "已成功退出登录")
 }

@@ -1,10 +1,11 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 )
 
-func RegisterRouter(mux *http.ServeMux, pattern string, getHandler GetHandler, middleOps ...MiddleOpFunc) {
+func RegisterRouter(method string, pattern string, getHandler GetHandler, middleOps ...MiddleOpFunc) {
 	if mux == nil {
 		panic("mux is nil")
 	}
@@ -13,6 +14,14 @@ func RegisterRouter(mux *http.ServeMux, pattern string, getHandler GetHandler, m
 		handlerFunc = middleOps[i](handlerFunc)
 	}
 	formatHandlerFunc := func(w http.ResponseWriter, r *http.Request) {
+		switch method {
+		case Get:
+			handlerFunc = enforceGet(handlerFunc)
+		case Post:
+			handlerFunc = enforcePost(handlerFunc)
+		default:
+			log.Printf("invalid method: %s", method)
+		}
 		handlerFunc(w, r, nil)
 	}
 	mux.HandleFunc(pattern, formatHandlerFunc)

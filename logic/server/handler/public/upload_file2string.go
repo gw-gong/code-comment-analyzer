@@ -42,7 +42,7 @@ func (f2s *File2String) Handle() {
 		Language:    language,
 		FileContent: fileContent,
 	}
-	protocol.HttpResponseSuccess(f2s.w, http.StatusOK, "已读取", response)
+	protocol.HttpResponseSuccess(f2s.w, http.StatusOK, "已读取", protocol.WithData(response))
 
 	go f2s.recordFileUpload(language, fileContent)
 }

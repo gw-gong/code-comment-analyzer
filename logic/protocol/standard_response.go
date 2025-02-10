@@ -6,8 +6,26 @@ import (
 	"net/http"
 )
 
+type option func(*optionParams)
+
+type optionParams struct {
+	language string
+	data     interface{}
+}
+
+func WithLanguage(language string) option {
+	return func(params *optionParams) {
+		params.language = language
+	}
+}
+
+func WithData(data interface{}) option {
+	return func(params *optionParams) {
+		params.data = data
+	}
+}
+
 // ps: 由于项目是重构的，所以这里会多一个language字段，不是很合理，但是现在前端不修改的情况下，只能这么加进去了。
-// 这边使用了"..."参数形式，来降低项目中的影响，直接忽略即可，只有少数接口需要用到。
 // 实际上只需要关心 status, msg, data 即可
 
 type responseFormat struct {
@@ -17,16 +35,17 @@ type responseFormat struct {
 	Language string      `json:"language,omitempty"`
 }
 
-func httpResponse(w http.ResponseWriter, httpStatusCode int, status int, msg string, data interface{}, language ...string) {
-	validLanguage := ""
-	if len(language) == 1 {
-		validLanguage = language[0]
+func httpResponse(w http.ResponseWriter, httpStatusCode int, status int, msg string, opts ...option) {
+	optParams := &optionParams{}
+	for _, opt := range opts {
+		opt(optParams)
 	}
+
 	response := responseFormat{
 		Status:   status,
 		Msg:      msg,
-		Data:     data,
-		Language: validLanguage,
+		Data:     optParams.data,
+		Language: optParams.language,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatusCode)
@@ -37,10 +56,10 @@ func httpResponse(w http.ResponseWriter, httpStatusCode int, status int, msg str
 	}
 }
 
-func HttpResponseSuccess(w http.ResponseWriter, httpStatusCode int, msg string, data interface{}, language ...string) {
-	httpResponse(w, httpStatusCode, StatusSuccess, msg, data, language...)
+func HttpResponseSuccess(w http.ResponseWriter, httpStatusCode int, msg string, opts ...option) {
+	httpResponse(w, httpStatusCode, StatusSuccess, msg, opts...)
 }
 
 func HttpResponseFail(w http.ResponseWriter, httpStatusCode int, errorCode int, msg string) {
-	httpResponse(w, httpStatusCode, errorCode, msg, nil)
+	httpResponse(w, httpStatusCode, errorCode, msg)
 }

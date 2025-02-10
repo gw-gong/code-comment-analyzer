@@ -76,7 +76,7 @@ func (u *UploadAndGetTree) Handle() {
 		Children: rootNode.Children,
 	}
 
-	protocol.HttpResponseSuccess(u.w, http.StatusOK, "文件已解压", response)
+	protocol.HttpResponseSuccess(u.w, http.StatusOK, "文件已解压", protocol.WithData(response))
 
 	go u.recordProjectUpload(destDir)
 }

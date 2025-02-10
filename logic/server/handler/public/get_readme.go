@@ -30,5 +30,5 @@ func (gr *GetReadme) Handle() {
 		return
 	}
 
-	protocol.HttpResponseSuccess(gr.w, http.StatusOK, "Success", fileContent)
+	protocol.HttpResponseSuccess(gr.w, http.StatusOK, "Success", protocol.WithData(fileContent))
 }

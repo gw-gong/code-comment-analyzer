@@ -8,3 +8,8 @@ type HandlerFunc func(http.ResponseWriter, *http.Request, Extractor)
 type MiddleOpFunc func(HandlerFunc) HandlerFunc
 
 type GetHandler = func(http.ResponseWriter, *http.Request, Extractor) Handler
+
+const (
+	Get  = "GET"
+	Post = "POST"
+)

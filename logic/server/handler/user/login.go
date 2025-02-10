@@ -76,7 +76,7 @@ func (l *Login) Handle() {
 		Email:    requestData.Email,
 		Nickname: nickname,
 	}
-	protocol.HttpResponseSuccess(l.w, http.StatusOK, "登录成功", response)
+	protocol.HttpResponseSuccess(l.w, http.StatusOK, "登录成功", protocol.WithData(response))
 }
 
 func (l *Login) decodeRequest() (*protocol.LoginRequest, error) {

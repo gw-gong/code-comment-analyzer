@@ -47,5 +47,5 @@ func (g *GetUserInfo) Handle() {
 		DateJoined: dateJoined.Format("2006-01-02"),
 	}
 
-	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取用户信息成功", response)
+	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取用户信息成功", protocol.WithData(response))
 }
