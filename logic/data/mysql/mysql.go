@@ -212,3 +212,18 @@ func (m *mysqlClient) RecordProjectUpload(userID uint64, projectUrl string) (err
 	}
 	return nil
 }
+
+func (m *mysqlClient) GetOneProjectUploadRecordUrlByOpID(operatingRecordId int64) (projectUrl string, err error) {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, qm.Select(models.UserProjectrecordColumns.ProjectURL))
+	queryMods = append(queryMods, models.UserProjectrecordWhere.OperatingRecordID.EQ(operatingRecordId))
+	projectRecord, err := models.UserProjectrecords(queryMods...).One(m.db)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			err = fmt.Errorf("project record not found|operatingRecordId:%v", operatingRecordId)
+			return
+		}
+		return
+	}
+	return projectRecord.ProjectURL, nil
+}

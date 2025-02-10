@@ -1,5 +1,7 @@
 package protocol
 
+import "strconv"
+
 // *********** sign in ***********
 
 type LoginRequest struct {
@@ -43,7 +45,7 @@ type File2StringResponse struct {
 	FileContent string `json:"fileContent"`
 }
 
-// *********** upload and get tree ***********
+// *********** project tree ***********
 
 type FileNode struct {
 	Label    string     `json:"label"`
@@ -74,4 +76,16 @@ type ReadFileRequest struct {
 
 type ReadFileResponse struct {
 	FileContent string `json:"fileContent"`
+}
+
+// *********** get file/project upload record ***********
+
+const GetKeyOperatingRecordId = "operating_record_id"
+
+func OpIDTransformStr2Int64(opID string) int64 {
+	result, err := strconv.ParseInt(opID, 10, 64)
+	if err != nil {
+		return 0
+	}
+	return result
 }

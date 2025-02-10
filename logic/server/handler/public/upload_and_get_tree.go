@@ -70,15 +70,11 @@ func (u *UploadAndGetTree) Handle() {
 	}
 	os.Remove(tempZipPath)
 
-	rootNode := u.buildDirectoryTree(destDir, destDir, projectStorageName)
-	response := protocol.FileNode{
-		Label:    projectName,
-		Children: rootNode.Children,
-	}
+	rootNode := util.BuildDirectoryTree(destDir, destDir, projectStorageName)
 
-	protocol.HttpResponseSuccess(u.w, http.StatusOK, "文件已解压", protocol.WithData(response))
+	protocol.HttpResponseSuccess(u.w, http.StatusOK, "文件已解压", protocol.WithData(rootNode.Children[0]))
 
-	go u.recordProjectUpload(destDir)
+	go u.recordProjectUpload(filepath.Join(destDir, projectName))
 }
 
 func (u *UploadAndGetTree) decodeRequest() (file multipart.File, header *multipart.FileHeader, err error) {
@@ -98,35 +94,6 @@ func (u *UploadAndGetTree) decodeRequest() (file multipart.File, header *multipa
 	// todo 判断是不是.zip，不是zip，直接file.close()
 
 	return
-}
-
-func (u *UploadAndGetTree) buildDirectoryTree(currentPath, rootPath, projectStorageName string) protocol.FileNode {
-	node := protocol.FileNode{
-		Label: filepath.Base(currentPath),
-	}
-
-	entries, err := os.ReadDir(currentPath)
-	if err != nil {
-		return node
-	}
-
-	for _, entry := range entries {
-		fullPath := filepath.Join(currentPath, entry.Name())
-		relPath, _ := filepath.Rel(rootPath, fullPath)
-		relPath = filepath.ToSlash(relPath) // 统一使用斜杠
-
-		if entry.IsDir() {
-			child := u.buildDirectoryTree(fullPath, rootPath, projectStorageName)
-			node.Children = append(node.Children, child)
-		} else {
-			node.Children = append(node.Children, protocol.FileNode{
-				Label: entry.Name(),
-				Value: filepath.Join(projectStorageName, relPath),
-			})
-		}
-	}
-
-	return node
 }
 
 func (u *UploadAndGetTree) recordProjectUpload(projectUrl string) {

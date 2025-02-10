@@ -10,6 +10,9 @@ type OperationManager interface {
 
 	RecordFileUpload(userID uint64, language, fileContent string) (err error)
 	RecordProjectUpload(userID uint64, projectUrl string) (err error)
+
+	GetOneProjectUploadRecordUrlByOpID(operatingRecordId int64) (projectUrl string, err error)
+
 	Close()
 }
 
