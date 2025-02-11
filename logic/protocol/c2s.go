@@ -55,10 +55,15 @@ type FileNode struct {
 
 // *********** get user info ***********
 
-type GetUserInfoResponse struct {
-	NickName   string `json:"nick_name"`
+type TableInfo struct {
+	NickName   string `json:"nickname"`
 	Email      string `json:"email"`
 	DateJoined string `json:"date_joined"`
+}
+
+type GetUserInfoResponse struct {
+	ProfilePicture string      `json:"profile_picture"`
+	TableInfo      []TableInfo `json:"tableInfo"`
 }
 
 // *********** get user profile picture ***********

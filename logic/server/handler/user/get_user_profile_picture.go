@@ -1,14 +1,12 @@
 package user
 
 import (
-	"fmt"
-	"net/http"
-	"path/filepath"
-
-	"code-comment-analyzer/config"
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
+	"code-comment-analyzer/util"
+	"fmt"
+	"net/http"
 )
 
 type GetUserProfilePicture struct {
@@ -57,17 +55,8 @@ func (g *GetUserProfilePicture) Handle() {
 		return
 	}
 
-	if isSetProfilePicture {
-		// todo 和上传头像接口协商一下，以及获取头像需要鉴权，这块需要设计一下
-		response.ProfilePicture = &profilePictureUrl
-		// response.Text = ？？？看一下python项目代码逻辑
-	} else {
-		avatarsStorageRootPath := config.Cfg.FileStoragePath.Avatars
-		defaultAvatar := config.Cfg.DefaultAvatar
-		defaultAvatarUrl := filepath.Join(avatarsStorageRootPath, defaultAvatar)
-		response.ProfilePicture = &defaultAvatarUrl
-		response.Text = "未设置"
-	}
+	response.ProfilePicture = util.TransformProfilePictureUrlToResourceUrl(isSetProfilePicture, profilePictureUrl)
+	response.Text = "未设置"
 
 	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取用户头像成功", protocol.WithData(response))
 }
