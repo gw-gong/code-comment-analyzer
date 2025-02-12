@@ -36,930 +36,930 @@
       let amis = amisRequire('amis/embed');
       // 通过替换下面这个配置来生成不同页面
       let amisJSON = {
-  "type": "page",
-  "title": "个人界面",
-  "body": [
-    {
-      "type": "flex",
-      "className": "p-1",
-      "items": [
-        {
-          "type": "container",
-          "size": "xs",
-          "style": {
-            "position": "static",
-            "display": "block",
-            "flex": "1 1 auto",
-            "flexGrow": 1,
-            "overflowX": "visible"
-          },
-          "wrapperBody": false,
-          "isFixedHeight": false,
-          "isFixedWidth": false,
-          "id": "u:70a36ef481cd",
-          "body": [
-            {
-              "id": "u:10f573c4f37f",
-              "type": "form",
-              "title": "",
-              "mode": "horizontal",
-              "dsType": "api",
-              "feat": "View",
-              "body": [
-                {
-                  "type": "flex",
-                  "className": "p-1",
-                  "items": [
-                    {
-                      "type": "container",
-                      "body": [
-                        {
-                          "type": "avatar",
-                          "showtype": "image",
-                          "icon": "",
-                          "fit": "cover",
-                          "style": {
-                            "width": 100,
-                            "height": 100,
-                            "borderRadius": 50,
-                            "fontFamily": "Times New Roman",
-                            "fontSize": 12,
-                            "textAlign": "center",
-                            "lineHeight": "100px",
-                            "fontWeight": "bold",
-                            "backgroundImage": "linear-gradient(180deg, #76c8ee, #4780e6)"
-                          },
-                          "id": "u:4e010eaa1990",
-                          "src": "${response.data.profile_picture}",
-                          "text": "加载失败",
-                          "onError": "return true;"
-                        }
-                      ],
-                      "size": "xs",
-                      "style": {
-                        "position": "static",
-                        "display": "flex",
-                        "flex": "1 1 auto",
-                        "flexGrow": 1,
-                        "flexWrap": "nowrap",
-                        "justifyContent": "center"
-                      },
-                      "wrapperBody": false,
-                      "isFixedHeight": false,
-                      "isFixedWidth": false,
-                      "id": "u:6ac4146541fc"
-                    },
-                    {
-                      "type": "container",
-                      "size": "xs",
-                      "style": {
-                        "position": "static",
-                        "display": "block",
-                        "flex": "1 1 auto",
-                        "flexGrow": 1
-                      },
-                      "wrapperBody": false,
-                      "isFixedHeight": false,
-                      "isFixedWidth": false,
-                      "id": "u:fd3326da4e61"
-                    },
-                    {
-                      "type": "container",
-                      "body": [
-                        {
-                          "type": "table",
-                          "columns": [
-                            {
-                              "label": "昵称",
-                              "name": "nickname",
-                              "type": "text",
-                              "id": "u:7e7825c6bd35"
-                            },
-                            {
-                              "type": "text",
-                              "name": "email",
-                              "label": "邮箱",
-                              "id": "u:681fea0f5945"
-                            },
-                            {
-                              "type": "date",
-                              "label": "注册时间",
-                              "name": "date_joined",
-                              "id": "u:01bf7318557f"
-                            }
-                          ],
-                          "id": "u:90dd0600b6af",
-                          "source": "${response.data.tableInfo}",
-                          "affixHeader": false
-                        }
-                      ],
-                      "size": "xs",
-                      "style": {
-                        "position": "static",
-                        "display": "block",
-                        "flex": "1 1 auto",
-                        "flexGrow": 1,
-                        "flexBasis": "auto"
-                      },
-                      "wrapperBody": false,
-                      "isFixedHeight": false,
-                      "isFixedWidth": false,
-                      "id": "u:2731ae441a21"
-                    }
-                  ],
-                  "style": {
-                    "position": "relative",
-                    "inset": "auto",
-                    "flexWrap": "nowrap",
-                    "flexDirection": "column"
-                  },
-                  "id": "u:e7ae61ccd585",
-                  "isFixedHeight": false,
-                  "isFixedWidth": false
-                }
-              ],
-              "actions": [],
-              "resetAfterSubmit": true,
-              "static": true,
-              "initApi": {
-                "method": "get",
-                "url": "/user/get_user_info/",
-                "requestAdaptor": "",
-                "adaptor": "return {\n    ...payload,\n    data: {\n        ...payload.data,\n        response: response.data\n    }\n}",
-                "messages": {},
-                "dataType": "json"
-              },
-              "wrapWithPanel": false
-            }
-          ]
-        }
-      ],
-      "style": {
-        "position": "static",
-        "flexWrap": "nowrap",
-        "flexDirection": "column",
-        "alignItems": "stretch",
-        "maxWidth": "500px",
-        "overflowX": "visible",
-        "minWidth": "300px",
-        "justifyContent": "center"
-      },
-      "id": "u:8e07b32b790c",
-      "isFixedHeight": false,
-      "isFixedWidth": false,
-      "themeCss": {
-        "baseControlClassName": {
-          "padding-and-margin:default": {
-            "marginTop": "3.75rem",
-            "marginLeft": "var(--sizes-size-1)",
-            "marginRight": "var(--sizes-size-1)"
-          }
-        }
-      }
-    },
-    {
-      "type": "container",
-      "body": [
-        {
-          "type": "tabs",
-          "tabs": [
-            {
-              "title": "操作记录",
-              "id": "u:47a1563636d0",
-              "body": [
-                {
-                  "id": "u:2ca60f6fefda",
-                  "type": "crud2",
-                  "mode": "table2",
-                  "dsType": "api",
-                  "syncLocation": true,
-                  "primaryField": "id",
-                  "loadType": "pagination",
-                  "api": {
-                    "url": "/user/get_user_operating_records/",
-                    "method": "get",
-                    "requestAdaptor": "",
-                    "adaptor": "",
-                    "messages": {},
-                    "dataType": "json"
-                  },
-                  "headerToolbar": [
-                    {
-                      "type": "flex",
-                      "direction": "row",
-                      "justify": "flex-start",
-                      "alignItems": "stretch",
-                      "style": {
-                        "position": "static"
-                      },
-                      "items": [
-                        {
-                          "type": "container",
-                          "align": "left",
-                          "behavior": [
-                            "Insert",
-                            "BulkEdit",
-                            "BulkDelete"
-                          ],
-                          "body": [],
-                          "wrapperBody": false,
-                          "style": {
-                            "flexGrow": 1,
-                            "flex": "1 1 auto",
-                            "position": "static",
-                            "display": "flex",
-                            "flexBasis": "auto",
-                            "flexDirection": "row",
-                            "flexWrap": "nowrap",
-                            "alignItems": "stretch",
-                            "justifyContent": "flex-start"
-                          },
-                          "id": "u:8e5d98089e98"
-                        },
-                        {
-                          "type": "container",
-                          "align": "right",
-                          "behavior": [
-                            "FuzzyQuery"
-                          ],
-                          "body": [],
-                          "wrapperBody": false,
-                          "style": {
-                            "flexGrow": 1,
-                            "flex": "1 1 auto",
-                            "position": "static",
-                            "display": "flex",
-                            "flexBasis": "auto",
-                            "flexDirection": "row",
-                            "flexWrap": "nowrap",
-                            "alignItems": "stretch",
-                            "justifyContent": "flex-end"
-                          },
-                          "id": "u:05e77c5e2e31"
-                        }
-                      ],
-                      "id": "u:58e162f2991a"
-                    }
-                  ],
-                  "footerToolbar": [
-                    {
-                      "type": "flex",
-                      "direction": "row",
-                      "justify": "flex-start",
-                      "alignItems": "stretch",
-                      "style": {
-                        "position": "static"
-                      },
-                      "items": [
-                        {
-                          "type": "container",
-                          "align": "left",
-                          "body": [],
-                          "wrapperBody": false,
-                          "style": {
-                            "flexGrow": 1,
-                            "flex": "1 1 auto",
-                            "position": "static",
-                            "display": "flex",
-                            "flexBasis": "auto",
-                            "flexDirection": "row",
-                            "flexWrap": "nowrap",
-                            "alignItems": "stretch",
-                            "justifyContent": "flex-start"
-                          },
-                          "id": "u:77a50cffcbf0"
-                        },
-                        {
-                          "type": "container",
-                          "align": "right",
-                          "body": [
-                            {
-                              "type": "pagination",
-                              "behavior": "Pagination",
-                              "layout": [
-                                "total",
-                                "perPage",
-                                "pager"
-                              ],
-                              "perPage": 10,
-                              "perPageAvailable": [
-                                10,
-                                20,
-                                50,
-                                100
-                              ],
-                              "align": "right",
-                              "id": "u:80ad871c6a5c"
-                            }
-                          ],
-                          "wrapperBody": false,
-                          "style": {
-                            "flexGrow": 1,
-                            "flex": "1 1 auto",
-                            "position": "static",
-                            "display": "flex",
-                            "flexBasis": "auto",
-                            "flexDirection": "row",
-                            "flexWrap": "nowrap",
-                            "alignItems": "stretch",
-                            "justifyContent": "flex-end"
-                          },
-                          "id": "u:8c8c6c528c43"
-                        }
-                      ],
-                      "id": "u:1d45d45510ec"
-                    }
-                  ],
-                  "columns": [
-                    {
-                      "type": "tpl",
-                      "title": "操作类型",
-                      "name": "operation_type",
-                      "id": "u:f8da656efd92"
-                    },
-                    {
-                      "type": "tpl",
-                      "title": "时间",
-                      "name": "created_at",
-                      "id": "u:176f54ebf3f8"
-                    },
-                    {
-                      "type": "operation",
-                      "title": "操作",
-                      "id": "u:6741aeb987d5",
-                      "buttons": [
-                        {
-                          "type": "button",
-                          "label": "查看",
-                          "level": "link",
-                          "behavior": "View",
-                          "onEvent": {
-                            "click": {
-                              "actions": [
-                                {
-                                  "ignoreError": false,
-                                  "actionType": "url",
-                                  "args": {
-                                    "url": "/file/?operating_record_id=${id}"
-                                  },
-                                  "expression": "${operation_type == '文件上传'}"
+        "type": "page",
+        "title": "个人界面",
+        "body": [
+          {
+            "type": "flex",
+            "id": "u:8e07b32b790c",
+            "className": "p-1",
+            "items": [
+              {
+                "type": "container",
+                "size": "xs",
+                "style": {
+                  "position": "static",
+                  "display": "block",
+                  "flex": "1 1 auto",
+                  "flexGrow": 1,
+                  "overflowX": "visible"
+                },
+                "wrapperBody": false,
+                "isFixedHeight": false,
+                "isFixedWidth": false,
+                "id": "u:70a36ef481cd",
+                "body": [
+                  {
+                    "id": "u:10f573c4f37f",
+                    "type": "form",
+                    "title": "",
+                    "mode": "horizontal",
+                    "dsType": "api",
+                    "feat": "View",
+                    "body": [
+                      {
+                        "type": "flex",
+                        "className": "p-1",
+                        "items": [
+                          {
+                            "type": "container",
+                            "body": [
+                              {
+                                "type": "avatar",
+                                "showtype": "image",
+                                "icon": "",
+                                "fit": "cover",
+                                "style": {
+                                  "width": 100,
+                                  "height": 100,
+                                  "borderRadius": 50,
+                                  "fontFamily": "Times New Roman",
+                                  "fontSize": 12,
+                                  "textAlign": "center",
+                                  "lineHeight": "100px",
+                                  "fontWeight": "bold",
+                                  "backgroundImage": "linear-gradient(180deg, #76c8ee, #4780e6)"
                                 },
-                                {
-                                  "ignoreError": false,
-                                  "actionType": "url",
-                                  "args": {
-                                    "url": "/project/?operating_record_id=${id}"
-                                  },
-                                  "expression": "${operation_type == '项目上传'}"
-                                }
-                              ]
-                            }
+                                "id": "u:4e010eaa1990",
+                                "src": "${response.data.profile_picture}",
+                                "text": "加载失败",
+                                "onError": "return true;"
+                              }
+                            ],
+                            "size": "xs",
+                            "style": {
+                              "position": "static",
+                              "display": "flex",
+                              "flex": "1 1 auto",
+                              "flexGrow": 1,
+                              "flexWrap": "nowrap",
+                              "justifyContent": "center"
+                            },
+                            "wrapperBody": false,
+                            "isFixedHeight": false,
+                            "isFixedWidth": false,
+                            "id": "u:6ac4146541fc"
                           },
-                          "id": "u:c841d132581a"
+                          {
+                            "type": "container",
+                            "size": "xs",
+                            "style": {
+                              "position": "static",
+                              "display": "block",
+                              "flex": "1 1 auto",
+                              "flexGrow": 1
+                            },
+                            "wrapperBody": false,
+                            "isFixedHeight": false,
+                            "isFixedWidth": false,
+                            "id": "u:fd3326da4e61"
+                          },
+                          {
+                            "type": "container",
+                            "body": [
+                              {
+                                "type": "table",
+                                "columns": [
+                                  {
+                                    "label": "昵称",
+                                    "name": "nickname",
+                                    "type": "text",
+                                    "id": "u:7e7825c6bd35"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "name": "email",
+                                    "label": "邮箱",
+                                    "id": "u:681fea0f5945"
+                                  },
+                                  {
+                                    "type": "date",
+                                    "label": "注册时间",
+                                    "name": "date_joined",
+                                    "id": "u:01bf7318557f"
+                                  }
+                                ],
+                                "id": "u:90dd0600b6af",
+                                "source": "${response.data.tableInfo}",
+                                "affixHeader": false
+                              }
+                            ],
+                            "size": "xs",
+                            "style": {
+                              "position": "static",
+                              "display": "block",
+                              "flex": "1 1 auto",
+                              "flexGrow": 1,
+                              "flexBasis": "auto"
+                            },
+                            "wrapperBody": false,
+                            "isFixedHeight": false,
+                            "isFixedWidth": false,
+                            "id": "u:2731ae441a21"
+                          }
+                        ],
+                        "style": {
+                          "position": "relative",
+                          "inset": "auto",
+                          "flexWrap": "nowrap",
+                          "flexDirection": "column"
                         },
-                        {
-                          "type": "button",
-                          "label": "删除",
-                          "behavior": "Delete",
-                          "className": "m-r-xs text-danger",
-                          "level": "link",
-                          "confirmText": "确认要删除数据",
-                          "onEvent": {
-                            "click": {
-                              "actions": [
-                                {
-                                  "actionType": "ajax",
-                                  "api": {
-                                    "method": "post",
-                                    "url": "/user/delete_operating_record/",
-                                    "requestAdaptor": "",
-                                    "adaptor": "",
-                                    "messages": {},
-                                    "dataType": "json",
-                                    "data": {
-                                      "id": "${id}"
+                        "id": "u:e7ae61ccd585",
+                        "isFixedHeight": false,
+                        "isFixedWidth": false
+                      }
+                    ],
+                    "actions": [],
+                    "resetAfterSubmit": true,
+                    "static": true,
+                    "initApi": {
+                      "method": "get",
+                      "url": "/user/get_user_info/",
+                      "requestAdaptor": "",
+                      "adaptor": "return {\n    ...payload,\n    data: {\n        ...payload.data,\n        response: response.data\n    }\n}",
+                      "messages": {},
+                      "dataType": "json"
+                    },
+                    "wrapWithPanel": false
+                  }
+                ]
+              }
+            ],
+            "style": {
+              "position": "static",
+              "flexWrap": "nowrap",
+              "flexDirection": "column",
+              "alignItems": "stretch",
+              "maxWidth": "500px",
+              "overflowX": "visible",
+              "minWidth": "300px",
+              "justifyContent": "center"
+            },
+            "isFixedHeight": false,
+            "isFixedWidth": false,
+            "themeCss": {
+              "baseControlClassName": {
+                "padding-and-margin:default": {
+                  "marginTop": "3.75rem",
+                  "marginLeft": "var(--sizes-size-1)",
+                  "marginRight": "var(--sizes-size-1)"
+                }
+              }
+            }
+          },
+          {
+            "id": "u:6fb3105d789d",
+            "type": "container",
+            "body": [
+              {
+                "type": "tabs",
+                "id": "u:73d264edf69e",
+                "tabs": [
+                  {
+                    "title": "操作记录",
+                    "id": "u:47a1563636d0",
+                    "body": [
+                      {
+                        "id": "u:2ca60f6fefda",
+                        "type": "crud2",
+                        "mode": "table2",
+                        "dsType": "api",
+                        "syncLocation": true,
+                        "primaryField": "id",
+                        "loadType": "pagination",
+                        "api": {
+                          "url": "/user/get_user_operating_records/",
+                          "method": "get",
+                          "requestAdaptor": "",
+                          "adaptor": "",
+                          "messages": {},
+                          "dataType": "json"
+                        },
+                        "headerToolbar": [
+                          {
+                            "type": "flex",
+                            "direction": "row",
+                            "justify": "flex-start",
+                            "alignItems": "stretch",
+                            "style": {
+                              "position": "static"
+                            },
+                            "items": [
+                              {
+                                "type": "container",
+                                "align": "left",
+                                "behavior": [
+                                  "Insert",
+                                  "BulkEdit",
+                                  "BulkDelete"
+                                ],
+                                "body": [],
+                                "wrapperBody": false,
+                                "style": {
+                                  "flexGrow": 1,
+                                  "flex": "1 1 auto",
+                                  "position": "static",
+                                  "display": "flex",
+                                  "flexBasis": "auto",
+                                  "flexDirection": "row",
+                                  "flexWrap": "nowrap",
+                                  "alignItems": "stretch",
+                                  "justifyContent": "flex-start"
+                                },
+                                "id": "u:8e5d98089e98"
+                              },
+                              {
+                                "type": "container",
+                                "align": "right",
+                                "behavior": [
+                                  "FuzzyQuery"
+                                ],
+                                "body": [],
+                                "wrapperBody": false,
+                                "style": {
+                                  "flexGrow": 1,
+                                  "flex": "1 1 auto",
+                                  "position": "static",
+                                  "display": "flex",
+                                  "flexBasis": "auto",
+                                  "flexDirection": "row",
+                                  "flexWrap": "nowrap",
+                                  "alignItems": "stretch",
+                                  "justifyContent": "flex-end"
+                                },
+                                "id": "u:05e77c5e2e31"
+                              }
+                            ],
+                            "id": "u:58e162f2991a"
+                          }
+                        ],
+                        "footerToolbar": [
+                          {
+                            "type": "flex",
+                            "direction": "row",
+                            "justify": "flex-start",
+                            "alignItems": "stretch",
+                            "style": {
+                              "position": "static"
+                            },
+                            "items": [
+                              {
+                                "type": "container",
+                                "align": "left",
+                                "body": [],
+                                "wrapperBody": false,
+                                "style": {
+                                  "flexGrow": 1,
+                                  "flex": "1 1 auto",
+                                  "position": "static",
+                                  "display": "flex",
+                                  "flexBasis": "auto",
+                                  "flexDirection": "row",
+                                  "flexWrap": "nowrap",
+                                  "alignItems": "stretch",
+                                  "justifyContent": "flex-start"
+                                },
+                                "id": "u:77a50cffcbf0"
+                              },
+                              {
+                                "type": "container",
+                                "align": "right",
+                                "body": [
+                                  {
+                                    "type": "pagination",
+                                    "behavior": "Pagination",
+                                    "layout": [
+                                      "total",
+                                      "perPage",
+                                      "pager"
+                                    ],
+                                    "perPage": 10,
+                                    "perPageAvailable": [
+                                      10,
+                                      20,
+                                      50,
+                                      100
+                                    ],
+                                    "align": "right",
+                                    "id": "u:80ad871c6a5c"
+                                  }
+                                ],
+                                "wrapperBody": false,
+                                "style": {
+                                  "flexGrow": 1,
+                                  "flex": "1 1 auto",
+                                  "position": "static",
+                                  "display": "flex",
+                                  "flexBasis": "auto",
+                                  "flexDirection": "row",
+                                  "flexWrap": "nowrap",
+                                  "alignItems": "stretch",
+                                  "justifyContent": "flex-end"
+                                },
+                                "id": "u:8c8c6c528c43"
+                              }
+                            ],
+                            "id": "u:1d45d45510ec"
+                          }
+                        ],
+                        "columns": [
+                          {
+                            "type": "tpl",
+                            "title": "操作类型",
+                            "name": "operation_type",
+                            "id": "u:f8da656efd92"
+                          },
+                          {
+                            "type": "tpl",
+                            "title": "时间",
+                            "name": "created_at",
+                            "id": "u:176f54ebf3f8"
+                          },
+                          {
+                            "type": "operation",
+                            "title": "操作",
+                            "id": "u:6741aeb987d5",
+                            "buttons": [
+                              {
+                                "type": "button",
+                                "label": "查看",
+                                "level": "link",
+                                "behavior": "View",
+                                "onEvent": {
+                                  "click": {
+                                    "actions": [
+                                      {
+                                        "ignoreError": false,
+                                        "actionType": "url",
+                                        "args": {
+                                          "url": "/file/?operating_record_id=${id}"
+                                        },
+                                        "expression": "${operation_type == '文件上传'}"
+                                      },
+                                      {
+                                        "ignoreError": false,
+                                        "actionType": "url",
+                                        "args": {
+                                          "url": "/project/?operating_record_id=${id}"
+                                        },
+                                        "expression": "${operation_type == '项目上传'}"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "id": "u:c841d132581a"
+                              },
+                              {
+                                "type": "button",
+                                "label": "删除",
+                                "behavior": "Delete",
+                                "className": "m-r-xs text-danger",
+                                "level": "link",
+                                "confirmText": "确认要删除数据",
+                                "onEvent": {
+                                  "click": {
+                                    "actions": [
+                                      {
+                                        "actionType": "ajax",
+                                        "api": {
+                                          "method": "post",
+                                          "url": "/user/delete_operating_record/",
+                                          "requestAdaptor": "",
+                                          "adaptor": "",
+                                          "messages": {},
+                                          "dataType": "json",
+                                          "data": {
+                                            "id": "${id}"
+                                          }
+                                        },
+                                        "outputVar": "responseResult",
+                                        "options": {}
+                                      },
+                                      {
+                                        "actionType": "search",
+                                        "groupType": "component",
+                                        "componentId": "u:2ca60f6fefda"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "id": "u:4eb8fd0d863b"
+                              }
+                            ]
+                          }
+                        ],
+                        "editorSetting": {
+                          "mock": {
+                            "enable": true,
+                            "maxDisplayRows": 5
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "title": "修改信息",
+                    "body": [
+                      {
+                        "id": "u:4198b52af6ed",
+                        "type": "form",
+                        "title": "",
+                        "mode": "horizontal",
+                        "dsType": "api",
+                        "feat": "Edit",
+                        "body": [
+                          {
+                            "name": "nickname",
+                            "label": "昵称",
+                            "type": "input-text",
+                            "id": "u:9a1172ebc013",
+                            "maxLength": 20
+                          },
+                          {
+                            "name": "profile_picture",
+                            "label": "头像",
+                            "type": "input-file",
+                            "id": "u:b21e61de9821",
+                            "btnLabel": "文件上传",
+                            "multiple": false,
+                            "uploadType": "asForm",
+                            "proxy": true,
+                            "autoUpload": true,
+                            "useChunk": false,
+                            "accept": ".png,.jpg",
+                            "drag": true,
+                            "asBlob": true,
+                            "formType": "asBlob"
+                          }
+                        ],
+                        "actions": [
+                          {
+                            "type": "button",
+                            "label": "提交修改",
+                            "onEvent": {
+                              "click": {
+                                "actions": [
+                                  {
+                                    "actionType": "submit",
+                                    "componentId": "u:4198b52af6ed"
+                                  }
+                                ]
+                              }
+                            },
+                            "level": "light",
+                            "id": "u:e611f0d138df"
+                          }
+                        ],
+                        "resetAfterSubmit": true,
+                        "api": {
+                          "url": "/user/update_user_info/",
+                          "method": "post",
+                          "requestAdaptor": "",
+                          "adaptor": "",
+                          "messages": {},
+                          "dataType": "form-data"
+                        },
+                        "onEvent": {
+                          "submitSucc": {
+                            "weight": 0,
+                            "actions": [
+                              {
+                                "ignoreError": false,
+                                "actionType": "refresh"
+                              }
+                            ]
+                          }
+                        },
+                        "initApi": {
+                          "method": "get",
+                          "url": "/user/get_user_info/",
+                          "requestAdaptor": "",
+                          "adaptor": "",
+                          "messages": {},
+                          "dataType": "json"
+                        }
+                      }
+                    ],
+                    "id": "u:a1e8bc8d3be4"
+                  },
+                  {
+                    "title": "修改密码",
+                    "body": [
+                      {
+                        "id": "u:297b8c3e1a8c",
+                        "type": "form",
+                        "title": "",
+                        "mode": "horizontal",
+                        "dsType": "api",
+                        "feat": "Insert",
+                        "body": [
+                          {
+                            "name": "old_password",
+                            "label": "旧密码",
+                            "type": "input-password",
+                            "id": "u:d4207fe793bf",
+                            "showCounter": false,
+                            "validations": {},
+                            "validationErrors": {},
+                            "maxLength": 20
+                          },
+                          {
+                            "name": "new_password",
+                            "label": "新密码",
+                            "type": "input-password",
+                            "id": "u:875df8a91986",
+                            "showCounter": false,
+                            "validations": {},
+                            "validationErrors": {},
+                            "maxLength": 20
+                          },
+                          {
+                            "name": "again_new_password",
+                            "label": "再次输入新密码",
+                            "type": "input-password",
+                            "id": "u:6aa9f7ddce4a",
+                            "showCounter": false,
+                            "validations": {},
+                            "validationErrors": {},
+                            "maxLength": 20
+                          }
+                        ],
+                        "api": {
+                          "url": "/user/change_password/",
+                          "method": "post",
+                          "requestAdaptor": "",
+                          "adaptor": "",
+                          "messages": {},
+                          "dataType": "json"
+                        },
+                        "actions": [
+                          {
+                            "type": "button",
+                            "label": "提交修改",
+                            "onEvent": {
+                              "click": {
+                                "actions": [
+                                  {
+                                    "actionType": "submit",
+                                    "componentId": "u:297b8c3e1a8c"
+                                  }
+                                ]
+                              }
+                            },
+                            "level": "light",
+                            "id": "u:55d2c95ed4b8"
+                          }
+                        ],
+                        "resetAfterSubmit": true,
+                        "onEvent": {
+                          "submitSucc": {
+                            "weight": 0,
+                            "actions": [
+                              {
+                                "ignoreError": false,
+                                "actionType": "url",
+                                "args": {
+                                  "url": "/login/"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "id": "u:429d7f5bf926"
+                  },
+                  {
+                    "title": "退出登录",
+                    "body": [
+                      {
+                        "type": "container",
+                        "id": "u:06fcdddea740",
+                        "body": [
+                          {
+                            "type": "button",
+                            "label": "退出登录",
+                            "onEvent": {
+                              "click": {
+                                "actions": [
+                                  {
+                                    "ignoreError": false,
+                                    "outputVar": "response",
+                                    "actionType": "ajax",
+                                    "options": {},
+                                    "api": {
+                                      "url": "/user/logout/",
+                                      "method": "get",
+                                      "requestAdaptor": "",
+                                      "adaptor": "",
+                                      "messages": {},
+                                      "dataType": "json"
                                     }
                                   },
-                                  "outputVar": "responseResult",
-                                  "options": {}
-                                },
-                                {
-                                  "actionType": "search",
-                                  "groupType": "component",
-                                  "componentId": "u:2ca60f6fefda"
-                                }
-                              ]
-                            }
-                          },
-                          "id": "u:4eb8fd0d863b"
-                        }
-                      ]
-                    }
-                  ],
-                  "editorSetting": {
-                    "mock": {
-                      "enable": true,
-                      "maxDisplayRows": 5
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "title": "修改信息",
-              "body": [
-                {
-                  "id": "u:4198b52af6ed",
-                  "type": "form",
-                  "title": "",
-                  "mode": "horizontal",
-                  "dsType": "api",
-                  "feat": "Edit",
-                  "body": [
-                    {
-                      "name": "nickname",
-                      "label": "昵称",
-                      "type": "input-text",
-                      "id": "u:9a1172ebc013",
-                      "maxLength": 20
-                    },
-                    {
-                      "name": "profile_picture",
-                      "label": "头像",
-                      "type": "input-file",
-                      "id": "u:b21e61de9821",
-                      "btnLabel": "文件上传",
-                      "multiple": false,
-                      "uploadType": "asForm",
-                      "proxy": true,
-                      "autoUpload": true,
-                      "useChunk": false,
-                      "accept": ".png,.jpg",
-                      "drag": true,
-                      "asBlob": true,
-                      "formType": "asBlob"
-                    }
-                  ],
-                  "actions": [
-                    {
-                      "type": "button",
-                      "label": "提交修改",
-                      "onEvent": {
-                        "click": {
-                          "actions": [
-                            {
-                              "actionType": "submit",
-                              "componentId": "u:4198b52af6ed"
-                            }
-                          ]
-                        }
-                      },
-                      "level": "light",
-                      "id": "u:e611f0d138df"
-                    }
-                  ],
-                  "resetAfterSubmit": true,
-                  "api": {
-                    "url": "/user/update_user_info/",
-                    "method": "post",
-                    "requestAdaptor": "",
-                    "adaptor": "",
-                    "messages": {},
-                    "dataType": "form-data"
-                  },
-                  "onEvent": {
-                    "submitSucc": {
-                      "weight": 0,
-                      "actions": [
-                        {
-                          "ignoreError": false,
-                          "actionType": "refresh"
-                        }
-                      ]
-                    }
-                  },
-                  "initApi": {
-                    "method": "get",
-                    "url": "/user/get_user_info/",
-                    "requestAdaptor": "",
-                    "adaptor": "",
-                    "messages": {},
-                    "dataType": "json"
-                  }
-                }
-              ],
-              "id": "u:a1e8bc8d3be4"
-            },
-            {
-              "title": "修改密码",
-              "body": [
-                {
-                  "id": "u:297b8c3e1a8c",
-                  "type": "form",
-                  "title": "",
-                  "mode": "horizontal",
-                  "dsType": "api",
-                  "feat": "Insert",
-                  "body": [
-                    {
-                      "name": "old_password",
-                      "label": "旧密码",
-                      "type": "input-password",
-                      "id": "u:d4207fe793bf",
-                      "showCounter": false,
-                      "validations": {},
-                      "validationErrors": {},
-                      "maxLength": 20
-                    },
-                    {
-                      "name": "new_password",
-                      "label": "新密码",
-                      "type": "input-password",
-                      "id": "u:875df8a91986",
-                      "showCounter": false,
-                      "validations": {},
-                      "validationErrors": {},
-                      "maxLength": 20
-                    },
-                    {
-                      "name": "again_new_password",
-                      "label": "再次输入新密码",
-                      "type": "input-password",
-                      "id": "u:6aa9f7ddce4a",
-                      "showCounter": false,
-                      "validations": {},
-                      "validationErrors": {},
-                      "maxLength": 20
-                    }
-                  ],
-                  "api": {
-                    "url": "/user/change_password/",
-                    "method": "post",
-                    "requestAdaptor": "",
-                    "adaptor": "",
-                    "messages": {},
-                    "dataType": "json"
-                  },
-                  "actions": [
-                    {
-                      "type": "button",
-                      "label": "提交修改",
-                      "onEvent": {
-                        "click": {
-                          "actions": [
-                            {
-                              "actionType": "submit",
-                              "componentId": "u:297b8c3e1a8c"
-                            }
-                          ]
-                        }
-                      },
-                      "level": "light",
-                      "id": "u:55d2c95ed4b8"
-                    }
-                  ],
-                  "resetAfterSubmit": true,
-                  "onEvent": {
-                    "submitSucc": {
-                      "weight": 0,
-                      "actions": [
-                        {
-                          "ignoreError": false,
-                          "actionType": "url",
-                          "args": {
-                            "url": "/login/"
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
-              ],
-              "id": "u:429d7f5bf926"
-            },
-            {
-              "title": "退出登录",
-              "body": [
-                {
-                  "type": "container",
-                  "id": "u:06fcdddea740",
-                  "body": [
-                    {
-                      "type": "button",
-                      "label": "退出登录",
-                      "onEvent": {
-                        "click": {
-                          "actions": [
-                            {
-                              "ignoreError": false,
-                              "outputVar": "response",
-                              "actionType": "ajax",
-                              "options": {},
-                              "api": {
-                                "url": "/user/logout/",
-                                "method": "post",
-                                "requestAdaptor": "",
-                                "adaptor": "",
-                                "messages": {},
-                                "dataType": "json"
+                                  {
+                                    "ignoreError": false,
+                                    "actionType": "url",
+                                    "args": {
+                                      "url": "/index/",
+                                      "blank": false
+                                    }
+                                  }
+                                ]
                               }
                             },
-                            {
-                              "ignoreError": false,
-                              "actionType": "url",
-                              "args": {
-                                "url": "/index/",
-                                "blank": false
-                              }
-                            }
-                          ]
-                        }
-                      },
-                      "id": "u:712414d948b7",
-                      "confirmText": "确认退出？",
-                      "level": "danger",
-                      "size": "lg"
-                    }
-                  ],
-                  "style": {
-                    "position": "static",
-                    "display": "flex",
-                    "flexWrap": "nowrap",
-                    "justifyContent": "center",
-                    "alignItems": "center",
-                    "minHeight": "300px",
-                    "maxHeight": "300px",
-                    "overflowY": "visible"
-                  },
-                  "size": "none",
-                  "wrapperBody": false,
-                  "isFixedHeight": false,
-                  "isFixedWidth": false
-                }
-              ],
-              "id": "u:9f330c94dc6b"
-            }
-          ],
-          "id": "u:73d264edf69e",
-          "tabsMode": "sidebar"
-        }
-      ],
-      "style": {
-        "position": "static",
-        "display": "flex",
-        "flexWrap": "nowrap",
-        "flexDirection": "column"
-      },
-      "size": "none",
-      "wrapperBody": false,
-      "id": "u:6fb3105d789d",
-      "isFixedHeight": false,
-      "isFixedWidth": false
-    }
-  ],
-  "id": "u:69c36b6caf21",
-  "asideResizor": false,
-  "pullRefresh": {
-    "disabled": true
-  },
-  "regions": [
-    "body",
-    "toolbar"
-  ],
-  "toolbar": [
-    {
-      "type": "flex",
-      "id": "u:5435e8b8d608",
-      "themeCss": {
-        "baseControlClassName": {
-          "padding-and-margin:default": {
-            "margin": "0"
-          },
-          "background:default": "var(--colors-brand-10)"
-        }
-      },
-      "className": "p-1",
-      "items": [
-        {
-          "type": "container",
-          "body": [
-            {
-              "type": "container",
-              "body": [],
-              "size": "",
-              "style": {
-                "position": "static",
-                "display": "block",
-                "flex": "1 1 auto",
-                "flexGrow": 1,
-                "overflowY": "visible",
-                "minHeight": "50px",
-                "minWidth": "50px",
-                "maxWidth": "50px",
-                "maxHeight": "50px"
-              },
-              "wrapperBody": false,
-              "isFixedHeight": false,
-              "isFixedWidth": false,
-              "id": "u:a9e2b8ee6332",
-              "themeCss": {
-                "baseControlClassName": {
-                  "padding-and-margin:default": {
-                    "marginRight": "var(--sizes-base-12)"
-                  },
-                  "background:default": "url(/static/images/CodeComment.svg) center center / contain no-repeat "
-                }
-              },
-              "onEvent": {
-                "click": {
-                  "weight": 0,
-                  "actions": []
-                }
+                            "id": "u:712414d948b7",
+                            "confirmText": "确认退出？",
+                            "level": "danger",
+                            "size": "lg"
+                          }
+                        ],
+                        "style": {
+                          "position": "static",
+                          "display": "flex",
+                          "flexWrap": "nowrap",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "minHeight": "300px",
+                          "maxHeight": "300px",
+                          "overflowY": "visible"
+                        },
+                        "size": "none",
+                        "wrapperBody": false,
+                        "isFixedHeight": false,
+                        "isFixedWidth": false
+                      }
+                    ],
+                    "id": "u:9f330c94dc6b"
+                  }
+                ],
+                "tabsMode": "sidebar"
+              }
+            ],
+            "style": {
+              "position": "static",
+              "display": "flex",
+              "flexWrap": "nowrap",
+              "flexDirection": "column"
+            },
+            "size": "none",
+            "wrapperBody": false,
+            "isFixedHeight": false,
+            "isFixedWidth": false
+          }
+        ],
+        "id": "u:69c36b6caf21",
+        "asideResizor": false,
+        "pullRefresh": {
+          "disabled": true
+        },
+        "regions": [
+          "body",
+          "toolbar"
+        ],
+        "toolbar": [
+          {
+            "type": "flex",
+            "id": "u:5435e8b8d608",
+            "themeCss": {
+              "baseControlClassName": {
+                "padding-and-margin:default": {
+                  "margin": "0"
+                },
+                "background:default": "var(--colors-brand-10)"
               }
             },
-            {
-              "type": "nav",
-              "stacked": false,
-              "popupClassName": "app-popover :AMISCSSWrapper",
-              "links": [
-                {
-                  "label": "主页",
-                  "to": "/index/",
-                  "target": "_self",
-                  "id": "0",
-                  "icon": "",
-                  "badge": "",
-                  "children": []
-                },
-                {
-                  "label": "文件",
-                  "to": "/file/",
-                  "target": "_self",
-                  "id": "1",
-                  "children": []
-                },
-                {
-                  "label": "项目",
-                  "to": "/project/",
-                  "target": "_self",
-                  "id": "2",
-                  "children": []
-                },
-                {
-                  "label": "说明文档",
-                  "to": "/readme/",
-                  "icon": "",
-                  "target": "_blank",
-                  "badge": "",
-                  "children": [],
-                  "id": "3"
-                }
-              ],
-              "id": "u:21c6f26815e2",
-              "style": {
-                "backgroundColor": "rgba(232, 240, 254, 1)"
-              }
-            }
-          ],
-          "size": "xs",
-          "style": {
-            "position": "static",
-            "display": "flex",
-            "flex": "1 1 auto",
-            "flexGrow": 1,
-            "flexWrap": "nowrap",
-            "alignItems": "center"
-          },
-          "wrapperBody": false,
-          "isFixedHeight": false,
-          "isFixedWidth": false,
-          "id": "u:8b7f04a60bae",
-          "themeCss": {
-            "baseControlClassName": {
-              "padding-and-margin:default": {
-                "paddingLeft": "var(--sizes-base-20)"
-              }
-            }
-          }
-        },
-        {
-          "type": "container",
-          "body": [
-            {
-              "id": "u:89e40caa2605",
-              "type": "form",
-              "title": "表单",
-              "mode": "horizontal",
-              "dsType": "api",
-              "feat": "View",
-              "body": [
-                {
-                  "type": "container",
-                  "style": {
-                    "position": "static",
-                    "display": "block"
-                  },
-                  "id": "u:d7242f3d219f",
-                  "body": [
-                    {
-                      "type": "avatar",
-                      "showtype": "image",
-                      "icon": "",
-                      "fit": "cover",
-                      "style": {
-                        "width": 40,
-                        "height": 40,
-                        "borderRadius": 20,
-                        "backgroundImage": "linear-gradient(180deg, #76c8ee, #4780e6)",
-                        "boxShadow": "2px 2px 4px",
-                        "fontFamily": "",
-                        "fontSize": 12
-                      },
-                      "id": "u:29ef5d6831fd",
-                      "gap": 4,
-                      "src": "${response.data.profile_picture}",
-                      "text": "${response.data.text}",
-                      "onError": "return true;",
-                      "visible": true
+            "className": "p-1",
+            "items": [
+              {
+                "type": "container",
+                "body": [
+                  {
+                    "type": "container",
+                    "body": [],
+                    "size": "",
+                    "style": {
+                      "position": "static",
+                      "display": "block",
+                      "flex": "1 1 auto",
+                      "flexGrow": 1,
+                      "overflowY": "visible",
+                      "minHeight": "50px",
+                      "minWidth": "50px",
+                      "maxWidth": "50px",
+                      "maxHeight": "50px"
+                    },
+                    "wrapperBody": false,
+                    "isFixedHeight": false,
+                    "isFixedWidth": false,
+                    "id": "u:a9e2b8ee6332",
+                    "themeCss": {
+                      "baseControlClassName": {
+                        "padding-and-margin:default": {
+                          "marginRight": "var(--sizes-base-12)"
+                        },
+                        "background:default": "url(/static/images/CodeComment.svg) center center / contain no-repeat "
+                      }
+                    },
+                    "onEvent": {
+                      "click": {
+                        "weight": 0,
+                        "actions": []
+                      }
                     }
-                  ],
-                  "size": "none",
-                  "wrapperBody": false,
-                  "isFixedHeight": false,
-                  "isFixedWidth": false,
-                  "onEvent": {
-                    "click": {
-                      "weight": 0,
-                      "actions": [
-                        {
-                          "ignoreError": false,
-                          "actionType": "url",
-                          "args": {
-                            "url": "/user/",
-                            "blank": false
-                          }
-                        }
-                      ]
+                  },
+                  {
+                    "type": "nav",
+                    "stacked": false,
+                    "popupClassName": "app-popover :AMISCSSWrapper",
+                    "links": [
+                      {
+                        "label": "主页",
+                        "to": "/index/",
+                        "target": "_self",
+                        "id": "0",
+                        "icon": "",
+                        "badge": "",
+                        "children": []
+                      },
+                      {
+                        "label": "文件",
+                        "to": "/file/",
+                        "target": "_self",
+                        "id": "1",
+                        "children": []
+                      },
+                      {
+                        "label": "项目",
+                        "to": "/project/",
+                        "target": "_self",
+                        "id": "2",
+                        "children": []
+                      },
+                      {
+                        "label": "说明文档",
+                        "to": "/readme/",
+                        "icon": "",
+                        "target": "_blank",
+                        "badge": "",
+                        "children": [],
+                        "id": "3"
+                      }
+                    ],
+                    "id": "u:21c6f26815e2",
+                    "style": {
+                      "backgroundColor": "rgba(232, 240, 254, 1)"
+                    }
+                  }
+                ],
+                "size": "xs",
+                "style": {
+                  "position": "static",
+                  "display": "flex",
+                  "flex": "1 1 auto",
+                  "flexGrow": 1,
+                  "flexWrap": "nowrap",
+                  "alignItems": "center"
+                },
+                "wrapperBody": false,
+                "isFixedHeight": false,
+                "isFixedWidth": false,
+                "id": "u:8b7f04a60bae",
+                "themeCss": {
+                  "baseControlClassName": {
+                    "padding-and-margin:default": {
+                      "paddingLeft": "var(--sizes-base-20)"
                     }
                   }
                 }
-              ],
-              "actions": [],
-              "static": true,
-              "initApi": {
-                "method": "get",
-                "url": "/user/get_user_profile_picture/",
-                "requestAdaptor": "",
-                "adaptor": "return {\n    ...payload,\n    data: {\n        ...payload.data,\n        response: response.data\n    }\n}",
-                "messages": {},
-                "dataType": "json"
               },
-              "wrapWithPanel": false
-            }
-          ],
-          "size": "xs",
-          "style": {
-            "position": "static",
-            "display": "flex",
-            "flex": "1 1 auto",
-            "flexGrow": 1,
-            "flexWrap": "nowrap",
-            "flexDirection": "row",
-            "justifyContent": "flex-end",
-            "alignItems": "center"
-          },
-          "wrapperBody": false,
-          "isFixedHeight": false,
-          "isFixedWidth": false,
-          "id": "u:b9f6e6e1c8b1",
-          "themeCss": {
-            "baseControlClassName": {
-              "padding-and-margin:default": {
-                "paddingRight": "var(--sizes-base-20)",
-                "paddingTop": "0.5rem"
+              {
+                "type": "container",
+                "body": [
+                  {
+                    "id": "u:89e40caa2605",
+                    "type": "form",
+                    "title": "表单",
+                    "mode": "horizontal",
+                    "dsType": "api",
+                    "feat": "View",
+                    "body": [
+                      {
+                        "type": "container",
+                        "style": {
+                          "position": "static",
+                          "display": "block"
+                        },
+                        "id": "u:d7242f3d219f",
+                        "body": [
+                          {
+                            "type": "avatar",
+                            "showtype": "image",
+                            "icon": "",
+                            "fit": "cover",
+                            "style": {
+                              "width": 40,
+                              "height": 40,
+                              "borderRadius": 20,
+                              "backgroundImage": "linear-gradient(180deg, #76c8ee, #4780e6)",
+                              "boxShadow": "2px 2px 4px",
+                              "fontFamily": "",
+                              "fontSize": 12
+                            },
+                            "id": "u:29ef5d6831fd",
+                            "gap": 4,
+                            "src": "${response.data.profile_picture}",
+                            "text": "${response.data.text}",
+                            "onError": "return true;",
+                            "visible": true
+                          }
+                        ],
+                        "size": "none",
+                        "wrapperBody": false,
+                        "isFixedHeight": false,
+                        "isFixedWidth": false,
+                        "onEvent": {
+                          "click": {
+                            "weight": 0,
+                            "actions": [
+                              {
+                                "ignoreError": false,
+                                "actionType": "url",
+                                "args": {
+                                  "url": "/user/",
+                                  "blank": false
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "actions": [],
+                    "static": true,
+                    "initApi": {
+                      "method": "get",
+                      "url": "/user/get_user_profile_picture/",
+                      "requestAdaptor": "",
+                      "adaptor": "return {\n    ...payload,\n    data: {\n        ...payload.data,\n        response: response.data\n    }\n}",
+                      "messages": {},
+                      "dataType": "json"
+                    },
+                    "wrapWithPanel": false
+                  }
+                ],
+                "size": "xs",
+                "style": {
+                  "position": "static",
+                  "display": "flex",
+                  "flex": "1 1 auto",
+                  "flexGrow": 1,
+                  "flexWrap": "nowrap",
+                  "flexDirection": "row",
+                  "justifyContent": "flex-end",
+                  "alignItems": "center"
+                },
+                "wrapperBody": false,
+                "isFixedHeight": false,
+                "isFixedWidth": false,
+                "id": "u:b9f6e6e1c8b1",
+                "themeCss": {
+                  "baseControlClassName": {
+                    "padding-and-margin:default": {
+                      "paddingRight": "var(--sizes-base-20)",
+                      "paddingTop": "0.5rem"
+                    }
+                  }
+                }
               }
-            }
+            ],
+            "style": {
+              "position": "fixed",
+              "flexWrap": "nowrap",
+              "flexDirection": "row",
+              "justifyContent": "center",
+              "overflowX": "visible",
+              "overflowY": "visible",
+              "width": "100%",
+              "zIndex": 1,
+              "inset": "0px 0px auto 0px"
+            },
+            "isFixedHeight": false,
+            "isFixedWidth": true,
+            "wrapperCustomStyle": {},
+            "originPosition": "left-top"
           }
-        }
-      ],
-      "style": {
-        "position": "fixed",
-        "flexWrap": "nowrap",
-        "flexDirection": "row",
-        "justifyContent": "center",
-        "overflowX": "visible",
-        "overflowY": "visible",
-        "width": "100%",
-        "zIndex": 1,
-        "inset": "0px 0px auto 0px"
-      },
-      "isFixedHeight": false,
-      "isFixedWidth": true,
-      "wrapperCustomStyle": {},
-      "originPosition": "left-top"
-    }
-  ]
-} ; let amisScoped = amis.embed('#root', amisJSON);
+        ]
+      } ; let amisScoped = amis.embed('#root', amisJSON);
     })();
   </script>
 </body>

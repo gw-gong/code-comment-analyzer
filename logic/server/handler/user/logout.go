@@ -1,11 +1,12 @@
 package user
 
 import (
+	"fmt"
+	"net/http"
+
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
-	"fmt"
-	"net/http"
 )
 
 type Logout struct {

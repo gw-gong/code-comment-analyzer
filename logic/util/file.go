@@ -2,12 +2,14 @@ package util
 
 import (
 	"archive/zip"
-	"code-comment-analyzer/protocol"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"code-comment-analyzer/config"
+	"code-comment-analyzer/protocol"
 )
 
 func Unzip(src, dest string) error {
@@ -103,4 +105,14 @@ func BuildDirectoryTree(currentPath, rootPath, projectStorageName string) protoc
 	}
 
 	return node
+}
+
+func TransformProfilePictureUrlToResourceUrl(notUseDefaultAvatar bool, profilePictureUrl string) *string {
+	if notUseDefaultAvatar {
+		return &profilePictureUrl
+	}
+	avatarsStorageRootPath := config.Cfg.FileStoragePath.Avatars
+	defaultAvatar := config.Cfg.DefaultAvatar
+	defaultAvatarUrl := filepath.Join("/", avatarsStorageRootPath, defaultAvatar)
+	return &defaultAvatarUrl
 }

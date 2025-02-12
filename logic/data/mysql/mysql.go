@@ -51,9 +51,9 @@ func (m *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname 
 	return user.UID, user.Nickname, user.Password, nil
 }
 
-func (m *mysqlClient) GetUserInfoByUserID(userID uint64) (email string, nickname string, dateJoined time.Time, err error) {
+func (m *mysqlClient) GetUserInfoByUserID(userID uint64) (isSetProfilePicture bool, profilePictureUrl string, email string, nickname string, dateJoined time.Time, err error) {
 	var queryMods []qm.QueryMod
-	queryMods = append(queryMods, qm.Select(models.UserUserColumns.Email, models.UserUserColumns.Nickname, models.UserUserColumns.DateJoined))
+	queryMods = append(queryMods, qm.Select(models.UserUserColumns.ProfilePicture, models.UserUserColumns.Email, models.UserUserColumns.Nickname, models.UserUserColumns.DateJoined))
 	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
 	user, err := models.UserUsers(queryMods...).One(m.db)
 	if err != nil {
@@ -63,7 +63,10 @@ func (m *mysqlClient) GetUserInfoByUserID(userID uint64) (email string, nickname
 		}
 		return
 	}
-	return user.Email, user.Nickname, user.DateJoined, nil
+	if user.ProfilePicture.Valid == false {
+		return false, "", user.Email, user.Nickname, user.DateJoined, nil
+	}
+	return true, user.ProfilePicture.String, user.Email, user.Nickname, user.DateJoined, nil
 }
 
 func (m *mysqlClient) GetUserProfilePictureByUserID(userID uint64) (isSetProfilePicture bool, profilePictureUrl string, err error) {

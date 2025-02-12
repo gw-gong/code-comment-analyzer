@@ -81,6 +81,7 @@ func defaultMiddleOp(getHandler GetHandler) HandlerFunc {
 func enforceGet(handlerFunc HandlerFunc) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {
 		if r.Method != Get {
+			log.Printf("request method must be %s", Get)
 			protocol.HttpResponseFail(w, http.StatusInternalServerError, protocol.ErrorCodeMustBeGet, fmt.Sprintf("request method must be %s", Get))
 			return
 		}
@@ -91,6 +92,7 @@ func enforceGet(handlerFunc HandlerFunc) HandlerFunc {
 func enforcePost(handlerFunc HandlerFunc) HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, extractor Extractor) {
 		if r.Method != Post {
+			log.Printf("request method must be %s", Post)
 			protocol.HttpResponseFail(w, http.StatusInternalServerError, protocol.ErrorCodeMustBePost, fmt.Sprintf("request method must be %s", Post))
 			return
 		}
