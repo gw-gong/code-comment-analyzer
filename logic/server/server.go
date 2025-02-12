@@ -37,7 +37,7 @@ func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer 
 	userGroup := m.NewRouterGroup("/user/", s.mux, m.WithSessionManager(sm))
 	userGroup.Get("", user.NewUserPageRedirect(), m.CheckLoginStatus)
 	userGroup.Post("login/", user.NewLogin(registry))
-	userGroup.Post("logout/", user.NewLogout(registry), m.CheckLoginStatus)
+	userGroup.Get("logout/", user.NewLogout(registry), m.CheckLoginStatus)
 	userGroup.Post("sign_up/", user.NewSignup(registry))
 	userGroup.Get("get_user_info/", user.NewGetUserInfo(registry), m.AuthenticateUser)
 	userGroup.Get("get_user_profile_picture/", user.NewGetUserProfilePicture(registry), m.CheckLoginStatus)
