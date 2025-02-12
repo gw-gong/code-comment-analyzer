@@ -1,7 +1,6 @@
 package user
 
 import (
-	"log"
 	"net/http"
 
 	"code-comment-analyzer/server/middleware"
@@ -25,11 +24,9 @@ func NewUserPageRedirect() middleware.GetHandler {
 
 func (u *UserPageRedirect) Handle() {
 	if isUserLoggedIn, err := u.extractor.IsUserLoggedIn(); err != nil || !isUserLoggedIn {
-		log.Println("/login/")
 		http.Redirect(u.w, u.r, "/login/", http.StatusFound)
 		return
 	}
-	log.Println("/user_info/")
 	http.Redirect(u.w, u.r, "/user_info/", http.StatusFound)
 }
 
