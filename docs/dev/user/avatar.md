@@ -9,6 +9,8 @@
 2. **数据库更新**：
     - 数据库中存储的头像地址只需文件名即可，即 `avatarFileName`。
 
+功能函数：`util.GetAvatarStoragePath()`
+
 ## 返回给前端的头像资源路径格式
 
 - 格式为：`/file_storage/avatars/avatarFileName`。
@@ -17,7 +19,11 @@
     - `/file/file_storage/avatars/avatarFileName`
     - `/user/file_storage/avatars/avatarFileName`
 
+功能函数：`util.TransformProfilePictureUrlToResourceUrl()`
+
 ## 通过资源路径访问头像
 
 - 先从 URL 中获取文件名，然后拼接路径：`file_storage/avatars/{{userID}}/avatarFileName`。
 - 注意：前面没有斜杠。
+
+功能函数：`util.GetAvatarStoragePath()`
