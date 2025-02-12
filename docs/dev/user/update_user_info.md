@@ -20,9 +20,7 @@ form-data:
 key: "profile_picture"
 value: file
 
-头像存储位置：file_storage/avatars/{{userID}}/avatarFileName<br>
-数据库存储地址只需要文件名就行了avatarFileName<br>
-avatarFileName使用uuid生成
+头像存储按照`avatar.md`说明
 
 response (json):<br>
 
