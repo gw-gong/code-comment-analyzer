@@ -20,7 +20,7 @@ ccanalyzer_conf:
   host: "localhost"
   port: "8888"
 
-user_token_duration: 60  # min
+user_token_duration: 5  # min
 jwt_key: secret_key_for_user
 
 default_nickname: "Anonymous"
