@@ -2,7 +2,6 @@ package file_storage
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -34,7 +33,6 @@ func NewGetAvatars(registry *data.DataManagerRegistry) middleware.GetHandler {
 
 func (g *GetAvatars) Handle() {
 	avatarPath := strings.TrimLeft(g.r.URL.Path, "/")
-	log.Println(avatarPath)
 	avatarFileName := filepath.Base(avatarPath)
 	avatarDirPath := filepath.Dir(avatarPath)
 	if avatarFileName == config.Cfg.DefaultAvatar {
