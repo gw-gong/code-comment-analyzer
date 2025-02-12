@@ -1,13 +1,13 @@
 package server
 
 import (
-	"code-comment-analyzer/server/handler/file_storage"
 	"fmt"
 	"log"
 	"net/http"
 
 	"code-comment-analyzer/ccanalyzer_client"
 	"code-comment-analyzer/data"
+	"code-comment-analyzer/server/handler/file_storage"
 	"code-comment-analyzer/server/handler/public"
 	"code-comment-analyzer/server/handler/user"
 	m "code-comment-analyzer/server/middleware"
