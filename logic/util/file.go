@@ -108,11 +108,18 @@ func BuildDirectoryTree(currentPath, rootPath, projectStorageName string) protoc
 }
 
 func TransformProfilePictureUrlToResourceUrl(notUseDefaultAvatar bool, profilePictureUrl string) *string {
+	profilePictureFileName := config.Cfg.DefaultAvatar
 	if notUseDefaultAvatar {
-		return &profilePictureUrl
+		profilePictureFileName = filepath.Base(profilePictureUrl)
 	}
 	avatarsStorageRootPath := config.Cfg.FileStoragePath.Avatars
-	defaultAvatar := config.Cfg.DefaultAvatar
-	defaultAvatarUrl := filepath.Join("/", avatarsStorageRootPath, defaultAvatar)
-	return &defaultAvatarUrl
+	avatarUrl := filepath.Join("/", avatarsStorageRootPath, profilePictureFileName)
+	return &avatarUrl
+}
+
+func GetAvatarStoragePath(userID uint64, avatarFileName string) string {
+	if avatarFileName == config.Cfg.DefaultAvatar {
+		return filepath.Join(config.Cfg.FileStoragePath.Avatars, avatarFileName)
+	}
+	return filepath.Join(config.Cfg.FileStoragePath.Avatars, fmt.Sprintf("%v", userID), avatarFileName)
 }
