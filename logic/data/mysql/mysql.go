@@ -28,7 +28,26 @@ func initMysqlClient(host, port, userName, password, dbName string) (*mysqlClien
 
 	return &mysqlClient{db: db}, nil
 }
+func (m *mysqlClient) CreateUser(email string, password string, nickname string) (uint64, error) {
+	// 创建一个新的用户对象
+	user := models.UserUser{
+		Email:      email,
+		Password:   password, // 明文存储密码
+		Nickname:   nickname,
+		DateJoined: time.Now(),
+		IsActive:   true,
+	}
 
+	// 将用户数据插入数据库
+	err := user.Insert(m.db, boil.Infer())
+	if err != nil {
+		log.Printf("Error inserting user: %v\n", err)
+		return 0, err
+	}
+
+	// 返回新创建的用户 ID
+	return user.UID, nil
+}
 func (m *mysqlClient) Close() {
 	err := m.db.Close()
 	if err != nil {
@@ -100,28 +119,38 @@ func (m *mysqlClient) IsExistUserByEmail(email string) (isExist bool, err error)
 	return true, nil
 }
 
-func (m *mysqlClient) CreateUser(email string, password string, nickname string) (uint64, error) {
-	// 创建一个新的用户对象
-	user := models.UserUser{
-		Email:      email,
-		Password:   password,
-		Nickname:   nickname,
-		DateJoined: time.Now(),
-		IsActive:   true,
-	}
-
-	// 将用户数据插入数据库
-	err := user.Insert(m.db, boil.Infer())
+func (m *mysqlClient) CheckOldPassword(userID uint64, oldPassword, newPassword string) error {
+	// 查找用户
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
+	user, err := models.UserUsers(queryMods...).One(m.db)
 	if err != nil {
-		log.Printf("Error inserting user: %v\n", err)
-		return 0, err
+		if errors.Is(err, sql.ErrNoRows) {
+			// 用户不存在
+			return errors.New("用户不存在")
+		}
+		// 其他错误
+		return err
 	}
 
-	// 返回新创建的用户 ID
-	log.Printf("User created: %+v\n", user)
-	return user.UID, nil
-}
+	// 验证旧密码是否正确
+	if user.Password != oldPassword {
+		// 旧密码不匹配
+		return errors.New("旧密码错误")
+	}
 
+	// 更新密码
+	user.Password = newPassword
+	_, err = user.Update(m.db, boil.Infer())
+	if err != nil {
+		// 更新密码失败
+		log.Printf("Error updating password: %v\n", err)
+		return errors.New("密码更新失败")
+	}
+
+	// 密码更新成功
+	return nil
+}
 func (m *mysqlClient) createOperate(tx *sql.Tx, userID uint64, operationType string) (operateID int64, err error) {
 	op := models.UserOperatingrecord{
 		UserID:        userID,

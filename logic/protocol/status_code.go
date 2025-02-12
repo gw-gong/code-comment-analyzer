@@ -26,4 +26,7 @@ const (
 	ErrorCodeCreatePathFailed
 	ErrorCodeSaveFileFailed
 	ErrorCodeUnzipFailed
+
+	ErrorCodeInvalidRequest
+	ErrorCodeInvalidPassword
 )

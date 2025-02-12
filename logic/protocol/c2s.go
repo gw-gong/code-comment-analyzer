@@ -94,3 +94,10 @@ func OpIDTransformStr2Int64(opID string) int64 {
 	}
 	return result
 }
+
+//======change_password----------------
+type ChangePasswordRequest struct {
+	OldPassword      string `json:"old_password"`
+	NewPassword      string `json:"new_password"`
+	AgainNewPassword string `json:"again_new_password"`
+}
