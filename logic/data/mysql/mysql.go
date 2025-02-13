@@ -28,6 +28,13 @@ func initMysqlClient(host, port, userName, password, dbName string) (*mysqlClien
 
 	return &mysqlClient{db: db}, nil
 }
+
+func (m *mysqlClient) Close() {
+	err := m.db.Close()
+	if err != nil {
+		panic(err)
+	}
+}
 func (m *mysqlClient) CreateUser(email string, password string, nickname string) (uint64, error) {
 	// 创建一个新的用户对象
 	user := models.UserUser{
@@ -48,13 +55,6 @@ func (m *mysqlClient) CreateUser(email string, password string, nickname string)
 	// 返回新创建的用户 ID
 	return user.UID, nil
 }
-func (m *mysqlClient) Close() {
-	err := m.db.Close()
-	if err != nil {
-		panic(err)
-	}
-}
-
 func (m *mysqlClient) GetUserInfoByEmail(email string) (userID uint64, nickname string, password string, err error) {
 	var queryMods []qm.QueryMod
 	queryMods = append(queryMods, qm.Select(models.UserUserColumns.UID, models.UserUserColumns.Nickname, models.UserUserColumns.Password))
@@ -119,7 +119,7 @@ func (m *mysqlClient) IsExistUserByEmail(email string) (isExist bool, err error)
 	return true, nil
 }
 
-func (m *mysqlClient) CheckOldPassword(userID uint64, oldPassword, newPassword string) error {
+func (m *mysqlClient) UpdatePassword(userID uint64, oldPassword, newPassword string) error {
 	// 查找用户
 	var queryMods []qm.QueryMod
 	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))

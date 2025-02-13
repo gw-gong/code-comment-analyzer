@@ -30,20 +30,15 @@ func NewChangePassword(registry *data.DataManagerRegistry) middleware.GetHandler
 }
 
 func (c *ChangePassword) Handle() {
-	// 解析请求中的 JSON 数据
 	ChangePasswordRequest, err := c.decodeRequest()
 	if err != nil {
 		protocol.HttpResponseFail(c.w, http.StatusBadRequest, protocol.ErrorCodeInvalidRequest, "请求数据无效")
 		return
 	}
-
-	// 校验密码是否一致
 	if ChangePasswordRequest.NewPassword != ChangePasswordRequest.AgainNewPassword {
 		protocol.HttpResponseFail(c.w, http.StatusBadRequest, protocol.ErrorCodeInvalidPassword, "两次输入的新密码不一致")
 		return
 	}
-
-	// 获取当前用户 ID
 	userID, err := c.extractor.GetUserId()
 	if err != nil {
 		protocol.HttpResponseFail(c.w, http.StatusInternalServerError, protocol.ErrorCodeMissingUserId, fmt.Sprintf("%v", err))
@@ -54,7 +49,7 @@ func (c *ChangePassword) Handle() {
 	um := c.registry.GetUserManager()
 
 	// 验证旧密码是否正确 以及更新密码
-	err = um.CheckOldPassword(userID, ChangePasswordRequest.OldPassword, ChangePasswordRequest.NewPassword)
+	err = um.UpdatePassword(userID, ChangePasswordRequest.OldPassword, ChangePasswordRequest.NewPassword)
 	if err != nil {
 		protocol.HttpResponseFail(c.w, http.StatusUnauthorized, protocol.ErrorCodeInvalidPassword, "旧密码错误")
 		return

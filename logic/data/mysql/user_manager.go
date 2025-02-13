@@ -11,7 +11,7 @@ type UserManager interface {
 	GetUserInfoByUserID(userID uint64) (isSetProfilePicture bool, profilePictureUrl string, email string, nickname string, dateJoined time.Time, err error)
 	GetUserProfilePictureByUserID(userID uint64) (isSetProfilePicture bool, profilePictureUrl string, err error)
 	IsExistUserByEmail(email string) (isExist bool, err error)
-	CheckOldPassword(userID uint64, oldPassword, newPassword string) error
+	UpdatePassword(userID uint64, oldPassword, newPassword string) error
 	Close()
 }
 
