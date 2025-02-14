@@ -7,6 +7,7 @@ import (
 
 	"code-comment-analyzer/data/redis"
 	"code-comment-analyzer/protocol"
+	"code-comment-analyzer/util"
 )
 
 type option func(*optionParams)
@@ -51,23 +52,27 @@ func (rg *routerGroup) registerRouter(method string, relativePath string, getHan
 	if rg.mux == nil {
 		panic("mux is nil")
 	}
+	realPath := rg.basePath + relativePath
 	// 请注意调用顺序，先调用最外层的中间件，再调用最内层的中间件，这里需要“反过来”写
 	handlerFunc := defaultMiddleOp(getHandler)
 	for i := len(middleOps) - 1; i >= 0; i-- {
 		handlerFunc = middleOps[i](rg, handlerFunc)
 	}
 	formatHandlerFunc := func(w http.ResponseWriter, r *http.Request) {
-		switch method {
-		case Get:
-			handlerFunc = enforceGet(handlerFunc)
-		case Post:
-			handlerFunc = enforcePost(handlerFunc)
-		default:
-			log.Printf("invalid method: %s", method)
-		}
-		handlerFunc(w, r, nil)
+		util.WithRecover(func() {
+			switch method {
+			case Get:
+				handlerFunc = enforceGet(handlerFunc)
+			case Post:
+				handlerFunc = enforcePost(handlerFunc)
+			default:
+				log.Printf("invalid method: %s", method)
+			}
+			handlerFunc(w, r, nil)
+		}, util.WithPanicHandler(func(err interface{}) {
+			panicHandler(err, method, realPath)
+		}))
 	}
-	realPath := rg.basePath + relativePath
 	rg.mux.HandleFunc(realPath, formatHandlerFunc)
 }
 
@@ -105,4 +110,8 @@ func (rg *routerGroup) getSessionManager() redis.SessionManager {
 		panic("session manager is not set")
 	}
 	return rg.sessionManager
+}
+
+func panicHandler(err interface{}, method string, realPath string) {
+	log.Printf("panic: %v, method: %s, realPath: %s", err, method, realPath)
 }

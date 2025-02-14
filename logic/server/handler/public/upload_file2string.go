@@ -44,7 +44,7 @@ func (f2s *File2String) Handle() {
 	}
 	protocol.HttpResponseSuccess(f2s.w, http.StatusOK, "已读取", protocol.WithData(response))
 
-	go f2s.recordFileUpload(language, fileContent)
+	go util.WithRecover(func() { f2s.recordFileUpload(language, fileContent) })
 }
 
 func (f2s *File2String) decodeRequest() (fileContent []byte, fileType string, err error) {
