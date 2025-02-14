@@ -13,6 +13,8 @@ type UserManager interface {
 	IsExistUserByEmail(email string) (isExist bool, err error)
 	UpdatePassword(userID uint64, oldPassword, newPassword string) error
 	Close()
+	UpdateUserAvatar(userID uint64, avatarFileName string) error
+	UpdateUserInfo(userID uint64, nickname string, password string) error
 }
 
 func NewUserManager(cfgMaster config.MysqlConfig) (UserManager, error) {
