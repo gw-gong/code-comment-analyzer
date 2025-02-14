@@ -74,7 +74,7 @@ func (u *UploadAndGetTree) Handle() {
 
 	protocol.HttpResponseSuccess(u.w, http.StatusOK, "文件已解压", protocol.WithData(rootNode.Children[0]))
 
-	go u.recordProjectUpload(filepath.Join(destDir, projectName))
+	go util.WithRecover(func() { u.recordProjectUpload(filepath.Join(destDir, projectName)) })
 }
 
 func (u *UploadAndGetTree) decodeRequest() (file multipart.File, header *multipart.FileHeader, err error) {
