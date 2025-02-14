@@ -86,6 +86,7 @@ type ReadFileResponse struct {
 // *********** get file/project upload record ***********
 
 const GetKeyOperatingRecordId = "operating_record_id"
+const GetUserOperatingRecords = "operating_record_id"
 
 func OpIDTransformStr2Int64(opID string) int64 {
 	result, err := strconv.ParseInt(opID, 10, 64)
@@ -99,5 +100,21 @@ func OpIDTransformStr2Int64(opID string) int64 {
 type ChangePasswordRequest struct {
 	OldPassword      string `json:"old_password"`
 	NewPassword      string `json:"new_password"`
+	AgainNewPassword string `json:"again_new_password"`
+}
+
+//=====delete_operating_record------------
+// Extract operation ID from the request body
+type DeleteOperatingRecordRequest struct {
+	ID int64 `json:"id"`
+}
+
+//=====update_user_info------------
+type UpdateInfo struct {
+	Nickname         string `json:"nickname"`
+	AgainNewPassword string `json:"again_new_password"`
+}
+type UpdateUserInfoRequest struct {
+	Nickname         string `json:"nickname"`
 	AgainNewPassword string `json:"again_new_password"`
 }

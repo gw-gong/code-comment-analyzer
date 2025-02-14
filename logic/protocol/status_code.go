@@ -29,4 +29,19 @@ const (
 
 	ErrorCodeInvalidRequest
 	ErrorCodeInvalidPassword
+
+	ErrorCodeInvalidID
+	ErrorCodeBadRequest
+	ErrorCodeUpdateUserInfoFailed
+	ErrorCodeUpdateUserAvatarFailed
+
+	ErrorCodeGetFileUploadRecordFailed
+	ErrorCodeGetFileContentFailed
+	ErrorCodeDeleteOperatingRecordFailed
+	ErrorCodeGetUserOperatingRecordsFailed
+	ErrorCodeGetUserInfoFailed
+	ErrorCodeGetUserProfilePictureFailed
+	ErrorCodeGetProjectUploadRecordFailed
+	ErrorCodeChangePasswordFailed
+	ErrorCodeInternalError
 )

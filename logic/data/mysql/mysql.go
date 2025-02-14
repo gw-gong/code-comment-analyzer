@@ -11,6 +11,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/null"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
@@ -258,4 +259,109 @@ func (m *mysqlClient) GetOneProjectUploadRecordUrlByOpID(operatingRecordId int64
 		return
 	}
 	return projectRecord.ProjectURL, nil
+}
+
+func (m *mysqlClient) DeleteOperatingRecordByID(operatingRecordId int64) (err error) {
+	// 创建查询条件
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, models.UserProjectrecordWhere.OperatingRecordID.EQ(operatingRecordId))
+
+	// 查询操作记录
+	record, err := models.UserProjectrecords(queryMods...).One(m.db)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			err = fmt.Errorf("operation record not found|recordID:%v", operatingRecordId)
+			return
+		}
+		return
+	}
+
+	// 删除记录
+	_, err = record.Delete(m.db)
+	if err != nil {
+		err = fmt.Errorf("failed to delete operation record|recordID:%v, err:%v", operatingRecordId, err)
+		return
+	}
+
+	return nil
+}
+
+func (m *mysqlClient) GetUserOperatingRecords(page, perPage int) (records []map[string]interface{}, total int64, err error) {
+	// 获取总记录数
+	totalRecords, err := models.UserOperatingrecords().Count(m.db)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to count total records: %v", err)
+	}
+
+	// 设置分页查询参数
+	offset := (page - 1) * perPage
+	queryMods := []qm.QueryMod{
+		qm.Limit(perPage),
+		qm.Offset(offset),
+	}
+
+	// 执行查询获取操作记录列表
+	operatingRecords, err := models.UserOperatingrecords(queryMods...).All(m.db)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to fetch user operating records: %v", err)
+	}
+
+	// 构建返回的操作记录列表
+	for _, record := range operatingRecords {
+		records = append(records, map[string]interface{}{
+			"id":             record.ID,
+			"operation_type": record.OperationType,
+			"created_at":     record.CreatedAt,
+		})
+	}
+
+	return records, totalRecords, nil
+}
+
+func (om *mysqlClient) GetFileContentByOpID(operatingRecordId int64) (fileContent string, err error) {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, qm.Select(models.UserFilerecordColumns.FileContent))
+	queryMods = append(queryMods, models.UserFilerecordWhere.OperatingRecordID.EQ(operatingRecordId))
+
+	fileRecord, err := models.UserFilerecords(queryMods...).One(om.db)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", fmt.Errorf("file record not found|operatingRecordId:%v", operatingRecordId)
+		}
+		return "", err
+	}
+
+	return fileRecord.FileContent, nil
+}
+
+func (m *mysqlClient) UpdateUserAvatar(userID uint64, avatarFileName string) error {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
+
+	user, err := models.UserUsers(queryMods...).One(m.db)
+	if err != nil {
+		return fmt.Errorf("failed to find user: %v", err)
+	}
+
+	user.ProfilePicture = null.StringFrom(avatarFileName)
+	_, err = user.Update(m.db, boil.Infer())
+	return err
+}
+
+func (m *mysqlClient) UpdateUserInfo(userID uint64, nickname string, password string) error {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
+
+	user, err := models.UserUsers(queryMods...).One(m.db)
+	if err != nil {
+		return fmt.Errorf("failed to find user: %v", err)
+	}
+
+	user.Nickname = nickname
+	if password != "" {
+		user.Password = password
+	}
+
+	_, err = user.Update(m.db, boil.Infer())
+	return err
 }
