@@ -43,7 +43,7 @@ func (g *GetFileUploadRecord) Handle() {
 }
 
 func (g *GetFileUploadRecord) decodeRequest() (operatingRecordId int64, err error) {
-	id := g.r.URL.Query().Get(protocol.GetUserOperatingRecords)
+	id := g.r.URL.Query().Get(protocol.GetKeyOperatingRecordId)
 	if id == "" {
 		err = fmt.Errorf("operatingRecordId is missing")
 		protocol.HttpResponseFail(g.w, http.StatusBadRequest, protocol.ErrorCodeParamError, fmt.Sprintf("%v", err))

@@ -1,13 +1,14 @@
 package user
 
 import (
-	"code-comment-analyzer/protocol"
 	"fmt"
 	"net/http"
-	"strconv"
+	"strings"
 
 	"code-comment-analyzer/data"
+	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
+	"code-comment-analyzer/util"
 )
 
 type GetProjectUploadRecord struct {
@@ -29,41 +30,28 @@ func NewGetProjectUploadRecord(registry *data.DataManagerRegistry) middleware.Ge
 }
 
 func (g *GetProjectUploadRecord) Handle() {
-	// 从 URL 查询参数中获取分页参数
-	pageStr := g.r.URL.Query().Get("page")
-	perPageStr := g.r.URL.Query().Get("perPage")
-
-	// 将分页参数从字符串转换为整数
-	page, err := strconv.Atoi(pageStr)
-	if err != nil || page < 1 {
-		protocol.HttpResponseFail(g.w, http.StatusBadRequest, protocol.ErrorCodeBadRequest, "无效的页码")
+	operatingRecordId, err := g.decodeRequest()
+	if err != nil {
 		return
 	}
 
-	perPage, err := strconv.Atoi(perPageStr)
-	if err != nil || perPage < 1 {
-		protocol.HttpResponseFail(g.w, http.StatusBadRequest, protocol.ErrorCodeBadRequest, "无效的每页数量")
-		return
-	}
-
-	// 获取操作管理器实例
 	om := g.registry.GetOperationManager()
-
-	// 根据分页参数获取用户操作记录列表以及总记录数
-	records, total, err := om.GetUserOperatingRecords(page, perPage)
+	projectUrl, err := om.GetOneProjectUploadRecordUrlByOpID(operatingRecordId)
 	if err != nil {
 		protocol.HttpResponseFail(g.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, fmt.Sprintf("%v", err))
 		return
 	}
 
-	// 构造返回数据
-	responseData := map[string]interface{}{
-		"data":  records,
-		"total": total,
-		"page":  page,
+	directorys := strings.Split(projectUrl, "/")
+	if len(directorys) < 2 {
+		protocol.HttpResponseFail(g.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, "获取项目名称失败")
+		return
 	}
+	projectStorageName := directorys[len(directorys)-1]
 
-	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取上传操作记录成功", protocol.WithData(responseData))
+	rootNode := util.BuildDirectoryTree(projectUrl, projectUrl, projectStorageName)
+
+	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取项目上传记录成功", protocol.WithData(rootNode.Children[0]))
 }
 
 func (g *GetProjectUploadRecord) decodeRequest() (operatingRecordId int64, err error) {
