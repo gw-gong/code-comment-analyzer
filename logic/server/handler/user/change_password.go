@@ -9,7 +9,6 @@ import (
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
-	"code-comment-analyzer/util"
 )
 
 type ChangePassword struct {
