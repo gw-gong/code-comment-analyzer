@@ -30,20 +30,19 @@ func NewDeleteOperatingRecord(registry *data.DataManagerRegistry) middleware.Get
 }
 
 func (d *DeleteOperatingRecord) Handle() {
-	DeleteOperatingRecordRequest, err := d.decodeRequest()
+	requestData, err := d.decodeRequest()
 	if err != nil {
-		protocol.HttpResponseFail(d.w, http.StatusBadRequest, protocol.ErrorCodeInvalidRequest, fmt.Sprintf("Invalid request body: %v", err))
 		return
 	}
 
-	if DeleteOperatingRecordRequest.ID == 0 {
+	if requestData.ID == 0 {
 		protocol.HttpResponseFail(d.w, http.StatusBadRequest, protocol.ErrorCodeInvalidID, "Invalid operation ID")
 		return
 	}
 
 	om := d.registry.GetOperationManager()
 	// Delete the operating record by ID
-	err = om.DeleteOperatingRecordByID(DeleteOperatingRecordRequest.ID)
+	err = om.DeleteOperatingRecordByID(requestData.ID)
 	if err != nil {
 		protocol.HttpResponseFail(d.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, fmt.Sprintf("Failed to delete operating record: %v", err))
 		return

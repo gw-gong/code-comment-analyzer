@@ -54,15 +54,15 @@ func (u *UpdateUserInfo) Handle() {
 	avatarErrChan := make(chan error, 1)
 	infoErrChan := make(chan error, 1)
 
-	go func() {
+	go util.WithRecover(func() {
 		avatarWantUpdate, err = u.handleProfilePicture(userID, userManager)
 		avatarErrChan <- err
-	}()
+	})
 
-	go func() {
+	go util.WithRecover(func() {
 		infoWantUpdate, err = u.updateUserInfo(userID, userManager)
 		infoErrChan <- err
-	}()
+	})
 
 	avatarErr := <-avatarErrChan
 	infoErr := <-infoErrChan
