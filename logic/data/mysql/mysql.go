@@ -340,7 +340,7 @@ func (m *mysqlClient) GetUserOperatingRecords(page, perPage int) (records []prot
 	return records, int64(len(records)), nil
 }
 
-func (om *mysqlClient) GetFileContentByOpID(operatingRecordId int64) (fileContent string, err error) {
+func (om *mysqlClient) GetOneFileUploadRecordByOpID(operatingRecordId int64) (language string, fileContent string, err error) {
 	var queryMods []qm.QueryMod
 	queryMods = append(queryMods, qm.Select(models.UserFilerecordColumns.FileContent))
 	queryMods = append(queryMods, models.UserFilerecordWhere.OperatingRecordID.EQ(operatingRecordId))
@@ -348,12 +348,12 @@ func (om *mysqlClient) GetFileContentByOpID(operatingRecordId int64) (fileConten
 	fileRecord, err := models.UserFilerecords(queryMods...).One(om.db)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", fmt.Errorf("file record not found|operatingRecordId:%v", operatingRecordId)
+			return "", "", fmt.Errorf("file record not found|operatingRecordId:%v", operatingRecordId)
 		}
-		return "", err
+		return "", "", err
 	}
 
-	return fileRecord.FileContent, nil
+	return fileRecord.FileType, fileRecord.FileContent, nil
 }
 
 func (m *mysqlClient) UpdateUserAvatar(userID uint64, avatarFileName string) error {

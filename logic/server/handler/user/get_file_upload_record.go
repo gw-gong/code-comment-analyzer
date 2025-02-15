@@ -1,11 +1,12 @@
 package user
 
 import (
+	"fmt"
+	"net/http"
+
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
-	"fmt"
-	"net/http"
 )
 
 type GetFileUploadRecord struct {
@@ -33,13 +34,18 @@ func (g *GetFileUploadRecord) Handle() {
 	}
 
 	om := g.registry.GetOperationManager()
-	fileContent, err := om.GetFileContentByOpID(operatingRecordId)
+	language, fileContent, err := om.GetOneFileUploadRecordByOpID(operatingRecordId)
 	if err != nil {
 		protocol.HttpResponseFail(g.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, fmt.Sprintf("%v", err))
 		return
 	}
 
-	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取文件上传记录成功", protocol.WithData(fileContent))
+	response := &protocol.GetFileUploadRecordResponse{
+		Language:    language,
+		FileContent: fileContent,
+	}
+
+	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取文件上传记录成功", protocol.WithData(response))
 }
 
 func (g *GetFileUploadRecord) decodeRequest() (operatingRecordId int64, err error) {

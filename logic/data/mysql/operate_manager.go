@@ -15,7 +15,7 @@ type OperationManager interface {
 
 	GetOneProjectUploadRecordUrlByOpID(operatingRecordId int64) (projectUrl string, err error)
 	GetUserOperatingRecords(page, perPage int) (records []protocol.OperatingRecord, total int64, err error)
-	GetFileContentByOpID(operatingRecordId int64) (fileContent string, err error)
+	GetOneFileUploadRecordByOpID(operatingRecordId int64) (language string, fileContent string, err error)
 
 	DeleteOperatingRecordByID(operatingRecordId int64) (err error)
 	
