@@ -1,13 +1,14 @@
 package user
 
 import (
-	"code-comment-analyzer/data"
-	"code-comment-analyzer/protocol"
-	"code-comment-analyzer/server/middleware"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+
+	"code-comment-analyzer/data"
+	"code-comment-analyzer/protocol"
+	"code-comment-analyzer/server/middleware"
 )
 
 type DeleteOperatingRecord struct {
@@ -19,7 +20,7 @@ type DeleteOperatingRecord struct {
 
 func NewDeleteOperatingRecord(registry *data.DataManagerRegistry) middleware.GetHandler {
 	return func(w http.ResponseWriter, r *http.Request, extractor middleware.Extractor) middleware.Handler {
-		return &GetUserInfo{
+		return &DeleteOperatingRecord{
 			w:         w,
 			r:         r,
 			extractor: extractor,
@@ -40,7 +41,6 @@ func (d *DeleteOperatingRecord) Handle() {
 		return
 	}
 
-	// 获取用户管理器
 	om := d.registry.GetOperationManager()
 	// Delete the operating record by ID
 	err = om.DeleteOperatingRecordByID(DeleteOperatingRecordRequest.ID)
@@ -49,8 +49,7 @@ func (d *DeleteOperatingRecord) Handle() {
 		return
 	}
 
-	// Return success response
-	protocol.HttpResponseSuccess(d.w, http.StatusOK, "删除操作记录成功", protocol.WithData(struct{}{}))
+	protocol.HttpResponseSuccess(d.w, http.StatusOK, "删除操作记录成功")
 }
 
 func (d *DeleteOperatingRecord) decodeRequest() (*protocol.DeleteOperatingRecordRequest, error) {
