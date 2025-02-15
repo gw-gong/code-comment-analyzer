@@ -59,7 +59,7 @@ func (u *UpdateUserInfo) Handle() {
 		return
 	}
 
-	protocol.HttpResponseSuccess(u.w, http.StatusOK, "用户信息更新成功", nil)
+	protocol.HttpResponseSuccess(u.w, http.StatusOK, "用户信息更新成功")
 }
 
 func (u *UpdateUserInfo) handleProfilePicture(userID uint64, userManager mysql.UserManager) error {
