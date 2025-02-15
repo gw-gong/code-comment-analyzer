@@ -1,13 +1,11 @@
 package user
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"code-comment-analyzer/config"
 	"code-comment-analyzer/data"
@@ -126,23 +124,14 @@ func (u *UpdateUserInfo) handleProfilePicture(userID uint64, userManager mysql.U
 }
 
 func (u *UpdateUserInfo) updateUserInfo(userID uint64, userManager mysql.UserManager) (wantUpdate bool, err error) {
+	nickname := u.r.FormValue(protocol.FormKeyNickname)
+
 	// 这里是因为只要有填写就更新，没填写就不管
-	jsonData := u.r.FormValue("json")
-	if jsonData == "" {
-		return false, nil
-	}
+    if nickname == "" {
+        return false, nil  // 如果没有提供昵称，不进行更新
+    }
 
-	var updateInfo protocol.UpdateUserInfoRequest
-	if err := json.NewDecoder(strings.NewReader(jsonData)).Decode(&updateInfo); err != nil {
-		return true, fmt.Errorf("无效的JSON数据")
-	}
-
-	// 如果昵称为空，直接返回成功
-	if updateInfo.Nickname == "" {
-		return false, nil
-	}
-
-	if err := userManager.UpdateUserInfo(userID, updateInfo.Nickname); err != nil {
+	if err := userManager.UpdateUserInfo(userID, nickname); err != nil {
 		return true, fmt.Errorf("更新用户昵称失败")
 	}
 

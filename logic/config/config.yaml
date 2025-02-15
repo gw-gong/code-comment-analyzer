@@ -33,7 +33,7 @@ file_storage_path:
 code-comment-analyzer_readme_path: ../docs/code-comment-analyzer_readme.md
 
 max_file_size: 10  # MB
-max_project_size: 100  # MB
+max_project_size: 1000  # MB
 max_avatar_size: 5  # MB
 
 uuid_project_prefix: "proj_"

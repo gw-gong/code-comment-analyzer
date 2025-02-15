@@ -12,13 +12,9 @@
 /user/update_user_info/
 ```
 
-request (json):
+request :
 
-```json
-{
-    "nickname": "xxx"
-}
-```
+表单值：key: "nickname"
 
 form-data:
 key: "profile_picture"

@@ -116,18 +116,12 @@ type DeleteOperatingRecordRequest struct {
 
 // *********** update_user_info ***********
 
-type UpdateInfo struct {
-	Nickname         string `json:"nickname"`
-	AgainNewPassword string `json:"again_new_password"`
-}
-type UpdateUserInfoRequest struct {
-	Nickname         string `json:"nickname"`
-}
+const FormKeyNickname = "nickname"
 
 // *********** get user operating records ***********
 
 const GetKeyPage = "page"
-const GetKeyPerPage = "per_page"
+const GetKeyPerPage = "perPage"
 
 type OperatingRecord struct {
 	ID            int64  `json:"id"`

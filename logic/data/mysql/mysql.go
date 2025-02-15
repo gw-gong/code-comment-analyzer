@@ -342,7 +342,7 @@ func (m *mysqlClient) GetUserOperatingRecords(page, perPage int) (records []prot
 
 func (om *mysqlClient) GetOneFileUploadRecordByOpID(operatingRecordId int64) (language string, fileContent string, err error) {
 	var queryMods []qm.QueryMod
-	queryMods = append(queryMods, qm.Select(models.UserFilerecordColumns.FileContent))
+	queryMods = append(queryMods, qm.Select(models.UserFilerecordColumns.FileType, models.UserFilerecordColumns.FileContent))
 	queryMods = append(queryMods, models.UserFilerecordWhere.OperatingRecordID.EQ(operatingRecordId))
 
 	fileRecord, err := models.UserFilerecords(queryMods...).One(om.db)
