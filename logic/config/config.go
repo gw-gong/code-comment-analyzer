@@ -51,10 +51,13 @@ type Config struct {
 	JwtKey            string                `yaml:"jwt_key"`
 	DefaultNickname   string                `yaml:"default_nickname"`
 	DefaultAvatar     string                `yaml:"default_avatar"`
-	MaxFileSize       int64                 `yaml:"max_file_size"`
-	MaxProjectSize    int64                 `yaml:"max_project_size"`
 	FileStoragePath   FileStoragePathConfig `yaml:"file_storage_path"`
 	ReadmePath        string                `yaml:"code-comment-analyzer_readme_path"`
+	MaxFileSize       int64                 `yaml:"max_file_size"`
+	MaxProjectSize    int64                 `yaml:"max_project_size"`
+	MaxAvatarSize     int64                 `yaml:"max_avatar_size"`
+	UuidProjectPrefix string                `yaml:"uuid_project_prefix"`
+	UuidAvatarPrefix  string                `yaml:"uuid_avatar_prefix"`
 }
 
 func init() {
