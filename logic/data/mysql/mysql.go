@@ -262,25 +262,51 @@ func (m *mysqlClient) GetOneProjectUploadRecordUrlByOpID(operatingRecordId int64
 }
 
 func (m *mysqlClient) DeleteOperatingRecordByID(operatingRecordId int64) (err error) {
-	// 创建查询条件
-	var queryMods []qm.QueryMod
-	queryMods = append(queryMods, models.UserProjectrecordWhere.OperatingRecordID.EQ(operatingRecordId))
+	// 开启事务
+	tx, err := m.db.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %v", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			err = tx.Commit()
+		}
+	}()
 
-	// 查询操作记录
-	record, err := models.UserProjectrecords(queryMods...).One(m.db)
+	// 首先获取操作记录
+	opRecord, err := models.UserOperatingrecords(
+		models.UserOperatingrecordWhere.ID.EQ(operatingRecordId),
+	).One(tx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			err = fmt.Errorf("operation record not found|recordID:%v", operatingRecordId)
-			return
+			return fmt.Errorf("operation record not found|recordID:%v", operatingRecordId)
 		}
-		return
+		return err
 	}
 
-	// 删除记录
-	_, err = record.Delete(m.db)
+	// 根据操作类型删除对应的记录
+	switch opRecord.OperationType {
+	case OperationTypeFileUpload:
+		_, err = models.UserFilerecords(
+			models.UserFilerecordWhere.OperatingRecordID.EQ(operatingRecordId),
+		).DeleteAll(tx)
+	case OperationTypeProjectUpload:
+		_, err = models.UserProjectrecords(
+			models.UserProjectrecordWhere.OperatingRecordID.EQ(operatingRecordId),
+		).DeleteAll(tx)
+	default:
+		return fmt.Errorf("unknown operation type|operationType:%v", opRecord.OperationType)
+	}
 	if err != nil {
-		err = fmt.Errorf("failed to delete operation record|recordID:%v, err:%v", operatingRecordId, err)
-		return
+		return fmt.Errorf("failed to delete child record: %v", err)
+	}
+
+	// 最后删除操作记录
+	_, err = opRecord.Delete(tx)
+	if err != nil {
+		return fmt.Errorf("failed to delete operation record|recordID:%v, err:%v", operatingRecordId, err)
 	}
 
 	return nil
