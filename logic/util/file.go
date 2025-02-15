@@ -57,8 +57,11 @@ func Unzip(src, dest string) error {
 }
 
 func GenerateUUIDProjectName() string {
-	prefix := "proj_"
-	return prefix + GenerateUUIDName()
+	return config.Cfg.UuidProjectPrefix + GenerateUUIDName()
+}
+
+func GenerateUUIDAvatarName() string {
+	return config.Cfg.UuidAvatarPrefix + GenerateUUIDName()
 }
 
 func ReadFileContentByPath(path string) (fileContent string, err error) {
