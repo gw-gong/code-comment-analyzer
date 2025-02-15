@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"code-comment-analyzer/config"
 	"code-comment-analyzer/data"
@@ -41,7 +40,6 @@ func (u *UploadAndGetTree) Handle() {
 	}
 	defer file.Close()
 
-	projectName := strings.TrimSuffix(header.Filename, protocol.FileSuffixZIP)
 	projectsStorageRootPath := config.Cfg.FileStoragePath.Projects
 	projectStorageName := util.GenerateUUIDProjectName()
 	destDir := filepath.Join(projectsStorageRootPath, projectStorageName)
@@ -74,7 +72,7 @@ func (u *UploadAndGetTree) Handle() {
 
 	protocol.HttpResponseSuccess(u.w, http.StatusOK, "文件已解压", protocol.WithData(rootNode.Children[0]))
 
-	go util.WithRecover(func() { u.recordProjectUpload(filepath.Join(destDir, projectName)) })
+	go util.WithRecover(func() { u.recordProjectUpload(destDir) })
 }
 
 func (u *UploadAndGetTree) decodeRequest() (file multipart.File, header *multipart.FileHeader, err error) {
