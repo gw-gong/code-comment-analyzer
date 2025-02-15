@@ -95,6 +95,11 @@ func OpIDTransformStr2Int64(opID string) int64 {
 	return result
 }
 
+type GetFileUploadRecordResponse struct {
+	Language    string `json:"language"`
+	FileContent string `json:"fileContent"`
+}
+
 // *********** change_password ***********
 
 type ChangePasswordRequest struct {
