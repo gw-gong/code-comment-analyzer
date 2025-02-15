@@ -2,6 +2,7 @@ package protocol
 
 const (
 	MultipartFormKeyFile = "file"
+	MultipartFormKeyProfilePicture = "profile_picture"
 )
 
 const (

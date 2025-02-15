@@ -1,13 +1,13 @@
 package user
 
 import (
+	"fmt"
+	"net/http"
+	"strconv"
+	
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
-	"code-comment-analyzer/util"
-	"fmt"
-	"net/http"
-	"strings"
 )
 
 type GetUserOperatingRecords struct {
@@ -27,37 +27,48 @@ func NewGetUserOperatingRecords(registry *data.DataManagerRegistry) middleware.G
 		}
 	}
 }
+
 func (g *GetUserOperatingRecords) Handle() {
-	operatingRecordId, err := g.decodeRequest()
+	page, perPage, err := g.getPageParams()
 	if err != nil {
+		protocol.HttpResponseFail(g.w, http.StatusBadRequest, protocol.ErrorCodeParamError, fmt.Sprintf("%v", err))
 		return
 	}
 
 	om := g.registry.GetOperationManager()
-	projectUrl, err := om.GetOneProjectUploadRecordUrlByOpID(operatingRecordId)
+
+	// 根据分页参数获取用户操作记录列表以及总记录数
+	records, total, err := om.GetUserOperatingRecords(page, perPage)
 	if err != nil {
 		protocol.HttpResponseFail(g.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, fmt.Sprintf("%v", err))
 		return
 	}
 
-	directorys := strings.Split(projectUrl, "/")
-	if len(directorys) < 2 {
-		protocol.HttpResponseFail(g.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, "获取项目名称失败")
-		return
+	// 构造返回数据
+	responseData := protocol.GetUserOperatingRecordsResponse{
+		Data:  records,
+		Total: total,
+		Page:  page,
 	}
-	projectStorageName := directorys[len(directorys)-1]
 
-	rootNode := util.BuildDirectoryTree(projectUrl, projectUrl, projectStorageName)
-
-	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取项目上传记录成功", protocol.WithData(rootNode.Children[0]))
+	protocol.HttpResponseSuccess(g.w, http.StatusOK, "获取上传操作记录成功", protocol.WithData(responseData))
 }
 
-func (g *GetUserOperatingRecords) decodeRequest() (operatingRecordId int64, err error) {
-	id := g.r.URL.Query().Get(protocol.GetUserOperatingRecords)
-	if id == "" {
-		err = fmt.Errorf("operatingRecordId is missing")
-		protocol.HttpResponseFail(g.w, http.StatusBadRequest, protocol.ErrorCodeParamError, fmt.Sprintf("%v", err))
-		return
+func (g *GetUserOperatingRecords) getPageParams() (page int, perPage int, err error) {
+	pageStr := g.r.URL.Query().Get(protocol.GetKeyPage)
+	perPageStr := g.r.URL.Query().Get(protocol.GetKeyPerPage)
+
+	page, err = strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		err = fmt.Errorf("无效的页码")
+		return 0, 0, err
 	}
-	return protocol.OpIDTransformStr2Int64(id), nil
+
+	perPage, err = strconv.Atoi(perPageStr)
+	if err != nil || perPage < 1 {
+		err = fmt.Errorf("无效的每页数量")
+		return 0, 0, err
+	}
+
+	return page, perPage, nil
 }

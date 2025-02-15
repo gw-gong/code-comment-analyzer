@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"code-comment-analyzer/data/mysql/models"
+	"code-comment-analyzer/protocol"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/volatiletech/sqlboiler/v4/boil"
-	"github.com/volatiletech/sqlboiler/v4/null"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
@@ -286,13 +286,7 @@ func (m *mysqlClient) DeleteOperatingRecordByID(operatingRecordId int64) (err er
 	return nil
 }
 
-func (m *mysqlClient) GetUserOperatingRecords(page, perPage int) (records []map[string]interface{}, total int64, err error) {
-	// 获取总记录数
-	totalRecords, err := models.UserOperatingrecords().Count(m.db)
-	if err != nil {
-		return nil, 0, fmt.Errorf("failed to count total records: %v", err)
-	}
-
+func (m *mysqlClient) GetUserOperatingRecords(page, perPage int) (records []protocol.OperatingRecord, total int64, err error) {
 	// 设置分页查询参数
 	offset := (page - 1) * perPage
 	queryMods := []qm.QueryMod{
@@ -307,15 +301,17 @@ func (m *mysqlClient) GetUserOperatingRecords(page, perPage int) (records []map[
 	}
 
 	// 构建返回的操作记录列表
+	records = make([]protocol.OperatingRecord, 0, len(operatingRecords))
 	for _, record := range operatingRecords {
-		records = append(records, map[string]interface{}{
-			"id":             record.ID,
-			"operation_type": record.OperationType,
-			"created_at":     record.CreatedAt,
+		records = append(records, protocol.OperatingRecord{
+			ID:            record.ID,
+			OperationType: record.OperationType,
+			CreatedAt:     record.CreatedAt.Format("2006-01-02"),
+			UpdatedAt:     record.UpdatedAt.Format("2006-01-02"),
 		})
 	}
 
-	return records, totalRecords, nil
+	return records, int64(len(records)), nil
 }
 
 func (om *mysqlClient) GetFileContentByOpID(operatingRecordId int64) (fileContent string, err error) {
@@ -335,6 +331,11 @@ func (om *mysqlClient) GetFileContentByOpID(operatingRecordId int64) (fileConten
 }
 
 func (m *mysqlClient) UpdateUserAvatar(userID uint64, avatarFileName string) error {
+	if avatarFileName == "" {
+		fmt.Println("avatarFileName is empty")
+		return nil
+	}
+
 	var queryMods []qm.QueryMod
 	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
 
@@ -343,12 +344,13 @@ func (m *mysqlClient) UpdateUserAvatar(userID uint64, avatarFileName string) err
 		return fmt.Errorf("failed to find user: %v", err)
 	}
 
-	user.ProfilePicture = null.StringFrom(avatarFileName)
+	user.ProfilePicture.String = avatarFileName
+	user.ProfilePicture.Valid = true
 	_, err = user.Update(m.db, boil.Infer())
 	return err
 }
 
-func (m *mysqlClient) UpdateUserInfo(userID uint64, nickname string, password string) error {
+func (m *mysqlClient) UpdateUserInfo(userID uint64, nickname string) error {
 	var queryMods []qm.QueryMod
 	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
 
@@ -358,9 +360,6 @@ func (m *mysqlClient) UpdateUserInfo(userID uint64, nickname string, password st
 	}
 
 	user.Nickname = nickname
-	if password != "" {
-		user.Password = password
-	}
 
 	_, err = user.Update(m.db, boil.Infer())
 	return err
