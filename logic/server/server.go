@@ -47,7 +47,7 @@ func (s *Server) RegisterRouters(registry *data.DataManagerRegistry, ccanalyzer 
 	userGroup.Get("get_user_operating_records/", user.NewGetUserOperatingRecords(registry), m.AuthenticateUser)
 	userGroup.Get("get_file_upload_record/", user.NewGetFileUploadRecord(registry), m.AuthenticateUser)
 	userGroup.Get("get_project_upload_record/", user.NewGetProjectUploadRecord(registry), m.AuthenticateUser)
-									
+
 	resourceGroup := m.NewRouterGroup("/file_storage/", s.mux, m.WithSessionManager(sm))
 	resourceGroup.Get("avatars/", file_storage.NewGetAvatars(registry), m.AuthenticateUser)
 }
