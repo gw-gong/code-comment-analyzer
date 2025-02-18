@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"code-comment-analyzer/data/mysql/models"
+	"code-comment-analyzer/protocol"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -258,4 +259,134 @@ func (m *mysqlClient) GetOneProjectUploadRecordUrlByOpID(operatingRecordId int64
 		return
 	}
 	return projectRecord.ProjectURL, nil
+}
+
+func (m *mysqlClient) DeleteOperatingRecordByID(operatingRecordId int64) (err error) {
+	// 开启事务
+	tx, err := m.db.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %v", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			err = tx.Commit()
+		}
+	}()
+
+	// 首先获取操作记录
+	opRecord, err := models.UserOperatingrecords(
+		models.UserOperatingrecordWhere.ID.EQ(operatingRecordId),
+	).One(tx)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return fmt.Errorf("operation record not found|recordID:%v", operatingRecordId)
+		}
+		return err
+	}
+
+	// 根据操作类型删除对应的记录
+	switch opRecord.OperationType {
+	case OperationTypeFileUpload:
+		_, err = models.UserFilerecords(
+			models.UserFilerecordWhere.OperatingRecordID.EQ(operatingRecordId),
+		).DeleteAll(tx)
+	case OperationTypeProjectUpload:
+		_, err = models.UserProjectrecords(
+			models.UserProjectrecordWhere.OperatingRecordID.EQ(operatingRecordId),
+		).DeleteAll(tx)
+	default:
+		return fmt.Errorf("unknown operation type|operationType:%v", opRecord.OperationType)
+	}
+	if err != nil {
+		return fmt.Errorf("failed to delete child record: %v", err)
+	}
+
+	// 最后删除操作记录
+	_, err = opRecord.Delete(tx)
+	if err != nil {
+		return fmt.Errorf("failed to delete operation record|recordID:%v, err:%v", operatingRecordId, err)
+	}
+
+	return nil
+}
+
+func (m *mysqlClient) GetUserOperatingRecords(page, perPage int) (records []protocol.OperatingRecord, total int64, err error) {
+	// 设置分页查询参数
+	offset := (page - 1) * perPage
+	queryMods := []qm.QueryMod{
+		qm.Limit(perPage),
+		qm.Offset(offset),
+	}
+
+	// 执行查询获取操作记录列表
+	operatingRecords, err := models.UserOperatingrecords(queryMods...).All(m.db)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to fetch user operating records: %v", err)
+	}
+
+	// 构建返回的操作记录列表
+	records = make([]protocol.OperatingRecord, 0, len(operatingRecords))
+	for _, record := range operatingRecords {
+		records = append(records, protocol.OperatingRecord{
+			ID:            record.ID,
+			OperationType: record.OperationType,
+			CreatedAt:     record.CreatedAt.Format("2006-01-02"),
+			UpdatedAt:     record.UpdatedAt.Format("2006-01-02"),
+		})
+	}
+
+	return records, int64(len(records)), nil
+}
+
+func (om *mysqlClient) GetOneFileUploadRecordByOpID(operatingRecordId int64) (language string, fileContent string, err error) {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, qm.Select(models.UserFilerecordColumns.FileType, models.UserFilerecordColumns.FileContent))
+	queryMods = append(queryMods, models.UserFilerecordWhere.OperatingRecordID.EQ(operatingRecordId))
+
+	fileRecord, err := models.UserFilerecords(queryMods...).One(om.db)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", "", fmt.Errorf("file record not found|operatingRecordId:%v", operatingRecordId)
+		}
+		return "", "", err
+	}
+
+	return fileRecord.FileType, fileRecord.FileContent, nil
+}
+
+func (m *mysqlClient) UpdateUserAvatar(userID uint64, avatarFileName string) error {
+	if avatarFileName == "" {
+		fmt.Println("avatarFileName is empty")
+		return nil
+	}
+
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
+
+	user, err := models.UserUsers(queryMods...).One(m.db)
+	if err != nil {
+		return fmt.Errorf("failed to find user: %v", err)
+	}
+
+	user.ProfilePicture.String = avatarFileName
+	user.ProfilePicture.Valid = true
+	_, err = user.Update(m.db, boil.Infer())
+	return err
+}
+
+func (m *mysqlClient) UpdateUserInfo(userID uint64, nickname string) error {
+	var queryMods []qm.QueryMod
+	queryMods = append(queryMods, models.UserUserWhere.UID.EQ(userID))
+
+	user, err := models.UserUsers(queryMods...).One(m.db)
+	if err != nil {
+		return fmt.Errorf("failed to find user: %v", err)
+	}
+
+	user.Nickname = nickname
+
+	_, err = user.Update(m.db, boil.Infer())
+	return err
 }

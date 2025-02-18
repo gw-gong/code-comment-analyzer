@@ -54,7 +54,13 @@ func (c *ChangePassword) Handle() {
 		protocol.HttpResponseFail(c.w, http.StatusUnauthorized, protocol.ErrorCodeInvalidPassword, "旧密码错误")
 		return
 	}
-	// 返回成功响应
+
+	sm := c.registry.GetSessionManager()
+	err = sm.ClearSession(userID)
+	if err != nil {
+		fmt.Println("clear session failed", err)
+	}
+
 	protocol.HttpResponseSuccess(c.w, http.StatusOK, "密码更新成功", protocol.WithData(map[string]interface{}{}))
 }
 

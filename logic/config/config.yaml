@@ -26,11 +26,15 @@ jwt_key: secret_key_for_user
 default_nickname: "Anonymous"
 default_avatar: "default_avatar.jpg"
 
-max_file_size: 10  # MB
-max_project_size: 100  # MB
-
 file_storage_path:
   avatars: "file_storage/avatars"
   projects: "file_storage/projects"
 
 code-comment-analyzer_readme_path: ../docs/code-comment-analyzer_readme.md
+
+max_file_size: 10  # MB
+max_project_size: 1000  # MB
+max_avatar_size: 5  # MB
+
+uuid_project_prefix: "proj_"
+uuid_avatar_prefix: "avatar_"

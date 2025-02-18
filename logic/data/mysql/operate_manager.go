@@ -1,8 +1,10 @@
 package mysql
 
 import (
-	"code-comment-analyzer/config"
 	"database/sql"
+
+	"code-comment-analyzer/config"
+	"code-comment-analyzer/protocol"
 )
 
 type OperationManager interface {
@@ -12,7 +14,11 @@ type OperationManager interface {
 	RecordProjectUpload(userID uint64, projectUrl string) (err error)
 
 	GetOneProjectUploadRecordUrlByOpID(operatingRecordId int64) (projectUrl string, err error)
+	GetUserOperatingRecords(page, perPage int) (records []protocol.OperatingRecord, total int64, err error)
+	GetOneFileUploadRecordByOpID(operatingRecordId int64) (language string, fileContent string, err error)
 
+	DeleteOperatingRecordByID(operatingRecordId int64) (err error)
+	
 	Close()
 }
 
