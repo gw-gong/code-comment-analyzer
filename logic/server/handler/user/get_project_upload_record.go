@@ -1,14 +1,13 @@
 package user
 
 import (
-	"fmt"
-	"net/http"
-	"strings"
-
 	"code-comment-analyzer/data"
 	"code-comment-analyzer/protocol"
 	"code-comment-analyzer/server/middleware"
 	"code-comment-analyzer/util"
+	"fmt"
+	"net/http"
+	"path/filepath"
 )
 
 type GetProjectUploadRecord struct {
@@ -42,12 +41,7 @@ func (g *GetProjectUploadRecord) Handle() {
 		return
 	}
 
-	directorys := strings.Split(projectUrl, "/")
-	if len(directorys) < 2 {
-		protocol.HttpResponseFail(g.w, http.StatusInternalServerError, protocol.ErrorCodeInternalServerError, "获取项目名称失败")
-		return
-	}
-	projectStorageName := directorys[len(directorys)-1]
+	projectStorageName := filepath.Base(projectUrl)
 
 	rootNode := util.BuildDirectoryTree(projectUrl, projectUrl, projectStorageName)
 

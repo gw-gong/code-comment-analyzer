@@ -1,21 +1,4 @@
 ```
-user  nobody;
-worker_processes  10;
-worker_rlimit_nofile 20000;
-
-#error_log  logs/error.log;
-#error_log  logs/error.log  notice;
-#error_log  logs/error.log  info;
-#error_log logs/error.log crit;  # 只记录严重错误
-
-#pid        logs/nginx.pid;
-
-
-events {
-    worker_connections  4096;
-}
-
-
 http {
     include       mime.types;
     tcp_nodelay on;  # 确保小数据包不会被延迟发送
@@ -28,13 +11,19 @@ http {
 
     #gzip  on;
 
+
     server {
         listen       80;
         server_name  localhost;
 
+        root /Users/guowei.gong/Documents/workspace/projects/code-comment-analyzer/frontend;
+
         # 配置前端静态文件处理
         location /static/ {
-            root /Users/guowei.gong/Documents/workspace/projects/Go_Entry_Task/frontend; # 静态文件存放的根目录
+            expires 30d; # 设置静态文件的 HTTP 缓存过期时间
+            access_log off; # 不记录访问静态文件的日志
+        }
+        location /node_modules/ {
             expires 30d; # 设置静态文件的 HTTP 缓存过期时间
             access_log off; # 不记录访问静态文件的日志
         }
@@ -42,14 +31,42 @@ http {
         # 配置页面路由
         # 指定根路由 '/' 直接指向 index.html
         location = / {
-            root /Users/guowei.gong/Documents/workspace/projects/code-comment-analyzer/frontend;
             try_files /index.html =404;
             types { }
             default_type text/html; 
         }
-        location = /index {
-            root /Users/guowei.gong/Documents/workspace/projects/code-comment-analyzer/frontend;
+        location = /index/ {
             try_files /index.html =404;
+            types { }
+            default_type text/html; 
+        }
+        location = /file/ {
+            try_files /file.html =404;
+            types { }
+            default_type text/html; 
+        }
+        location = /project/ {
+            try_files /project.html =404;
+            types { }
+            default_type text/html; 
+        }
+        location = /readme/ {
+            try_files /readme.html =404;
+            types { }
+            default_type text/html; 
+        }
+        location = /user_info/ {
+            try_files /user_info.html =404;
+            types { }
+            default_type text/html; 
+        }
+        location = /sign_up/ {
+            try_files /sign_up.html =404;
+            types { }
+            default_type text/html; 
+        }
+        location = /login/ {
+            try_files /login.html =404;
             types { }
             default_type text/html; 
         }
@@ -66,13 +83,9 @@ http {
             proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        error_page  404              /404.html;
-        location = /404.html {
-            root   /Users/guowei.gong/Documents/workspace/projects/code-comment-analyzer/frontend/error_pages;
-        }
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /Users/guowei.gong/Documents/workspace/projects/code-comment-analyzer/frontend/error_pages;
+        error_page  404              /error_pages/404.html;
+        error_page   500 502 503 504  /error_pages/50x.html;
+        location /error_pages/ {
         }
     }
     include servers/*;
