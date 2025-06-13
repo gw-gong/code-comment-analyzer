@@ -1,6 +1,7 @@
 **/node_modules/
 
 **/venv/
+keys.yaml
 
 **/__pycache__/
 *.pyc
