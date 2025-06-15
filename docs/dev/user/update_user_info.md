@@ -4,7 +4,7 @@
 
 1. 修改用户信息
 
-`<br><br>``<br>`
+<br><br><br>
 
 ## 二、路由
 
@@ -22,7 +22,7 @@ value: file
 
 头像存储按照 `avatar.md`说明
 
-response (json):`<br>`
+response (json):
 
 success
 
